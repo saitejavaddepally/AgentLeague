@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
+import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/otp_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,7 @@ class _MyAppState extends State {
     return MaterialApp(
       title: 'Knight and Day',
       debugShowCheckedModeBanner: false,
-      home: const OtpScreen(),
+      home: Otp(),
       theme: CustomTheme.lightTheme, //3
       darkTheme: CustomTheme.darkTheme, //4
       themeMode: currentTheme.currentTheme, //5
