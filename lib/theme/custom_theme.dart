@@ -32,6 +32,7 @@ class CustomTheme with ChangeNotifier {
         scaffoldBackgroundColor: CustomColors.dark,
         fontFamily: 'pop_md',
         textTheme: ThemeData.dark().textTheme,
+        iconTheme: const IconThemeData(color: Colors.white),
         buttonTheme: ButtonThemeData(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
