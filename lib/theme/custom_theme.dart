@@ -26,5 +26,6 @@ class CustomTheme with ChangeNotifier {
         defaultTextColor: Colors.white,
         lightSource: LightSource.topLeft,
         shadowLightColor: Colors.blue.withOpacity(0.7));
+
   }
 }
