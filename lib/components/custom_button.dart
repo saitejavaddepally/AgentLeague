@@ -1,5 +1,4 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:agent_league/theme/colors.dart';
 
 import '../theme/config.dart';
 
@@ -12,6 +11,7 @@ class CustomButton {
   late Color textColor;
   late double width;
   late double height;
+  late Function onClick;
 
   CustomButton(
       {required this.text,
@@ -21,7 +21,8 @@ class CustomButton {
       this.color = Colors.yellow,
       this.textColor = Colors.white,
       this.width = 150,
-      this.height = 50});
+      this.height = 50,
+      required this.onClick});
 
   use() {
     return SizedBox(
@@ -29,14 +30,14 @@ class CustomButton {
         height: height,
         child: Neumorphic(
             style: NeumorphicStyle(
-                shape: NeumorphicShape.flat,
-                boxShape:
-                    NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
-                depth: depth,
-                color: color,
+              shape: NeumorphicShape.flat,
+              boxShape:
+                  NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
+              depth: depth,
+              color: color,
             ),
             child: TextButton(
-              onPressed: () {currentTheme.toggleTheme();},
+              onPressed: onClick(),
               child: Text(
                 text,
                 style: TextStyle(color: textColor),
