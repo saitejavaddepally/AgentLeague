@@ -4,7 +4,6 @@ import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/ui/otp_screen.dart';
 import 'package:agent_league/ui/signin_edit.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 void main() {

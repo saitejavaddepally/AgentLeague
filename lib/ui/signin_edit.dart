@@ -1,4 +1,6 @@
 import 'package:agent_league/components/custom_button.dart';
+import 'package:agent_league/components/custom_container.dart';
+import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/theme/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -11,19 +13,87 @@ class SignInEdit extends StatefulWidget {
 }
 
 class _SignInEditState extends State<SignInEdit> {
+  double height = 500;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Center(
-              child: CustomButton(
-                  text: 'sign up',
-                  color: Colors.green,
-                  onClick: () => currentTheme.toggleTheme()).use()),
-        ],
+        body: Column(children: [
+      Container(
+        color: const Color(0xFF000000).withOpacity(0.1),
+        width: double.maxFinite,
+        height: 170,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Image.asset("lib/assets/images/logo_onboarding.png"),
+          const SizedBox(height: 2),
+          const Padding(
+            padding: EdgeInsets.only(left: 157.0),
+            child: Text(
+              "Every lead counts",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFFFFFFFF),
+                  fontSize: 10),
+            ),
+          ),
+        ]),
       ),
-    );
+      CustomContainer(
+        margin: const EdgeInsets.only(top: 20.0),
+        padding: const EdgeInsets.all(12.0),
+        height: 400,
+        // decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+        color: CustomColors.dark,
+        alignment: Alignment.topCenter,
+        child: Column(
+          children: [
+            Container(
+              width: 350,
+              height: 400 * 0.55,
+              child: Image.asset("lib/assets/images/img.png"),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  color: Colors.red),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+              width: 350,
+              height: 500 * 0.2,
+              // decoration:
+              //     BoxDecoration(border: Border.all(color: Colors.red)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CustomButton(
+                    width: 160,
+                    height: 50,
+                    color: CustomColors.dark,
+                    textColor: Colors.yellow,
+                    onClick: () {},
+                    text: 'Sign Up',
+                  ).use(),
+                  CustomButton(
+                    width: 160,
+                    height: 50,
+                    textColor: Colors.yellow,
+                    color: CustomColors.dark,
+                    onClick: () {},
+                    text: 'Sign In',
+                  ).use(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ).use()
+    ]));
   }
 }
+
+// CustomButton(
+// text: 'sign up',
+// color: HexColor('#FD7E0E').withOpacity(0.7),
+// onClick: () => currentTheme.toggleTheme(),
+//
+// ).use()),
