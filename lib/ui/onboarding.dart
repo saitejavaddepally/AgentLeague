@@ -1,3 +1,5 @@
+import 'package:agent_league/components/custom_button.dart';
+import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 const shadow = [
@@ -68,99 +70,83 @@ class _OnboardingState extends State<Onboarding> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.keyboard_backspace)),
-                    Image.asset("assets/logo_onboarding.png"),
-                    (_currentPage == 5)
-                        ? const SizedBox(width: 50)
-                        : GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _controller.jumpToPage(4);
-                              });
-                            },
-                            child: const Text("Skip All",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                )),
-                          )
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: double.maxFinite,
-                height: 490,
-                child: PageView.builder(
-                    physics: const ClampingScrollPhysics(),
-                    controller: _controller,
-                    onPageChanged: (int page) {
-                      setState(() {
-                        _currentPage = page + 1;
-                      });
-                    },
-                    itemCount: list.length,
-                    itemBuilder: (context, index) => list[index]),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  (_currentPage == 1) ? activeIndicator() : inactiveIndicator(),
-                  (_currentPage == 2) ? activeIndicator() : inactiveIndicator(),
-                  (_currentPage == 3) ? activeIndicator() : inactiveIndicator(),
-                  (_currentPage == 4) ? activeIndicator() : inactiveIndicator(),
-                  (_currentPage == 5) ? activeIndicator() : inactiveIndicator(),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.keyboard_backspace)),
+                  Image.asset("assets/logo_onboarding.png"),
+                  (_currentPage == 5)
+                      ? const SizedBox(width: 50)
+                      : GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _controller.jumpToPage(4);
+                            });
+                          },
+                          child: const Text("Skip All",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              )),
+                        )
                 ],
               ),
-              const SizedBox(height: 80),
-              GestureDetector(
-                onTap: () {
-                  _controller.nextPage(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.ease);
-                },
-                child: Container(
-                  width: 140,
-                  height: 43,
-                  decoration: BoxDecoration(
-                      boxShadow: shadow,
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: const LinearGradient(
-                          colors: [Color(0xFFFD7E0E), Color(0xFFC12103)])),
-                  child: Center(
-                    child: (_currentPage == 5)
-                        ? const Text("Sign Up",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                letterSpacing: 0.4,
-                                color: Colors.white))
-                        : const Text("Next",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                letterSpacing: 0.4,
-                                color: Colors.white)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-            ],
-          ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                  physics: const ClampingScrollPhysics(),
+                  controller: _controller,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page + 1;
+                    });
+                  },
+                  itemCount: list.length,
+                  itemBuilder: (context, index) => list[index]),
+            ),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                (_currentPage == 1) ? activeIndicator() : inactiveIndicator(),
+                (_currentPage == 2) ? activeIndicator() : inactiveIndicator(),
+                (_currentPage == 3) ? activeIndicator() : inactiveIndicator(),
+                (_currentPage == 4) ? activeIndicator() : inactiveIndicator(),
+                (_currentPage == 5) ? activeIndicator() : inactiveIndicator(),
+              ],
+            ),
+            const SizedBox(height: 60),
+            (_currentPage == 5)
+                ? CustomButton(
+                        text: "Sign Up",
+                        onClick: () {},
+                        radius: 30,
+                        color: HexColor('FD7E0E').withOpacity(0.7),
+                        width: 140,
+                        height: 43)
+                    .use()
+                : CustomButton(
+                    text: "Next",
+                    onClick: () {
+                      _controller.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.ease);
+                    },
+                    radius: 30,
+                    width: 140,
+                    height: 43,
+                    color: HexColor('FD7E0E').withOpacity(0.7),
+                  ).use(),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );

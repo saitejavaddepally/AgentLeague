@@ -11,33 +11,34 @@ class CustomButton {
   late Color textColor;
   late double width;
   late double height;
-  late Function onClick;
-
+  late void Function() onClick;
+  late List<Color> gradientColors;
+  late bool isGradient;
   CustomButton(
       {required this.text,
+      required this.onClick,
       this.shape = 'flat',
       this.radius = 50,
       this.depth = 4,
       this.color = Colors.yellow,
       this.textColor = Colors.white,
       this.width = 150,
-      this.height = 50,
-      required this.onClick});
+      this.height = 50});
 
   use() {
-    return SizedBox(
+    return Container(
         width: width,
         height: height,
         child: Neumorphic(
             style: NeumorphicStyle(
+              color: color,
               shape: NeumorphicShape.flat,
               boxShape:
                   NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
               depth: depth,
-              color: color,
             ),
             child: TextButton(
-              onPressed: onClick(),
+              onPressed: onClick,
               child: Text(
                 text,
                 style: TextStyle(color: textColor),

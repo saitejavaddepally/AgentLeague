@@ -29,8 +29,6 @@ flutter:
     - assets/
   #   - images/a_dot_ham.jpeg
 
-  assets:
-    - lib/assets/images/
   # example:
   fonts:
     - family: pop_md
