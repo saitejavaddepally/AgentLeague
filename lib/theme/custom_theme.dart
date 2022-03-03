@@ -31,6 +31,7 @@ class CustomTheme with ChangeNotifier {
         primaryColor: CustomColors.light,
         scaffoldBackgroundColor: CustomColors.dark,
         fontFamily: 'pop_md',
+        iconTheme: const IconThemeData(color: Colors.white),
         textTheme: ThemeData.dark().textTheme,
         buttonTheme: ButtonThemeData(
           shape:
