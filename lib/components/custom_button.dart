@@ -27,10 +27,8 @@ class CustomButton {
       this.width = 150,
       this.height = 50,
       this.rounded = false,
-        this.isIcon = false,
-      required this.onClick,
+      this.isIcon = false,
       this.gradientColors = const []});
-
 
   use() {
     return Container(
@@ -47,12 +45,12 @@ class CustomButton {
             ),
             child: TextButton(
               onPressed: onClick,
-              child: (isIcon) ? Image.asset(
-                "lib/assets/images/$text.png"
-              ): Text(
-                text,
-                style: TextStyle(color: textColor),
-              ),
+              child: (isIcon)
+                  ? Image.asset("assets/$text.png")
+                  : Text(
+                      text,
+                      style: TextStyle(color: textColor),
+                    ),
             )));
   }
 }

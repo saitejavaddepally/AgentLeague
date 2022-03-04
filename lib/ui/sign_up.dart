@@ -20,18 +20,25 @@ class _SignUpFormState extends State<SignUpForm> {
         toolbarHeight: 100,
         elevation: 1,
         backgroundColor: CustomColors.dark,
-        title: Container(
-          margin: const EdgeInsets.all(14),
-          width: 75.93,
-          height: 46.05,
-          child: Image.asset("lib/assets/images/logo_onboarding.png"),
+        title: GestureDetector(
+          onTap: () {
+          },
+          child: Container(
+            margin: const EdgeInsets.all(14),
+            width: 75.93,
+            height: 46.05,
+
+            child: Image.asset("assets/logo_onboarding.png"),
+          ),
         ),
         actions: [
           Container(
             margin: const EdgeInsets.all(24),
             child: CustomButton(
               text: "help_icon" ,
-              onClick: () {},
+              onClick: () {
+                Navigator.pushNamed(context, '/help');
+              },
               width: 48,
               height: 48,
               isIcon: true,
