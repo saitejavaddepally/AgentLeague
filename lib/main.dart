@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
+import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:agent_league/ui/otp_screen.dart';
 import 'package:agent_league/ui/sign_up.dart';
@@ -32,7 +33,7 @@ class _MyAppState extends State {
     return NeumorphicApp(
       title: 'Agent League',
       debugShowCheckedModeBanner: false,
-      home: Onboarding(),
+      home: Help(),
       theme: CustomTheme.lightTheme, //3
       darkTheme: CustomTheme.darkTheme, //4
       themeMode: currentTheme.currentTheme, //5
