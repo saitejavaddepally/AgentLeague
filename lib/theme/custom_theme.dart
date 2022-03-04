@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 import 'colors.dart';
 
 class CustomTheme with ChangeNotifier {
   static bool _isDarkTheme = true;
+
   ThemeMode get currentTheme => _isDarkTheme ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() {
@@ -11,32 +12,20 @@ class CustomTheme with ChangeNotifier {
     notifyListeners();
   }
 
-  static ThemeData get lightTheme {
-    //1
-    return ThemeData(
-        //2
-        primaryColor: CustomColors.light,
-        scaffoldBackgroundColor: CustomColors.light,
-        fontFamily: 'pop_md', //3
-        buttonTheme: ButtonThemeData(
-          // 4
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-          buttonColor: CustomColors.light,
-        ));
+  static NeumorphicThemeData get lightTheme {
+    return NeumorphicThemeData(
+        baseColor: Colors.grey,
+        defaultTextColor: Colors.black,
+        lightSource: LightSource.topLeft,
+        shadowLightColor: Colors.black.withOpacity(0.7));
   }
 
-  static ThemeData get darkTheme {
-    return ThemeData(
-        primaryColor: CustomColors.light,
-        scaffoldBackgroundColor: CustomColors.dark,
-        fontFamily: 'pop_md',
+  static NeumorphicThemeData get darkTheme {
+    return NeumorphicThemeData(
+        baseColor: CustomColors.dark,
+        defaultTextColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.white),
-        textTheme: ThemeData.dark().textTheme,
-        buttonTheme: ButtonThemeData(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-          buttonColor: CustomColors.light,
-        ));
+        lightSource: LightSource.topLeft,
+        shadowLightColor: Colors.blue.withOpacity(0.7));
   }
 }
