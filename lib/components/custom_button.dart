@@ -18,6 +18,7 @@ class CustomButton {
 
   CustomButton(
       {required this.text,
+      required this.onClick,
       this.shape = 'flat',
       this.radius = 50,
       this.depth = 4,
@@ -30,8 +31,9 @@ class CustomButton {
       required this.onClick,
       this.gradientColors = const []});
 
+
   use() {
-    return SizedBox(
+    return Container(
         width: width,
         height: height,
         child: Neumorphic(

@@ -24,6 +24,7 @@ class CustomTheme with ChangeNotifier {
     return NeumorphicThemeData(
         baseColor: CustomColors.dark,
         defaultTextColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
         lightSource: LightSource.topLeft,
         shadowLightColor: Colors.blue.withOpacity(0.7));
   }
