@@ -13,6 +13,8 @@ class CustomButton {
   late double height;
   late Function() onClick;
   late List<Color> gradientColors;
+  late bool rounded;
+  late bool isIcon;
 
   CustomButton(
       {required this.text,
@@ -23,6 +25,8 @@ class CustomButton {
       this.textColor = Colors.white,
       this.width = 150,
       this.height = 50,
+      this.rounded = false,
+        this.isIcon = false,
       required this.onClick,
       this.gradientColors = const []});
 
@@ -34,13 +38,16 @@ class CustomButton {
             style: NeumorphicStyle(
               color: color,
               shape: NeumorphicShape.flat,
-              boxShape:
-                  NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
+              boxShape: (rounded)
+                  ? const NeumorphicBoxShape.circle()
+                  : NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
               depth: depth,
             ),
             child: TextButton(
               onPressed: onClick,
-              child: Text(
+              child: (isIcon) ? Image.asset(
+                "lib/assets/images/$text.png"
+              ): Text(
                 text,
                 style: TextStyle(color: textColor),
               ),

@@ -24,7 +24,7 @@ class _SignInEditState extends State<SignInEdit> {
         width: double.maxFinite,
         height: 170,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image.asset("lib/assets/images/logo_onboarding.png"),
+          Image.asset("lib/assets/images/logo.png", width: 150, height: 74.6,),
           const SizedBox(height: 2),
           const Padding(
             padding: EdgeInsets.only(left: 157.0),
@@ -40,51 +40,54 @@ class _SignInEditState extends State<SignInEdit> {
         ]),
       ),
       CustomContainer(
-        margin: const EdgeInsets.only(top: 20.0),
+        margin: const EdgeInsets.all(14),
         padding: const EdgeInsets.all(12.0),
         height: 400,
-        // decoration: BoxDecoration(border: Border.all(color: Colors.red)),
         color: CustomColors.dark,
         alignment: Alignment.topCenter,
-        child: Column(
-          children: [
-            Container(
-              width: 350,
-              height: 400 * 0.55,
-              child: Image.asset("lib/assets/images/img.png"),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  color: Colors.red),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                Container(
+                  width: 350,
+                  height: 400 * 0.55,
+                  child: Image.asset("lib/assets/images/img.png"),
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      color: Colors.red),
+                ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+                  width: 350,
+                  height: 500 * 0.2,
+                  // decoration:
+                  //     BoxDecoration(border: Border.all(color: Colors.red)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CustomButton(
+                        width: 160,
+                        height: 50,
+                        color: CustomColors.dark,
+                        textColor: Colors.yellow,
+                        onClick: () {},
+                        text: 'Sign Up',
+                      ).use(),
+                      CustomButton(
+                        width: 160,
+                        height: 50,
+                        textColor: Colors.yellow,
+                        color: CustomColors.dark,
+                        onClick: () {},
+                        text: 'Sign In',
+                      ).use(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 14, 0, 0),
-              width: 350,
-              height: 500 * 0.2,
-              // decoration:
-              //     BoxDecoration(border: Border.all(color: Colors.red)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CustomButton(
-                    width: 160,
-                    height: 50,
-                    color: CustomColors.dark,
-                    textColor: Colors.yellow,
-                    onClick: () {},
-                    text: 'Sign Up',
-                  ).use(),
-                  CustomButton(
-                    width: 160,
-                    height: 50,
-                    textColor: Colors.yellow,
-                    color: CustomColors.dark,
-                    onClick: () {},
-                    text: 'Sign In',
-                  ).use(),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ).use()
     ]));
