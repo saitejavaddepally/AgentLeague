@@ -51,29 +51,13 @@ class _OtpState extends State<Otp> {
                 color: const Color(0xFF000000).withOpacity(0.1),
                 width: double.maxFinite,
                 height: 150,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset("assets/logo.png"),
-                      const SizedBox(height: 2),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 157.0),
-                        child: Text(
-                          "Every lead counts",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xFFFFFFFF),
-                              fontSize: 10),
-                        ),
-                      ),
-                    ]),
+                child: Image.asset("assets/logo.png"),
               ),
               const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30.0),
                 child: Text(
-                  "enter otp send to your mobile number 90******78",
+                  "enter otp send to your mobile\nnumber 90******78",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -209,8 +193,11 @@ class _OtpState extends State<Otp> {
       height: 40,
       width: 40,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(31), color: Colors.white),
-      child: Text(""),
+          borderRadius: BorderRadius.circular(31),
+          color: Colors.white.withOpacity(0.1)),
+      child: const Center(
+          child: Text("",
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16))),
     );
   }
 
