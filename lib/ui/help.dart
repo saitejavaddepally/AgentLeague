@@ -45,6 +45,10 @@ class _HelpState extends State<Help> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
+                    const Text("name*",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 14)),
+                    const SizedBox(height: 20,),
                     TextField(
                       cursorColor: Colors.white.withOpacity(0.1),
                       decoration: InputDecoration(
@@ -64,6 +68,10 @@ class _HelpState extends State<Help> {
                               borderRadius: BorderRadius.circular(31))),
                     ),
                     const SizedBox(height: 30),
+                    const Text("mobile number*",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 14)),
+                    const SizedBox(height: 20,),
                     Row(children: [
                       const SizedBox(width: 5),
                       Image.asset("assets/flag-india.png"),
@@ -98,6 +106,10 @@ class _HelpState extends State<Help> {
                     const SizedBox(height: 30),
                     Row(
                       children: [
+                        const Text("Issue type*  ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500, fontSize: 14)),
+                        const SizedBox(height: 20,),
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -140,7 +152,7 @@ class _HelpState extends State<Help> {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    const Text("   more about the issue (optional) : ",
+                    const Text("more about the issue (optional) : ",
                         style: TextStyle(
                             fontWeight: FontWeight.w500, fontSize: 14)),
                     const SizedBox(height: 10),
