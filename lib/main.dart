@@ -33,7 +33,13 @@ class _MyAppState extends State {
     return NeumorphicApp(
       title: 'Agent League',
       debugShowCheckedModeBanner: false,
-      home: Help(),
+      routes: {
+        '/' : (context) => const Onboarding(),
+        '/sign_in_edit' : (context) => const SignInEdit(),
+        '/signup': (context) => const SignUpForm(),
+        '/help': (context) =>  const Help()
+      },
+      initialRoute: '/',
       theme: CustomTheme.lightTheme, //3
       darkTheme: CustomTheme.darkTheme, //4
       themeMode: currentTheme.currentTheme, //5

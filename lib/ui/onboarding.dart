@@ -16,40 +16,42 @@ const shadow = [
 ];
 
 class Onboarding extends StatefulWidget {
+  const Onboarding({Key? key}) : super(key: key);
+
   @override
   State<Onboarding> createState() => _OnboardingState();
 }
 
 class _OnboardingState extends State<Onboarding> {
   final List<Widget> list = [
-    Page(
+    const Page(
         image: "assets/onboarding1.png",
         text1: "Never miss your ",
         colorText: "sale",
         text2: "",
         text3:
             "Increase real estate sales with\ntechnology enabled lead\nmanagement at your fingertips"),
-    Page(
+    const Page(
         image: "assets/onboarding2.png",
         text1: "Don't carry bundles of\n",
         colorText: "marketing ",
         text2: "flyers",
         text3:
             "It's time to upgrade the way you\ndemonstrate realty projects to\nyour customers"),
-    Page(
+    const Page(
         image: "assets/onboarding3.png",
         text1: "Introducing ",
         colorText: "LeadsBox\n",
         text2: "(The Agent Genie)",
         text3: "Ask your genie how many leads\nyou want right now."),
-    Page(
+    const Page(
         image: "assets/onboarding4.png",
         text1: "",
         colorText: "Analytics ",
         text2: "at work",
         text3:
             "Analyse your sales, leads and\nearnings with our customised \ndashboards made for you"),
-    Page(
+    const Page(
         image: "assets/onboarding5.png",
         text1: "Become ",
         colorText: "personal realty\n",
@@ -127,7 +129,9 @@ class _OnboardingState extends State<Onboarding> {
             (_currentPage == 5)
                 ? CustomButton(
                         text: "Sign Up",
-                        onClick: () {},
+                        onClick: () {
+                          Navigator.pushNamed(context, '/sign_in_edit');
+                        },
                         radius: 30,
                         color: HexColor('FD7E0E').withOpacity(0.7),
                         width: 140,
@@ -184,12 +188,12 @@ class Page extends StatelessWidget {
   final String text2;
   final String text3;
 
-  Page(
-      {required this.image,
+  const Page(
+      {Key? key, required this.image,
       required this.text1,
       required this.colorText,
       required this.text2,
-      required this.text3});
+      required this.text3}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -46,7 +46,11 @@ class CustomButton {
             child: TextButton(
               onPressed: onClick,
               child: (isIcon)
+<<<<<<< HEAD
                   ? Image.asset("lib/assets/images/$text.png")
+=======
+                  ? Image.asset("assets/$text.png")
+>>>>>>> 7f860cfac1b280220c30636ead84f4c55dc70638
                   : Text(
                       text,
                       style: TextStyle(color: textColor),
