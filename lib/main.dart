@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:agent_league/ui/otp_screen.dart';
@@ -34,10 +35,10 @@ class _MyAppState extends State {
       title: 'Agent League',
       debugShowCheckedModeBanner: false,
       routes: {
-        '/' : (context) => const Onboarding(),
-        '/sign_in_edit' : (context) => const SignInEdit(),
+        '/': (context) => const BottomBar(),
+        '/sign_in_edit': (context) => const SignInEdit(),
         '/signup': (context) => const SignUpForm(),
-        '/help': (context) =>  const Help()
+        '/help': (context) => const Help()
       },
       initialRoute: '/',
       theme: CustomTheme.lightTheme, //3
