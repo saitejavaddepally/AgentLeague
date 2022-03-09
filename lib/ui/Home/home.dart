@@ -47,10 +47,10 @@ class _HomeState extends State<Home> {
                             image: "assets/profile.png", text: "profile")),
                     Flexible(
                         child: CustomImage(
-                            image: "assets/profile.png", text: "explore")),
+                            image: "assets/explorer.png", text: "explore")),
                     Flexible(
                         child: CustomImage(
-                            image: "assets/profile.png", text: "alerts")),
+                            image: "assets/alerts.png", text: "alerts")),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -75,6 +75,7 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
                       image: const DecorationImage(
+                          fit: BoxFit.fill,
                           image: AssetImage('assets/frame.png')),
                       boxShadow: const [
                         BoxShadow(
@@ -99,7 +100,7 @@ class _HomeState extends State<Home> {
                               children: [
                             TextSpan(text: "Introducing LeadsBox "),
                             TextSpan(
-                                text: "(TheAgent Genie)",
+                                text: "(The Agent Genie)",
                                 style: TextStyle(fontWeight: FontWeight.w400))
                           ])),
                       const Text(
@@ -180,7 +181,7 @@ class CustomImage extends StatelessWidget {
                 ? BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.blue))
-                : null,
+                : const BoxDecoration(boxShadow: shadow),
             child: Image.asset(image, height: 40, width: 40)),
         const SizedBox(height: 3),
         Text(
