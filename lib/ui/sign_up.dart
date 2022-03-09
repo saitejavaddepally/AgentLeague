@@ -153,7 +153,9 @@ class _SignUpFormState extends State<SignUpForm> {
                       children: [
                         CustomButton(
                                 text: "Sign Up",
-                                onClick: () {},
+                                onClick: () {
+                                  Navigator.pushNamed(context, "/otp");
+                                },
                                 width: 360,
                                 height: 43,
                                 radius: 30,

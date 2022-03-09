@@ -1,7 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-import '../theme/config.dart';
-
 class CustomButton {
   late double radius;
   late String shape;
@@ -46,7 +44,7 @@ class CustomButton {
             child: TextButton(
               onPressed: onClick,
               child: (isIcon)
-                  ? Image.asset("lib/assets/images/$text.png")
+                  ? Image.asset("assets/$text.png")
                   : Text(
                       text,
                       style: TextStyle(color: textColor),

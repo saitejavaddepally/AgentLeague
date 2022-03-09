@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/help.dart';
-import 'package:agent_league/ui/onboarding.dart';
-import 'package:agent_league/ui/otp_screen.dart';
+import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -38,7 +35,8 @@ class _MyAppState extends State {
         '/': (context) => const BottomBar(),
         '/sign_in_edit': (context) => const SignInEdit(),
         '/signup': (context) => const SignUpForm(),
-        '/help': (context) => const Help()
+        '/help': (context) => const Help(),
+        '/otp': (context) => const Otp(),
       },
       initialRoute: '/',
       theme: CustomTheme.lightTheme, //3
