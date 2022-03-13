@@ -3,6 +3,7 @@ import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/otp.dart';
+import 'package:agent_league/ui/profile.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -37,6 +38,7 @@ class _MyAppState extends State {
         '/signup': (context) => const SignUpForm(),
         '/help': (context) => const Help(),
         '/otp': (context) => const Otp(),
+        '/profile': (context) => const Profile(),
       },
       initialRoute: '/',
       theme: CustomTheme.lightTheme, //3
