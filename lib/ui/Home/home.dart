@@ -2,6 +2,8 @@ import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_container.dart';
 import 'package:flutter/material.dart';
 
+import '../../theme/colors.dart';
+
 const shadow = [
   BoxShadow(
       offset: Offset(-6, -6),
@@ -37,20 +39,30 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
                     Flexible(
-                        child: CustomImage(
-                            image: "assets/leadsBox.png",
-                            text: "LeadsBox",
-                            isDecorated: true)),
+                      child: CustomImage(
+                        text: "leads box",
+                        image: "assets/leadsBox.png",
+                      ),
+                    ),
                     Spacer(flex: 2),
                     Flexible(
-                        child: CustomImage(
-                            image: "assets/profile.png", text: "profile")),
+                      child: CustomImage(
+                        text: "profile",
+                        image: "assets/profile.png",
+                      ),
+                    ),
                     Flexible(
-                        child: CustomImage(
-                            image: "assets/profile.png", text: "explore")),
+                      child: CustomImage(
+                        text: "profile",
+                        image: "assets/profile.png",
+                      ),
+                    ),
                     Flexible(
-                        child: CustomImage(
-                            image: "assets/profile.png", text: "alerts")),
+                      child: CustomImage(
+                        text: "profile",
+                        image: "assets/profile.png",
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -147,7 +159,7 @@ class _HomeState extends State<Home> {
                     containerColor: const Color(0xFF55C18D),
                     buttonWidth: 109,
                     buttonText: "Refer Now",
-                    buttonTextColor: Color(0xFF21293A),
+                    buttonTextColor: const Color(0xFF21293A),
                     buttonColor: const Color(0xFFF3F4F6),
                     onButtonClick: () {}),
               ],
@@ -163,6 +175,7 @@ class CustomImage extends StatelessWidget {
   final String image;
   final String text;
   final bool isDecorated;
+
   const CustomImage(
       {required this.image,
       required this.text,
@@ -173,7 +186,10 @@ class CustomImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(shape: BoxShape.circle),
+      decoration: const BoxDecoration(
+      shape: BoxShape.circle,
+      boxShadow: shadow,
+    ),
       child: Column(children: [
         Container(
             decoration: (isDecorated)
@@ -195,6 +211,7 @@ class CustomImage extends StatelessWidget {
 
 class Title extends StatelessWidget {
   final String text;
+
   const Title({required this.text, Key? key}) : super(key: key);
 
   @override
@@ -215,6 +232,7 @@ class HomeContainer extends StatelessWidget {
   final Color buttonColor;
   final double buttonWidth;
   final void Function() onButtonClick;
+
   const HomeContainer(
       {required this.text,
       required this.image,

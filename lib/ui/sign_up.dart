@@ -13,6 +13,7 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

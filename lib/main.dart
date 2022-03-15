@@ -2,6 +2,7 @@ import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/help.dart';
+import 'package:agent_league/ui/lead_box.dart';
 import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
@@ -37,8 +38,9 @@ class _MyAppState extends State {
         '/signup': (context) => const SignUpForm(),
         '/help': (context) => const Help(),
         '/otp': (context) => const Otp(),
+        '/leadsBox': (context) => const LeadBox()
       },
-      initialRoute: '/',
+      initialRoute: '/leadsBox',
       theme: CustomTheme.lightTheme, //3
       darkTheme: CustomTheme.darkTheme, //4
       themeMode: currentTheme.currentTheme, //5
