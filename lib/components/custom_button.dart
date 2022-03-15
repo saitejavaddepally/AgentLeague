@@ -13,6 +13,7 @@ class CustomButton {
   late List<Color> gradientColors;
   late bool rounded;
   late bool isIcon;
+  late bool isBorderEnabled;
 
   CustomButton(
       {required this.text,
@@ -26,29 +27,43 @@ class CustomButton {
       this.height = 50,
       this.rounded = false,
       this.isIcon = false,
+      this.isBorderEnabled = false,
       this.gradientColors = const []});
 
   use() {
     return Container(
         width: width,
         height: height,
+
         child: Neumorphic(
             style: NeumorphicStyle(
-              color: color,
-              shape: NeumorphicShape.flat,
-              boxShape: (rounded)
-                  ? const NeumorphicBoxShape.circle()
-                  : NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
-              depth: depth,
-            ),
-            child: TextButton(
-              onPressed: onClick,
-              child: (isIcon)
-                  ? Image.asset("assets/$text.png")
-                  : Text(
-                      text,
-                      style: TextStyle(color: textColor),
-                    ),
+                color: color,
+                shape: NeumorphicShape.flat,
+                boxShape: (rounded)
+                    ? const NeumorphicBoxShape.circle()
+                    : NeumorphicBoxShape.roundRect(
+                        BorderRadius.circular(radius)),
+                depth: depth,
+                border: NeumorphicBorder(
+                    isEnabled: isBorderEnabled,
+                    width: 1.0,
+                    color: Colors.blue)),
+            child: Container(
+              height: double.infinity,
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: onClick,
+                child: (isIcon)
+                    ? Image.asset(
+                        "assets/$text.png",
+                        height: 150,
+                        fit: BoxFit.contain,
+                      )
+                    : Text(
+                        text,
+                        style: TextStyle(color: textColor),
+                      ),
+              ),
             )));
   }
 }

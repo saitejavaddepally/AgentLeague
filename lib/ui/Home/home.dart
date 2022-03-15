@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 import '../../components/home_container.dart';
 import '../../helper/constants.dart';
 
@@ -132,6 +133,7 @@ class CustomImage extends StatelessWidget {
   final String image;
   final String text;
   final bool isDecorated;
+
   void Function()? onTap;
   CustomImage(
       {required this.image,
@@ -143,6 +145,7 @@ class CustomImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -171,6 +174,7 @@ class CustomImage extends StatelessWidget {
 
 class Title extends StatelessWidget {
   final String text;
+
   const Title({required this.text, Key? key}) : super(key: key);
 
   @override
