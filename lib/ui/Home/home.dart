@@ -22,27 +22,29 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                        child: CustomImage(
-                            image: "assets/leadsBox.png",
-                            text: "LeadsBox",
-                            isDecorated: true)),
-                    const Spacer(flex: 2),
-                    Flexible(
-                        child: CustomImage(
+                    Row(children: [
+                      CustomImage(
+                          image: "assets/leadsBox.png",
+                          text: "LeadsBox",
+                          isDecorated: true),
+                    ]),
+                    Row(
+                      children: [
+                        CustomImage(
                             image: "assets/profile.png",
                             text: "profile",
                             onTap: () {
                               Navigator.pushNamed(context, '/profile');
-                            })),
-                    Flexible(
-                        child: CustomImage(
-                            image: "assets/explorer.png", text: "explore")),
-                    Flexible(
-                        child: CustomImage(
-                            image: "assets/alerts.png", text: "alerts")),
+                            }),
+                        const SizedBox(width: 15),
+                        CustomImage(
+                            image: "assets/explorer.png", text: "explore"),
+                        const SizedBox(width: 15),
+                        CustomImage(image: "assets/alerts.png", text: "alerts"),
+                      ],
+                    ),
                   ],
                 ),
                 const SizedBox(height: 30),
