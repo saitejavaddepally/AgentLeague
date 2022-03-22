@@ -17,7 +17,6 @@ class CustomLineUnderText{
         height: 10,
         width: 200,
         decoration: BoxDecoration(
-          border: Border.all(),
           color: color,
           borderRadius: const BorderRadius.all(Radius.circular(30)),
         ),

@@ -3,6 +3,7 @@ import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 import '../theme/colors.dart';
 import 'lead_box.dart';
@@ -46,14 +47,12 @@ class _SellScreenState extends State<SellScreen> {
                 unselectedLabelColor: HexColor("#b48484"),
                 indicatorSize: TabBarIndicatorSize.label,
                 labelStyle: const TextStyle(fontSize: 27),
-                indicator: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: HexColor("FE7F0E"),
-                      width: 4,
-                    ),
-                  ),
-                  // borderRadius: BorderRadius.circular(12.0)
+                indicator: MaterialIndicator(
+                  height: 4 ,
+                  bottomLeftRadius: 5,
+                  bottomRightRadius: 5,
+                  horizontalPadding: 5,
+                  color: Colors.lightGreen,
                 ),
                 tabs: const [
                   Tab(
