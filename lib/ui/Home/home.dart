@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import '../../components/home_container.dart';
 import '../../helper/constants.dart';
 
@@ -27,9 +26,13 @@ class _HomeState extends State<Home> {
                   children: [
                     Row(children: [
                       CustomImage(
-                          image: "assets/leadsBox.png",
-                          text: "LeadsBox",
-                          isDecorated: true),
+                        image: "assets/leadsBox.png",
+                        text: "LeadsBox",
+                        isDecorated: true,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/leadsBox');
+                        },
+                      ),
                     ]),
                     Row(
                       children: [
@@ -135,6 +138,7 @@ class CustomImage extends StatelessWidget {
   final bool isDecorated;
 
   void Function()? onTap;
+
   CustomImage(
       {required this.image,
       required this.text,
@@ -145,7 +149,6 @@ class CustomImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: onTap,
       child: Container(

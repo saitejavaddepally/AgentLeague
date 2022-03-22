@@ -31,7 +31,7 @@ class CustomButton {
       this.gradientColors = const []});
 
   use() {
-    return Container(
+    return SizedBox(
         width: width,
         height: height,
 
@@ -57,7 +57,7 @@ class CustomButton {
                     ? Image.asset(
                         "assets/$text.png",
                         height: 150,
-                        fit: BoxFit.contain,
+                        fit: BoxFit.fill,
                       )
                     : Text(
                         text,

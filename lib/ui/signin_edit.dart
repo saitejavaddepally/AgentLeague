@@ -24,7 +24,11 @@ class _SignInEditState extends State<SignInEdit> {
         width: double.maxFinite,
         height: 170,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image.asset("assets/logo.png", width: 150, height: 74.6,),
+          Image.asset(
+            "assets/logo.png",
+            width: 150,
+            height: 74.6,
+          ),
           const SizedBox(height: 2),
           const Padding(
             padding: EdgeInsets.only(left: 157.0),
@@ -81,7 +85,9 @@ class _SignInEditState extends State<SignInEdit> {
                         height: 50,
                         textColor: Colors.yellow,
                         color: CustomColors.dark,
-                        onClick: () {},
+                        onClick: () {
+                          Navigator.pushNamed(context, '/home');
+                        },
                         text: 'Sign In',
                       ).use(),
                     ],
