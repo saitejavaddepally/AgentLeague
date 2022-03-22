@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-
+import '../../components/custom_title.dart';
 import '../../components/home_container.dart';
 import '../../helper/constants.dart';
 
@@ -41,7 +41,11 @@ class _HomeState extends State<Home> {
                             }),
                         const SizedBox(width: 15),
                         CustomImage(
-                            image: "assets/explorer.png", text: "explore"),
+                            image: "assets/explorer.png",
+                            text: "explore",
+                            onTap: () {
+                              Navigator.pushNamed(context, '/explore');
+                            }),
                         const SizedBox(width: 15),
                         CustomImage(image: "assets/alerts.png", text: "alerts"),
                       ],
@@ -108,7 +112,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                const Title(text: "Refer Your Friends"),
+                const CustomTitle(text: "Refer Your Friends"),
                 const SizedBox(height: 10),
                 HomeContainer(
                     text:
@@ -145,7 +149,6 @@ class CustomImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -169,19 +172,5 @@ class CustomImage extends StatelessWidget {
         ]),
       ),
     );
-  }
-}
-
-class Title extends StatelessWidget {
-  final String text;
-
-  const Title({required this.text, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-            fontWeight: FontWeight.w600, fontSize: 18, letterSpacing: -0.15));
   }
 }

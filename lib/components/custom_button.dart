@@ -10,31 +10,30 @@ class CustomButton {
   late double width;
   late double height;
   late Function() onClick;
-  late List<Color> gradientColors;
+
   late bool rounded;
   late bool isIcon;
   late bool isBorderEnabled;
 
-  CustomButton(
-      {required this.text,
-      required this.onClick,
-      this.shape = 'flat',
-      this.radius = 50,
-      this.depth = 4,
-      this.color = Colors.yellow,
-      this.textColor = Colors.white,
-      this.width = 150,
-      this.height = 50,
-      this.rounded = false,
-      this.isIcon = false,
-      this.isBorderEnabled = false,
-      this.gradientColors = const []});
+  CustomButton({
+    required this.text,
+    required this.onClick,
+    this.shape = 'flat',
+    this.radius = 50,
+    this.depth = 4,
+    this.color = Colors.yellow,
+    this.textColor = Colors.white,
+    this.width = 150,
+    this.height = 50,
+    this.rounded = false,
+    this.isIcon = false,
+    this.isBorderEnabled = false,
+  });
 
   use() {
     return Container(
         width: width,
         height: height,
-
         child: Neumorphic(
             style: NeumorphicStyle(
                 color: color,

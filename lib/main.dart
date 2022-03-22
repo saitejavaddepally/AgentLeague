@@ -1,10 +1,12 @@
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/explore.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/lead_box.dart';
 import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/profile.dart';
+import 'package:agent_league/ui/realtor_card.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -39,10 +41,12 @@ class _MyAppState extends State {
         '/signup': (context) => const SignUpForm(),
         '/help': (context) => const Help(),
         '/otp': (context) => const Otp(),
-         '/leadsBox': (context) => const LeadBox(), 
+        '/leadsBox': (context) => const LeadBox(),
         '/profile': (context) => const Profile(),
+        '/explore': (context) => const Explore(),
+        '/realtor_card': (context) => const RealtorCard(),
       },
-      initialRoute: '/leadsBox',
+      initialRoute: '/realtor_card',
       theme: CustomTheme.lightTheme, //3
       darkTheme: CustomTheme.darkTheme, //4
       themeMode: currentTheme.currentTheme, //5
