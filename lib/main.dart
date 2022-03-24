@@ -2,6 +2,7 @@ import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/Home/home.dart';
+import 'package:agent_league/ui/amenties.dart';
 import 'package:agent_league/ui/explore.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/lead_box.dart';
@@ -52,6 +53,7 @@ class _MyAppState extends State {
         '/realtor_card': (context) => const RealtorCard(),
         '/home': (context) => const Home(),
         '/sell': (context) => const SellScreen(),
+        '/amenties': (context) => const Amenties(),
       },
       initialRoute: '/realtor_card',
       theme: CustomTheme.lightTheme, //3

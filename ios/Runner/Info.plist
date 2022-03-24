@@ -45,5 +45,13 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+		<string>To take images</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>To choose image</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Used to capture audio for imagePicker</string>
+		<key>NSAppTransportSecurity</key>
+		<string>For video player in image</string>
 	</dict>
 </plist>

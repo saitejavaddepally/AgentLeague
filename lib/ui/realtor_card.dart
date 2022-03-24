@@ -12,41 +12,70 @@ class RealtorCard extends StatefulWidget {
 }
 
 class _RealtorCardState extends State<RealtorCard> {
+  List pages = [RealtorPage(), RealtorPage()];
+  Color color = Colors.deepPurpleAccent;
+  List colorList = [Colors.deepPurpleAccent, Colors.deepOrangeAccent];
   @override
   Widget build(BuildContext context) {
-    var textList = [
-      '20% Construction & 80% space',
-      'Total 750 flat in 3 towers',
-      'Exclusive club house',
-      'Just 2kms distance to ORR',
-      'Golf track and playground'
-    ];
-
-    var iconMap = {
-      'location': 'assets/location.png',
-      'gallery': 'assets/img_preview.png',
-      'tour': 'assets/compass.png',
-      'documents': 'assets/documents.png',
-      'eml': 'assets/credit_card.png'
-    };
-
     return Scaffold(
+        backgroundColor: color,
         body: SafeArea(
             child: Stack(children: [
-      Column(children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15, right: 35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.keyboard_backspace_sharp)),
-              IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.share_outlined))
-            ],
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0, right: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.keyboard_backspace_sharp),
+                ),
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.share_outlined)),
+              ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(top: 60),
+            child: PageView.builder(
+              itemCount: 2,
+              onPageChanged: (int page) {
+                setState(() {
+                  color = colorList[page];
+                });
+              },
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) {
+                return pages[index];
+              },
+            ),
+          ),
+        ])));
+  }
+}
+
+class RealtorPage extends StatelessWidget {
+  RealtorPage({Key? key}) : super(key: key);
+  var textList = [
+    '20% Construction & 80% space',
+    'Total 750 flat in 3 towers',
+    'Exclusive club house',
+    'Just 2kms distance to ORR',
+    'Golf track and playground'
+  ];
+
+  var iconMap = {
+    'location': 'assets/location.png',
+    'gallery': 'assets/img_preview.png',
+    'tour': 'assets/compass.png',
+    'documents': 'assets/documents.png',
+    'eml': 'assets/credit_card.png'
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      Column(children: [
         LayoutBuilder(
           builder: (context, constraints) => Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +150,7 @@ class _RealtorCardState extends State<RealtorCard> {
           ]),
         ),
       ),
-    ])));
+    ]);
   }
 }
 
