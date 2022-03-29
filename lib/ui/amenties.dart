@@ -4,10 +4,9 @@ import 'package:agent_league/provider/amenities_provider.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
+
 import '../components/custom_button.dart';
 import '../helper/constants.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 class Amenties extends StatefulWidget {
   const Amenties({Key? key}) : super(key: key);

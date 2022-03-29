@@ -8,7 +8,6 @@ class CustomSelector {
   late bool dim;
   late String hint;
 
-
   CustomSelector(
       {this.color = const Color(0xFF213C53),
       this.textColor = Colors.white,

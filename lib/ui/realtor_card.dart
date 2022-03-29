@@ -3,6 +3,7 @@ import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/ui/Home/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RealtorCard extends StatefulWidget {
   const RealtorCard({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class _RealtorCardState extends State<RealtorCard> {
   List pages = [RealtorPage(), RealtorPage()];
   Color color = Colors.deepPurpleAccent;
   List colorList = [Colors.deepPurpleAccent, Colors.deepOrangeAccent];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

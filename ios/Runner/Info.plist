@@ -53,5 +53,6 @@
 		<string>Used to capture audio for imagePicker</string>
 		<key>NSAppTransportSecurity</key>
 		<string>For video player in image</string>
+		<key>NSAllowsArbitraryLoads</key>
 	</dict>
 </plist>
