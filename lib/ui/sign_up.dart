@@ -168,14 +168,18 @@ class _SignUpFormState extends State<SignUpForm> {
                       Flexible(
                           child: Image.asset("assets/member.png", height: 70))
                     ]),
-                    const SizedBox(height: 30,),
+                    const SizedBox(
+                      height: 30,
+                    ),
                     Center(
                         child: CustomButton(
                                 text: "sign in",
-                                onClick: () {},
+                                onClick: () {
+                                  Navigator.pushNamed(context, '/home');
+                                },
                                 height: 43,
                                 radius: 30,
-                            textColor: Colors.yellow,
+                                textColor: Colors.yellow,
                                 color: CustomColors.dark)
                             .use())
                   ],

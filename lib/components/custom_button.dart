@@ -1,7 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-import '../theme/config.dart';
-
 class CustomButton {
   late double radius;
   late String shape;
@@ -15,42 +13,62 @@ class CustomButton {
   late List<Color> gradientColors;
   late bool rounded;
   late bool isIcon;
+  late bool isBorderEnabled;
+  late bool isNeu;
+  late bool textAlignRight;
 
-  CustomButton(
-      {required this.text,
-      required this.onClick,
-      this.shape = 'flat',
-      this.radius = 50,
-      this.depth = 4,
-      this.color = Colors.yellow,
-      this.textColor = Colors.white,
-      this.width = 150,
-      this.height = 50,
-      this.rounded = false,
-      this.isIcon = false,
-      this.gradientColors = const []});
+  CustomButton({
+    required this.text,
+    required this.onClick,
+    this.shape = 'flat',
+    this.radius = 50,
+    this.depth = 4,
+    this.color = Colors.yellow,
+    this.textColor = Colors.white,
+    this.width = 150,
+    this.height = 50,
+    this.rounded = false,
+    this.isIcon = false,
+    this.isBorderEnabled = false,
+    this.gradientColors = const [],
+    this.isNeu = true,
+    this.textAlignRight = false,
+  });
 
   use() {
-    return Container(
+    return SizedBox(
         width: width,
         height: height,
         child: Neumorphic(
             style: NeumorphicStyle(
-              color: color,
-              shape: NeumorphicShape.flat,
-              boxShape: (rounded)
-                  ? const NeumorphicBoxShape.circle()
-                  : NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
-              depth: depth,
-            ),
-            child: TextButton(
-              onPressed: onClick,
-              child: (isIcon)
-                  ? Image.asset("assets/$text.png")
-                  : Text(
-                      text,
-                      style: TextStyle(color: textColor),
-                    ),
+                color: color,
+                shape: NeumorphicShape.flat,
+                boxShape: (rounded)
+                    ? const NeumorphicBoxShape.circle()
+                    : NeumorphicBoxShape.roundRect(
+                        BorderRadius.circular(radius)),
+                depth: (isNeu) ? depth : 0,
+                border: NeumorphicBorder(
+                    isEnabled: isBorderEnabled,
+                    width: 1.0,
+                    color: Colors.blue)),
+            child: Container(
+              height: double.infinity,
+              alignment:
+                  (textAlignRight) ? Alignment.centerRight : Alignment.center,
+              child: TextButton(
+                onPressed: onClick,
+                child: (isIcon)
+                    ? Image.asset(
+                        "assets/$text.png",
+                        height: 150,
+                        fit: BoxFit.fill,
+                      )
+                    : Text(
+                        text,
+                        style: TextStyle(color: textColor),
+                      ),
+              ),
             )));
   }
 }
