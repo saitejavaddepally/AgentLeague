@@ -25,6 +25,7 @@ class CustomLineUnderText {
             color: color,
             borderRadius: const BorderRadius.all(Radius.circular(30)),
           ),
+
         ),
       ]),
     );

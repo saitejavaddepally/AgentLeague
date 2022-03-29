@@ -14,6 +14,8 @@ class CustomButton {
   late bool rounded;
   late bool isIcon;
   late bool isBorderEnabled;
+  late bool isNeu;
+  late bool textAlignRight;
 
   CustomButton({
     required this.text,
@@ -28,6 +30,9 @@ class CustomButton {
     this.rounded = false,
     this.isIcon = false,
     this.isBorderEnabled = false,
+    this.gradientColors = const [],
+    this.isNeu = true,
+    this.textAlignRight = false,
   });
 
   use() {
@@ -42,14 +47,15 @@ class CustomButton {
                     ? const NeumorphicBoxShape.circle()
                     : NeumorphicBoxShape.roundRect(
                         BorderRadius.circular(radius)),
-                depth: depth,
+                depth: (isNeu) ? depth : 0,
                 border: NeumorphicBorder(
                     isEnabled: isBorderEnabled,
                     width: 1.0,
                     color: Colors.blue)),
             child: Container(
               height: double.infinity,
-              alignment: Alignment.center,
+              alignment:
+                  (textAlignRight) ? Alignment.centerRight : Alignment.center,
               child: TextButton(
                 onPressed: onClick,
                 child: (isIcon)

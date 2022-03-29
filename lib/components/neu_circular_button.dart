@@ -8,16 +8,19 @@ class CircularNeumorphicButton {
   late GestureTapCallback onTap;
   late double size;
   late bool isNeu;
+  late double width;
+  late double padding;
 
-  CircularNeumorphicButton({
-    this.isTextUnder = false,
-    this.color = Colors.white,
-    this.text = '',
-    required this.imageName,
-    required this.onTap,
-    this.size = 40,
-    this.isNeu = true,
-  });
+  CircularNeumorphicButton(
+      {this.isTextUnder = false,
+      this.color = Colors.white,
+      this.text = '',
+      required this.imageName,
+      required this.onTap,
+      this.size = 40,
+      this.isNeu = true,
+      this.padding = 0,
+      this.width = 10});
 
   use() {
     return Container(
@@ -27,25 +30,25 @@ class CircularNeumorphicButton {
           onTap: onTap,
           child: Column(
             children: [
-              Container(
-                width: size,
-                height: size,
-                margin: const EdgeInsets.all(3),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
+              Neumorphic(
+                style: NeumorphicStyle(
+                  color: color,
+                  shape: NeumorphicShape.flat,
+                  boxShape: const NeumorphicBoxShape.circle(),
+                  depth: (isNeu) ? 4 : 0,
+                  intensity: (isNeu) ? 0.8 : 0,
                 ),
-                child: Neumorphic(
-                  style: NeumorphicStyle(
+                child: Container(
+                  padding: EdgeInsets.all(padding),
+                  width: size,
+                  height: size,
+                  margin: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
                     color: color,
-                    shape: NeumorphicShape.flat,
-                    boxShape: const NeumorphicBoxShape.circle(),
-                    depth: (isNeu) ? 4: 0,
-                    intensity: (isNeu) ? 0.8: 0,
+                    shape: BoxShape.circle,
                   ),
                   child: Image.asset(
                     "assets/$imageName.png",
-                    width: size,
                   ),
                 ),
               ),
