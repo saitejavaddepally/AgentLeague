@@ -12,6 +12,8 @@ class HomeContainer extends StatelessWidget {
   final Color buttonColor;
   final double buttonWidth;
   final bool isSizedBox;
+  final String text2;
+  final bool isSecondText;
   final void Function() onButtonClick;
   const HomeContainer(
       {required this.text,
@@ -19,6 +21,8 @@ class HomeContainer extends StatelessWidget {
       required this.containerColor,
       required this.buttonText,
       required this.onButtonClick,
+      this.text2 = '',
+      this.isSecondText = false,
       this.textColor = const Color(0xFF1B1B1B),
       this.isSizedBox = false,
       this.buttonWidth = 105,
@@ -29,6 +33,12 @@ class HomeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var style = TextStyle(
+        height: 1.5,
+        fontWeight: FontWeight.w500,
+        fontSize: 14,
+        color: textColor.withOpacity(0.87));
+
     return Container(
       padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
       decoration: BoxDecoration(
@@ -37,17 +47,18 @@ class HomeContainer extends StatelessWidget {
         boxShadow: shadow,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            text,
-            style: TextStyle(
-                height: 1.5,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: textColor.withOpacity(0.87)),
-          ),
+          Text(text, style: style),
+          (isSecondText)
+              ? Column(children: [
+                  const SizedBox(height: 5),
+                  Text(text2, style: style)
+                ])
+              : const SizedBox(),
           (isSizedBox) ? const SizedBox(height: 10) : Container(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: Image.asset(image)),
               const SizedBox(width: 10),

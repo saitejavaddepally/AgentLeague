@@ -9,7 +9,6 @@ class CustomSelector {
   late String hint;
   late double borderRadius;
 
-
   CustomSelector(
       {this.color = const Color(0xFF213C53),
       this.textColor = Colors.white,

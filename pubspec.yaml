@@ -1,7 +1,7 @@
 name: agent_league
 description: A PropertyBox application.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -9,34 +9,36 @@ environment:
   sdk: ">=2.16.1 <3.0.0"
 
 dependencies:
+  chewie: ^1.3.1
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
   flutter_neumorphic: ^3.2.0
+  image_picker: ^0.8.4+11
+  provider: ^6.0.2
+  syncfusion_flutter_pdfviewer: ^19.4.56-beta
+  video_player: ^2.3.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^1.0.0
   flutter_native_splash: ^2.0.5
+  flutter_test:
+    sdk: flutter
   tab_indicator_styler: ^2.0.0
   google_maps_flutter: ^2.1.3
   flutter_google_places: ^0.3.0
-
 
 
 flutter_native_splash:
   background_image: "assets/nativeSplash.png"
 
 flutter:
-
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
   #   - images/a_dot_ham.jpeg
-
   # example:
 #  fonts:
 #    - family: pop_md

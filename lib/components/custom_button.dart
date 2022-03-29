@@ -10,7 +10,7 @@ class CustomButton {
   late double width;
   late double height;
   late Function() onClick;
-  late List<Color> gradientColors;
+
   late bool rounded;
   late bool isIcon;
   late bool isBorderEnabled;
