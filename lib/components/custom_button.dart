@@ -30,7 +30,6 @@ class CustomButton {
     this.rounded = false,
     this.isIcon = false,
     this.isBorderEnabled = false,
-    this.gradientColors = const [],
     this.isNeu = true,
     this.textAlignRight = false,
   });

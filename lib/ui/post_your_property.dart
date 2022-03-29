@@ -37,10 +37,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                const Center(
-                  child: Text('Basic Info'),
-                ),
-                CustomLineUnderText(width: 60).use(),
+
+                CustomLineUnderText(text: 'Basic Info', height: 3, width: 60).use(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
                   child: Column(

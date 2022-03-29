@@ -36,10 +36,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              const Center(
-                child: Text('Personal  Information'),
-              ),
-              CustomLineUnderText(width: 135).use(),
+              CustomLineUnderText(text: 'Personal  Information', height: 3, width: 135).use(),
               CustomWidget(text: 'Facing :').use(),
               CustomWidget(text: 'Furnished :').use(),
               CustomWidget(text: 'No. of floors :').use(),
@@ -98,10 +95,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
               const SizedBox(
                 height: 10,
               ),
-              const Center(
-                child: Text('Rental Income (optional)'),
-              ),
-              CustomLineUnderText(width: 150).use(),
+              CustomLineUnderText(text: 'Rental Income (optional)', height: 3, width: 150).use(),
               CustomWidget(text: 'Total Portions :', isText: true).use(),
               CustomWidget(text: 'Total Income :', isText: true).use(),
               const SizedBox(
