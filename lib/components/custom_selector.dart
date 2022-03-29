@@ -7,19 +7,21 @@ class CustomSelector {
   late Color textColor;
   late bool dim;
   late String hint;
+  late double borderRadius;
 
 
   CustomSelector(
       {this.color = const Color(0xFF213C53),
       this.textColor = Colors.white,
       this.dim = true,
-      this.hint = 'All'});
+      this.hint = 'All',
+      this.borderRadius = 20});
 
   use() {
     return Container(
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(

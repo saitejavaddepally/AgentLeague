@@ -14,8 +14,8 @@ class CustomLineUnderText{
   use() {
     return Center(
       child: Container(
-        height: 10,
-        width: 200,
+        height: 3,
+        width: width,
         decoration: BoxDecoration(
           color: color,
           borderRadius: const BorderRadius.all(Radius.circular(30)),

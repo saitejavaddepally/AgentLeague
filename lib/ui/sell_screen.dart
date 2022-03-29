@@ -4,9 +4,7 @@ import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-
 import '../theme/colors.dart';
-import 'lead_box.dart';
 
 class SellScreen extends StatefulWidget {
   const SellScreen({Key? key}) : super(key: key);
@@ -48,7 +46,7 @@ class _SellScreenState extends State<SellScreen> {
                 indicatorSize: TabBarIndicatorSize.label,
                 labelStyle: const TextStyle(fontSize: 27),
                 indicator: MaterialIndicator(
-                  height: 4 ,
+                  height: 4,
                   bottomLeftRadius: 5,
                   bottomRightRadius: 5,
                   horizontalPadding: 5,
