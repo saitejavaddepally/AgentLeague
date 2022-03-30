@@ -42,6 +42,12 @@ class _OtpState extends State<Otp> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -53,21 +59,27 @@ class _OtpState extends State<Otp> {
                 color: const Color(0xFF000000).withOpacity(0.1),
                 width: double.maxFinite,
                 height: 170,
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Image.asset("assets/logo.png", width: 150, height: 74.6,),
-                  const SizedBox(height: 2),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 157.0),
-                    child: Text(
-                      "Every lead counts",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFFFFFFFF),
-                          fontSize: 10),
-                    ),
-                  ),
-                ]),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/logo.png",
+                        width: 150,
+                        height: 74.6,
+                      ),
+                      const SizedBox(height: 2),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 157.0),
+                        child: Text(
+                          "Every lead counts",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFFFFFFFF),
+                              fontSize: 10),
+                        ),
+                      ),
+                    ]),
               ),
               const SizedBox(height: 20),
               const Padding(
@@ -112,16 +124,16 @@ class _OtpState extends State<Otp> {
                           borderRadius: BorderRadius.circular(30)),
                       child: Center(
                           child: Text(
-                            "resend",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                letterSpacing: 0.4,
-                                color: (seconds == 0)
-                                    ? const Color(0xFFFE7F0E)
-                                    : Colors.white.withOpacity(0.3)),
-                          )),
+                        "resend",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            letterSpacing: 0.4,
+                            color: (seconds == 0)
+                                ? const Color(0xFFFE7F0E)
+                                : Colors.white.withOpacity(0.3)),
+                      )),
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -137,14 +149,14 @@ class _OtpState extends State<Otp> {
                         borderRadius: BorderRadius.circular(30)),
                     child: const Center(
                         child: Text(
-                          "submit",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              letterSpacing: 0.4,
-                              color: Color(0xFFFFFFFF)),
-                        )),
+                      "submit",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          letterSpacing: 0.4,
+                          color: Color(0xFFFFFFFF)),
+                    )),
                   ),
                 ],
               ),
@@ -192,7 +204,7 @@ class _OtpState extends State<Otp> {
                         boxShadow: shadow,
                       ),
                       child:
-                      const Center(child: Icon(Icons.backspace_outlined)),
+                          const Center(child: Icon(Icons.backspace_outlined)),
                     ),
                   ),
                 ],
