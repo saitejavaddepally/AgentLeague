@@ -76,7 +76,7 @@ class _SignInEditState extends State<SignInEdit> {
                         color: CustomColors.dark,
                         textColor: Colors.yellow,
                         onClick: () {
-                          Navigator.pushNamed(context, '/signup');
+                          Navigator.pushNamed(context, '/sign_up');
                         },
                         text: 'Sign Up',
                       ).use(),

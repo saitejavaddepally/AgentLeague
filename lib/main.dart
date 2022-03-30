@@ -69,7 +69,7 @@ class _MyAppState extends State {
         '/location': (context) => const LocationScreen(),
         '/gallery': (context) => const GalleryScreen(),
       },
-      initialRoute: '/post_page_two',
+      initialRoute: '/sign_in_edit',
       theme: CustomTheme.lightTheme,
       //3
       darkTheme: CustomTheme.darkTheme,
