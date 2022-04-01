@@ -23,10 +23,7 @@ class _SignUpFormState extends State<SignUpForm> {
   String referralCode = '';
   bool loading = false;
 
-  Future<bool> sendOtp(String number) async {
-
-    var rng = Random();
-    var code = 1000 +rng.nextInt(8999);
+  Future<bool> sendOtp(String number, int code) async {
     try {
       var response = await http.get(Uri.parse(
           'http://pwtpl.com/sms/V1/send-sms-api.php?apikey=uJ1ihilQ2YmkLQgv&senderid=PROBOX&templateid=1207161182287211693&entityid=1201160586379471408&number=$number&message=Welcome%20to%20PropertyBox%3A-%20Your%20OTP%20is%20-%20$code&format=json'));
@@ -109,6 +106,14 @@ class _SignUpFormState extends State<SignUpForm> {
                               onChanged: (number) {
                                 phoneNumber = number;
                               },
+                              validator: (number) {
+                                if (number == null ||
+                                    number.isEmpty ||
+                                    number.length != 10) {
+                                  return "Enter Correct Mobile Number";
+                                }
+                                return null;
+                              },
                               cursorColor: Colors.white.withOpacity(0.1),
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.all(10),
@@ -119,6 +124,14 @@ class _SignUpFormState extends State<SignUpForm> {
                                       color: Colors.white.withOpacity(0.3)),
                                   fillColor: Colors.white.withOpacity(0.1),
                                   filled: true,
+                                  errorBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 0.5),
+                                      borderRadius: BorderRadius.circular(31)),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 0.5),
+                                      borderRadius: BorderRadius.circular(31)),
                                   enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                       borderRadius: BorderRadius.circular(31)),
@@ -194,29 +207,38 @@ class _SignUpFormState extends State<SignUpForm> {
                                 child: CustomButton(
                                         text: "Sign Up",
                                         onClick: () async {
-                                          setState(() {
-                                            loading = true;
-                                          });
-                                          bool result =
-                                              await sendOtp(phoneNumber);
-                                          if (result) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            var rng = Random();
+                                            var code = 1000 + rng.nextInt(8999);
                                             setState(() {
-                                              loading = false;
+                                              loading = true;
                                             });
+                                            bool result = await sendOtp(
+                                                phoneNumber, code);
+                                            if (result) {
+                                              setState(() {
+                                                loading = false;
+                                              });
 
-                                            Navigator.pushNamed(
-                                                context, "/otp");
-                                          } else {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        'Something Went Wrong!')));
+                                              Navigator.pushNamed(
+                                                  context, "/otp", arguments: [
+                                                code,
+                                                phoneNumber
+                                              ]);
+                                            } else {
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          'Something Went Wrong!')));
+                                            }
                                           }
                                         },
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         height: 43,
                                         radius: 30,
                                         color: HexColor('FD7E0E'))
