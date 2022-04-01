@@ -42,7 +42,7 @@ class CircularNeumorphicButton {
                   padding: EdgeInsets.all(padding),
                   width: size,
                   height: size,
-                  margin: const EdgeInsets.all(3),
+                  // margin: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
                     color: color,
                     shape: BoxShape.circle,

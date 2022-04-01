@@ -91,7 +91,9 @@ class _SellScreenState extends State<SellScreen> {
                                       child: CircularNeumorphicButton(
                                               imageName: 'add',
                                               size: 50,
-                                              onTap: () {},
+                                              onTap: () {
+                                                Navigator.pushNamed(context, '/post_page_one');
+                                              },
                                               isNeu: false,
                                               isTextUnder: true,
                                               text: 'Add')
@@ -213,91 +215,90 @@ class _SellScreenState extends State<SellScreen> {
                       ),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                    height: 160,
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(17.0),
-                                        topRight: Radius.circular(17.0),
-                                        bottomLeft: Radius.zero,
-                                        bottomRight: Radius.zero,
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            width: 100,
-                                            height: 170,
-                                            // decoration:
-                                            //     BoxDecoration(border: Border.all()),
-                                            child: Image.asset(
-                                                "assets/sell_image.png"),
-                                          ),
+                          GestureDetector(
+                            onTap: ()=> Navigator.pushNamed(context, '/realtor_card'),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                      height: 160,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(17.0),
+                                          topRight: Radius.circular(17.0),
+                                          bottomLeft: Radius.zero,
+                                          bottomRight: Radius.zero,
                                         ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: Container(
                                               width: 100,
                                               height: 170,
-                                              padding: const EdgeInsets.all(8),
                                               // decoration:
                                               //     BoxDecoration(border: Border.all()),
-                                              child: Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Column(
-                                                  children: [
-                                                    CustomContainerText(
-                                                            text1: 'Category',
-                                                            text2:
-                                                                'Residential')
-                                                        .use(),
-                                                    CustomContainerText(
-                                                            text1: 'Type',
-                                                            text2: 'Villa')
-                                                        .use(),
-                                                    CustomContainerText(
-                                                            text1: 'Area',
-                                                            text2: '300 sq.yds')
-                                                        .use(),
-                                                    CustomContainerText(
-                                                            text1: 'Location',
-                                                            text2:
-                                                                'Tarnaka, Hyd')
-                                                        .use(),
-                                                    CustomContainerText(
-                                                            text1: 'Price',
-                                                            text2:
-                                                                '30000000 INR')
-                                                        .use(),
-                                                    CustomContainerText(
-                                                            text1: 'Possession',
-                                                            text2:
-                                                                'ready to move')
-                                                        .use(),
-                                                  ],
-                                                ),
-                                              )),
-                                        ),
-                                      ],
-                                    )),
-                              ),
-                            ],
+                                              child: Image.asset(
+                                                  "assets/sell_image.png"),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Container(
+                                                width: 100,
+                                                height: 170,
+                                                padding: const EdgeInsets.all(8),
+                                                // decoration:
+                                                //     BoxDecoration(border: Border.all()),
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Column(
+                                                    children: [
+                                                      CustomContainerText(
+                                                              text1: 'Category',
+                                                              text2:
+                                                                  'Residential')
+                                                          .use(),
+                                                      CustomContainerText(
+                                                              text1: 'Type',
+                                                              text2: 'Villa')
+                                                          .use(),
+                                                      CustomContainerText(
+                                                              text1: 'Area',
+                                                              text2: '300 sq.yds')
+                                                          .use(),
+                                                      CustomContainerText(
+                                                              text1: 'Location',
+                                                              text2:
+                                                                  'Tarnaka, Hyd')
+                                                          .use(),
+                                                      CustomContainerText(
+                                                              text1: 'Price',
+                                                              text2:
+                                                                  '30000000 INR')
+                                                          .use(),
+                                                      CustomContainerText(
+                                                              text1: 'Possession',
+                                                              text2:
+                                                                  'ready to move')
+                                                          .use(),
+                                                    ],
+                                                  ),
+                                                )),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomLineUnderText().use(),
-                  ],
+                                     ],
                 ),
               ),
             ),

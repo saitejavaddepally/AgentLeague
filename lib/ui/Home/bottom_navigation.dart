@@ -1,4 +1,5 @@
 import 'package:agent_league/ui/Home/home.dart';
+import 'package:agent_league/ui/sell_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
@@ -12,7 +13,7 @@ class _BottomBarState extends State<BottomBar> {
   int _currentIndex = 0;
   List screens = <Widget>[
     const Home(),
-    Container(color: Colors.green),
+    const SellScreen(),
     Container(color: Colors.blue),
     Container(color: Colors.yellow),
     Container(color: Colors.cyan)

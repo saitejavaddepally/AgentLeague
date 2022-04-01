@@ -1,4 +1,6 @@
 // import 'package:flutter/cupertino.dart';
+import 'dart:math';
+
 import 'package:agent_league/components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -22,9 +24,12 @@ class _SignUpFormState extends State<SignUpForm> {
   bool loading = false;
 
   Future<bool> sendOtp(String number) async {
+
+    var rng = Random();
+    var code = 1000 +rng.nextInt(8999);
     try {
       var response = await http.get(Uri.parse(
-          'http://pwtpl.com/sms/V1/send-sms-api.php?apikey=uJ1ihilQ2YmkLQgv&senderid=PROBOX&templateid=1207161182287211693&entityid=1201160586379471408&number=$number&message=Welcome%20to%20PropertyBox%3A-%20Your%20OTP%20is%20-%20%7B%23var%23%7D&format=json'));
+          'http://pwtpl.com/sms/V1/send-sms-api.php?apikey=uJ1ihilQ2YmkLQgv&senderid=PROBOX&templateid=1207161182287211693&entityid=1201160586379471408&number=$number&message=Welcome%20to%20PropertyBox%3A-%20Your%20OTP%20is%20-%20$code&format=json'));
 
       if (response.statusCode == 200) {
         return true;
@@ -72,14 +77,14 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 20),
@@ -211,7 +216,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                                         'Something Went Wrong!')));
                                           }
                                         },
-                                        width: 360,
+                                        width: MediaQuery.of(context).size.width,
                                         height: 43,
                                         radius: 30,
                                         color: HexColor('FD7E0E'))
@@ -233,7 +238,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             child: CustomButton(
                                     text: "sign in",
                                     onClick: () {
-                                      Navigator.pushNamed(context, '/home');
+                                      Navigator.pushNamed(context, '/');
                                     },
                                     height: 43,
                                     radius: 30,
@@ -242,8 +247,8 @@ class _SignUpFormState extends State<SignUpForm> {
                                 .use())
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

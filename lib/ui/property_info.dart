@@ -130,7 +130,9 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                     child: CustomButton(
                             text: "Next",
                             color: HexColor('FD7E0E'),
-                            onClick: () {})
+                            onClick: () {
+                              Navigator.pushNamed(context, '/amenties');
+                            })
                         .use(),
                   )),
                 ],

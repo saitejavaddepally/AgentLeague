@@ -139,24 +139,29 @@ class _OtpState extends State<Otp> {
                   const SizedBox(width: 20),
                   buildTimer(),
                   const SizedBox(width: 20),
-                  Container(
-                    width: 98,
-                    height: 36,
-                    decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                            colors: [Color(0xFFFD7E0E), Color(0xFFC12103)]),
-                        boxShadow: shadow,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: const Center(
-                        child: Text(
-                      "submit",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          letterSpacing: 0.4,
-                          color: Color(0xFFFFFFFF)),
-                    )),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: Container(
+                      width: 98,
+                      height: 36,
+                      decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                              colors: [Color(0xFFFD7E0E), Color(0xFFC12103)]),
+                          boxShadow: shadow,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: const Center(
+                          child: Text(
+                        "submit",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            letterSpacing: 0.4,
+                            color: Color(0xFFFFFFFF)),
+                      )),
+                    ),
                   ),
                 ],
               ),

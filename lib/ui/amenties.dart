@@ -336,7 +336,7 @@ class _AmentiesState extends State<Amenties> {
                                           letterSpacing: 0.2,
                                           color: HexColor('FE7F0E'))),
                                 )
-                              ],
+                               ],
                             ),
                           ],
                         ),
@@ -344,7 +344,13 @@ class _AmentiesState extends State<Amenties> {
                       const SizedBox(height: 30),
                       CustomButton(
                               text: 'Submit',
-                              onClick: () {},
+                              onClick: () {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                      "Thank you for posting your property"),
+                                ));
+                              },
                               width: 102,
                               height: 40,
                               color: HexColor('FD7E0E'))
@@ -367,6 +373,7 @@ class IconTextButton extends StatelessWidget {
   final String text;
   final bool isSelected;
   final void Function() onTap;
+
   const IconTextButton(
       {required this.image,
       required this.text,

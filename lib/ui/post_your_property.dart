@@ -71,7 +71,9 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                   child: CustomButton(
                                           text: 'next',
                                           color: HexColor('FD7E0E'),
-                                          onClick: () {})
+                                          onClick: () {
+                                            Navigator.pushNamed(context, '/post_page_two');
+                                          })
                                       .use())),
                         ],
                       )

@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
                         text: "LeadsBox",
                         isDecorated: true,
                         onTap: () {
-                          Navigator.pushNamed(context, '/leadsBox');
+                          Navigator.pushNamed(context, '/leads_box');
                         },
                       ),
                     ]),

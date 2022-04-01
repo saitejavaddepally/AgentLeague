@@ -76,6 +76,13 @@ class RealtorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var iconFunctionalities = [
+      () => Navigator.pushNamed(context, '/location'),
+      () => Navigator.pushNamed(context, '/gallery'),
+      () => Navigator.pushNamed(context, '/tour'),
+      () => Navigator.pushNamed(context, '/documents'),
+      () => Navigator.pushNamed(context, '/emi'),
+    ];
     return Stack(children: [
       Column(children: [
         LayoutBuilder(
@@ -105,9 +112,12 @@ class RealtorPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       for (int i = 0; i < iconMap.length; i++)
-                        IconWithText(
-                            text: iconMap.keys.toList()[i],
-                            image: iconMap.values.toList()[i])
+                        GestureDetector(
+                          onTap: iconFunctionalities[i],
+                          child: IconWithText(
+                              text: iconMap.keys.toList()[i],
+                              image: iconMap.values.toList()[i]),
+                        )
                     ]),
               ),
             ],
@@ -141,13 +151,16 @@ class RealtorPage extends StatelessWidget {
             const SizedBox(width: 12),
             Image.asset('assets/property.png'),
             const Spacer(),
-            Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.orange)),
-              child: Image.asset('assets/leadsBox.png'),
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, '/leads_box'),
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.orange)),
+                child: Image.asset('assets/leadsBox.png'),
+              ),
             ),
           ]),
         ),
@@ -159,6 +172,7 @@ class RealtorPage extends StatelessWidget {
 class IconWithText extends StatelessWidget {
   final String text;
   final String image;
+
   const IconWithText({required this.text, required this.image, Key? key})
       : super(key: key);
 
@@ -186,6 +200,7 @@ class IconWithText extends StatelessWidget {
 
 class TextWithIndicator extends StatelessWidget {
   final String text;
+
   const TextWithIndicator({required this.text, Key? key}) : super(key: key);
 
   @override

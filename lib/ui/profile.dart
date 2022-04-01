@@ -58,7 +58,9 @@ class _ProfileState extends State<Profile> {
                   ),
                   CustomButton(
                           text: "close_round",
-                          onClick: () {},
+                          onClick: () {
+                            Navigator.pop(context);
+                          },
                           isIcon: true,
                           height: 40,
                           width: 40,
