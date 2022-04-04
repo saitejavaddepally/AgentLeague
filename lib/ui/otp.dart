@@ -17,8 +17,11 @@ class _OtpState extends State<Otp> {
     final code = args[0];
     final String phoneNumber = args[1];
 
-    return ChangeNotifierProvider<OtpProvider>(
-        create: (context) => OtpProvider(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => OtpTimer()),
+          ChangeNotifierProvider(create: (context) => OtpProvider())
+        ],
         builder: (context, widget) {
           final otpProvider = Provider.of<OtpProvider>(context, listen: false);
           return Scaffold(
@@ -52,8 +55,8 @@ class _OtpState extends State<Otp> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    Consumer<OtpProvider>(
-                      builder: (context, value, child) => Row(
+                    Consumer<OtpProvider>(builder: (context, value, child) {
+                      return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           buildTextField((value.otp.asMap().containsKey(0))
@@ -72,47 +75,46 @@ class _OtpState extends State<Otp> {
                               ? value.otp[3].toString()
                               : '')
                         ],
-                      ),
-                    ),
+                      );
+                    }),
                     const SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Consumer<OtpProvider>(
-                            builder: (context, value, child) => Flexible(
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(30),
-                                    onTap: (value.seconds == 0) ? () {} : null,
-                                    child: Container(
-                                      width: 98,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                          color: (value.seconds == 0)
-                                              ? const Color(0xFF082640)
-                                              : Colors.white.withOpacity(0.3),
-                                          boxShadow: shadow1,
-                                          borderRadius:
-                                              BorderRadius.circular(30)),
-                                      child: Center(
-                                          child: Text(
-                                        "resend",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            letterSpacing: 0.4,
-                                            color: (value.seconds == 0)
-                                                ? const Color(0xFFFE7F0E)
-                                                : Colors.white
-                                                    .withOpacity(0.3)),
-                                      )),
-                                    ),
-                                  ),
+                        Consumer<OtpTimer>(builder: (context, value, child) {
+                          return Flexible(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(30),
+                              onTap: (value.seconds == 0) ? () {} : null,
+                              child: Container(
+                                width: 98,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                    color: (value.seconds == 0)
+                                        ? const Color(0xFF082640)
+                                        : Colors.white.withOpacity(0.3),
+                                    boxShadow: shadow1,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Center(
+                                    child: Text(
+                                  "resend",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      letterSpacing: 0.4,
+                                      color: (value.seconds == 0)
+                                          ? const Color(0xFFFE7F0E)
+                                          : Colors.white.withOpacity(0.3)),
                                 )),
+                              ),
+                            ),
+                          );
+                        }),
                         const SizedBox(width: 20),
-                        Consumer<OtpProvider>(
-                            builder: (context, value, child) =>
-                                buildTimer(value)),
+                        Consumer<OtpTimer>(builder: (context, value, child) {
+                          return buildTimer(value);
+                        }),
                         const SizedBox(width: 20),
                         Flexible(
                           child: GestureDetector(
@@ -261,7 +263,7 @@ class _OtpState extends State<Otp> {
     );
   }
 
-  Widget buildTimer(OtpProvider value) {
+  Widget buildTimer(OtpTimer value) {
     return Container(
       height: 72,
       width: 72,
@@ -276,7 +278,7 @@ class _OtpState extends State<Otp> {
               height: 50,
               width: 50,
               child: CircularProgressIndicator(
-                value: 1 - value.seconds / OtpProvider.maxSecond,
+                value: 1 - value.seconds / OtpTimer.maxSecond,
                 strokeWidth: 3,
                 valueColor: const AlwaysStoppedAnimation(Colors.white),
                 backgroundColor: Colors.orange,

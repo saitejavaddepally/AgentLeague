@@ -5,34 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class OtpProvider extends ChangeNotifier {
-  static const maxSecond = 30;
-  int _seconds = maxSecond;
-  Timer? timer;
-
   final List<int> _otp = [];
 
   UnmodifiableListView<int> get otp => UnmodifiableListView(_otp);
-
-  int get seconds => _seconds;
-
-  OtpProvider() {
-    startTimer();
-  }
-
-  startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_seconds > 0) {
-        _seconds--;
-        notifyListeners();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    timer?.cancel();
-  }
 
   void pushToOtp(int number) {
     if (_otp.length < 4) {
@@ -60,5 +35,32 @@ class OtpProvider extends ChangeNotifier {
     } else {
       return "enterotp";
     }
+  }
+}
+
+class OtpTimer extends ChangeNotifier {
+  static const maxSecond = 30;
+  int _seconds = maxSecond;
+  Timer? timer;
+
+  OtpTimer() {
+    startTimer();
+  }
+
+  int get seconds => _seconds;
+
+  startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_seconds > 0) {
+        _seconds--;
+        notifyListeners();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
   }
 }
