@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Otp extends StatefulWidget {
-  const Otp({Key? key}) : super(key: key);
+  final List args;
+  const Otp({required this.args, Key? key}) : super(key: key);
 
   @override
   _OtpState createState() => _OtpState();
@@ -13,9 +14,8 @@ class Otp extends StatefulWidget {
 class _OtpState extends State<Otp> {
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as List;
-    final code = args[0];
-    final String phoneNumber = args[1];
+    final code = widget.args[0];
+    final String phoneNumber = widget.args[1];
 
     return MultiProvider(
         providers: [
@@ -59,21 +59,47 @@ class _OtpState extends State<Otp> {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          buildTextField((value.otp.asMap().containsKey(0))
-                              ? value.otp[0].toString()
-                              : ''),
-                          const SizedBox(width: 15),
-                          buildTextField((value.otp.asMap().containsKey(1))
-                              ? value.otp[1].toString()
-                              : ''),
-                          const SizedBox(width: 15),
-                          buildTextField((value.otp.asMap().containsKey(2))
-                              ? value.otp[2].toString()
-                              : ''),
-                          const SizedBox(width: 15),
-                          buildTextField((value.otp.asMap().containsKey(3))
-                              ? value.otp[3].toString()
-                              : '')
+                          Flexible(
+                            child: buildTextField(
+                                (value.otp.asMap().containsKey(0))
+                                    ? value.otp[0].toString()
+                                    : ''),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: buildTextField(
+                                (value.otp.asMap().containsKey(1))
+                                    ? value.otp[1].toString()
+                                    : ''),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: buildTextField(
+                                (value.otp.asMap().containsKey(2))
+                                    ? value.otp[2].toString()
+                                    : ''),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: buildTextField(
+                                (value.otp.asMap().containsKey(3))
+                                    ? value.otp[3].toString()
+                                    : ''),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: buildTextField(
+                                (value.otp.asMap().containsKey(4))
+                                    ? value.otp[4].toString()
+                                    : ''),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: buildTextField(
+                                (value.otp.asMap().containsKey(5))
+                                    ? value.otp[5].toString()
+                                    : ''),
+                          )
                         ],
                       );
                     }),

@@ -1,10 +1,10 @@
 import 'package:agent_league/components/custom_container_text.dart';
-import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-import '../theme/colors.dart';
+
+import '../../theme/colors.dart';
 
 class SellScreen extends StatefulWidget {
   const SellScreen({Key? key}) : super(key: key);
@@ -92,7 +92,8 @@ class _SellScreenState extends State<SellScreen> {
                                               imageName: 'add',
                                               size: 50,
                                               onTap: () {
-                                                Navigator.pushNamed(context, '/post_page_one');
+                                                Navigator.pushNamed(
+                                                    context, '/post_page_one');
                                               },
                                               isNeu: false,
                                               isTextUnder: true,
@@ -216,7 +217,8 @@ class _SellScreenState extends State<SellScreen> {
                       child: Column(
                         children: [
                           GestureDetector(
-                            onTap: ()=> Navigator.pushNamed(context, '/realtor_card'),
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/realtor_card'),
                             child: Row(
                               children: [
                                 Expanded(
@@ -250,11 +252,13 @@ class _SellScreenState extends State<SellScreen> {
                                             child: Container(
                                                 width: 100,
                                                 height: 170,
-                                                padding: const EdgeInsets.all(8),
+                                                padding:
+                                                    const EdgeInsets.all(8),
                                                 // decoration:
                                                 //     BoxDecoration(border: Border.all()),
                                                 child: Align(
-                                                  alignment: Alignment.centerLeft,
+                                                  alignment:
+                                                      Alignment.centerLeft,
                                                   child: Column(
                                                     children: [
                                                       CustomContainerText(
@@ -268,7 +272,8 @@ class _SellScreenState extends State<SellScreen> {
                                                           .use(),
                                                       CustomContainerText(
                                                               text1: 'Area',
-                                                              text2: '300 sq.yds')
+                                                              text2:
+                                                                  '300 sq.yds')
                                                           .use(),
                                                       CustomContainerText(
                                                               text1: 'Location',
@@ -281,7 +286,8 @@ class _SellScreenState extends State<SellScreen> {
                                                                   '30000000 INR')
                                                           .use(),
                                                       CustomContainerText(
-                                                              text1: 'Possession',
+                                                              text1:
+                                                                  'Possession',
                                                               text2:
                                                                   'ready to move')
                                                           .use(),
@@ -298,7 +304,7 @@ class _SellScreenState extends State<SellScreen> {
                         ],
                       ),
                     ),
-                                     ],
+                  ],
                 ),
               ),
             ),

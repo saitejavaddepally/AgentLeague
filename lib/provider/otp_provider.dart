@@ -10,7 +10,7 @@ class OtpProvider extends ChangeNotifier {
   UnmodifiableListView<int> get otp => UnmodifiableListView(_otp);
 
   void pushToOtp(int number) {
-    if (_otp.length < 4) {
+    if (_otp.length < 6) {
       _otp.add(number);
       notifyListeners();
     }
@@ -24,8 +24,9 @@ class OtpProvider extends ChangeNotifier {
   }
 
   String checkOtp(int sendCode) {
-    if (_otp.length == 4) {
-      var userCode = int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}");
+    if (_otp.length == 6) {
+      var userCode =
+          int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
 
       if (sendCode == userCode) {
         return "correct";

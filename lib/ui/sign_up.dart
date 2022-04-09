@@ -210,7 +210,8 @@ class _SignUpFormState extends State<SignUpForm> {
                                           if (_formKey.currentState!
                                               .validate()) {
                                             var rng = Random();
-                                            var code = 1000 + rng.nextInt(8999);
+                                            var code =
+                                                100000 + rng.nextInt(899999);
                                             setState(() {
                                               loading = true;
                                             });
