@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "36906349039",
+    "project_id": "agent-fly-a5f08",
+    "storage_bucket": "agent-fly-a5f08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36906349039:android:d82239a7c5749a60ed861a",
+        "android_client_info": {
+          "package_name": "com.example.agent_league"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36906349039-vk0jncoun7m2ghgadm32pk09ob8dvlc6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK3eRVvLSUGTfvl3pXgKhUe1gjtkc113M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36906349039-vk0jncoun7m2ghgadm32pk09ob8dvlc6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
