@@ -1,9 +1,11 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_title.dart';
-import 'package:agent_league/ui/Home/home.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+
+import '../theme/colors.dart';
 
 class RealtorCard extends StatefulWidget {
   const RealtorCard({Key? key}) : super(key: key);
@@ -13,9 +15,33 @@ class RealtorCard extends StatefulWidget {
 }
 
 class _RealtorCardState extends State<RealtorCard> {
-  List pages = [RealtorPage(), RealtorPage()];
-  Color color = Colors.deepPurpleAccent;
-  List colorList = [Colors.deepPurpleAccent, Colors.deepOrangeAccent];
+  List pages = [const RealtorPage(), const RealtorPage()];
+  Color color = CustomColors.dark;
+
+  @override
+  void initState() {
+    _updateState();
+    super.initState();
+  }
+
+  void _updateState() {
+    final style = SystemUiOverlayStyle(
+      systemNavigationBarColor: CustomColors.dark,
+      systemNavigationBarIconBrightness: Brightness.light,
+    );
+    SystemChrome.setSystemUIOverlayStyle(style);
+  }
+
+  // @override
+  // void dispose() {
+  //   var brightness = SchedulerBinding.instance!.window.platformBrightness;
+  //   bool isDarkMode = brightness == Brightness.dark;
+  //   print(isDarkMode);
+  //   SystemUiOverlayStyle value =
+  //       (!isDarkMode) ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light;
+  //   SystemChrome.setSystemUIOverlayStyle(value);
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -23,41 +49,40 @@ class _RealtorCardState extends State<RealtorCard> {
         backgroundColor: color,
         body: SafeArea(
             child: Stack(children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.keyboard_backspace_sharp),
-                ),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.share_outlined)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 60),
-            child: PageView.builder(
-              itemCount: 2,
-              onPageChanged: (int page) {
-                setState(() {
-                  color = colorList[page];
-                });
-              },
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                return pages[index];
-              },
-            ),
+          PageView.builder(
+            itemCount: 2,
+            onPageChanged: (int page) {
+              setState(() {
+                // color = colorList[page];
+              });
+            },
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              return pages[index];
+            },
           ),
         ])));
   }
 }
 
-class RealtorPage extends StatelessWidget {
-  RealtorPage({Key? key}) : super(key: key);
+class RealtorPage extends StatefulWidget {
+  const RealtorPage({Key? key}) : super(key: key);
+
+  @override
+  State<RealtorPage> createState() => _RealtorPageState();
+}
+
+class _RealtorPageState extends State<RealtorPage> {
+  @override
+  void initState() {
+    final style = SystemUiOverlayStyle(
+      systemNavigationBarColor: CustomColors.dark,
+      systemNavigationBarIconBrightness: Brightness.light,
+    );
+    SystemChrome.setSystemUIOverlayStyle(style);
+    super.initState();
+  }
+
   var textList = [
     '20% Construction & 80% space',
     'Total 750 flat in 3 towers',
@@ -85,6 +110,25 @@ class RealtorPage extends StatelessWidget {
     ];
     return Stack(children: [
       Column(children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0, right: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.keyboard_backspace_sharp),
+              ),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.share_outlined)),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         LayoutBuilder(
           builder: (context, constraints) => Row(
             crossAxisAlignment: CrossAxisAlignment.start,

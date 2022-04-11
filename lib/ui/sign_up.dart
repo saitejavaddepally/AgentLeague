@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:agent_league/components/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
@@ -22,19 +23,28 @@ class _SignUpFormState extends State<SignUpForm> {
   String name = '';
   String referralCode = '';
   bool loading = false;
+  String verificationId = '';
 
-  Future<bool> sendOtp(String number, int code) async {
-    try {
-      var response = await http.get(Uri.parse(
-          'http://pwtpl.com/sms/V1/send-sms-api.php?apikey=uJ1ihilQ2YmkLQgv&senderid=PROBOX&templateid=1207161182287211693&entityid=1201160586379471408&number=$number&message=Welcome%20to%20PropertyBox%3A-%20Your%20OTP%20is%20-%20$code&format=json'));
+  FirebaseAuth auth = FirebaseAuth.instance;
 
-      if (response.statusCode == 200) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      return false;
-    }
+  sendOtp(String number) async {
+    auth.verifyPhoneNumber(
+        phoneNumber: "+91" + phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await auth.signInWithCredential(credential).then((value) {});
+        },
+        verificationFailed: (FirebaseAuthException exception) {
+          print(exception.message);
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            this.verificationId = verificationId;
+          });
+          print(verificationId);
+          Navigator.pushNamed(context, "/otp",
+              arguments: [verificationId, phoneNumber]);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {});
   }
 
   @override
@@ -85,9 +95,6 @@ class _SignUpFormState extends State<SignUpForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 20),
-                        const Text("mobile number*",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14)),
                         const SizedBox(
                           height: 20,
                         ),
@@ -141,12 +148,8 @@ class _SignUpFormState extends State<SignUpForm> {
                             ),
                           ),
                         ]),
-                        const SizedBox(height: 30),
-                        const Text("name*",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14)),
                         const SizedBox(
-                          height: 20,
+                          height: 30,
                         ),
                         TextFormField(
                           cursorColor: Colors.white.withOpacity(0.1),
@@ -171,12 +174,6 @@ class _SignUpFormState extends State<SignUpForm> {
                         ),
                         const SizedBox(
                           height: 30,
-                        ),
-                        const Text("Referral code (optional)",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14)),
-                        const SizedBox(
-                          height: 20,
                         ),
                         TextField(
                           cursorColor: Colors.white.withOpacity(0.1),
@@ -209,32 +206,25 @@ class _SignUpFormState extends State<SignUpForm> {
                                         onClick: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            var rng = Random();
-                                            var code =
-                                                100000 + rng.nextInt(899999);
+
                                             setState(() {
                                               loading = true;
                                             });
-                                            bool result = await sendOtp(
-                                                phoneNumber, code);
-                                            if (result) {
+                                            await sendOtp(phoneNumber);
+                                            if (verificationId != '') {
                                               setState(() {
                                                 loading = false;
                                               });
 
-                                              Navigator.pushNamed(
-                                                  context, "/otp", arguments: [
-                                                code,
-                                                phoneNumber
-                                              ]);
+
                                             } else {
                                               setState(() {
                                                 loading = false;
                                               });
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                      content: Text(
-                                                          'Something Went Wrong!')));
+                                              // ScaffoldMessenger.of(context)
+                                              //     .showSnackBar(const SnackBar(
+                                              //     content: Text(
+                                              //         'Something Went Wrong!')));
                                             }
                                           }
                                         },
@@ -246,7 +236,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                     .use()),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 30),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -267,7 +257,32 @@ class _SignUpFormState extends State<SignUpForm> {
                                     radius: 30,
                                     textColor: Colors.yellow,
                                     color: CustomColors.dark)
-                                .use())
+                                .use()),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 50,
+                            child: Column(
+                              children: const [
+                                Center(
+                                  child: Text(
+                                    'By clicking signup you agree for our ',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
+                                    'Terms & Conditions',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ],

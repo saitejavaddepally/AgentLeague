@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/provider/otp_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,10 +15,42 @@ class Otp extends StatefulWidget {
 }
 
 class _OtpState extends State<Otp> {
+
+  static const maxSecond = 120;
+  int seconds = maxSecond;
+  Timer? timer;
+
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+
+
+  }
+
+  startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (seconds > 0) {
+        setState(() => seconds--);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final code = widget.args[0];
     final String phoneNumber = widget.args[1];
+
+
 
     return MultiProvider(
         providers: [
@@ -144,8 +179,9 @@ class _OtpState extends State<Otp> {
                         const SizedBox(width: 20),
                         Flexible(
                           child: GestureDetector(
-                            onTap: () {
-                              var result = otpProvider.checkOtp(code);
+                            onTap: () async{
+                              print("code is" + code);
+                              var result =await otpProvider.checkOtp(code);
                               if (result == "correct") {
                                 Navigator.pushNamed(context, '/');
                               } else if (result == 'incorrect') {

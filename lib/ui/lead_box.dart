@@ -2,6 +2,7 @@ import 'package:agent_league/components/custom_container_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class LeadBox extends StatefulWidget {
   const LeadBox({Key? key}) : super(key: key);
@@ -34,14 +35,12 @@ class _LeadBoxState extends State<LeadBox> {
                   unselectedLabelColor: HexColor("#b48484"),
                   indicatorSize: TabBarIndicatorSize.label,
                   labelStyle: const TextStyle(fontSize: 27),
-                  indicator: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: HexColor("FE7F0E"),
-                        width: 4,
-                      ),
-                    ),
-                    // borderRadius: BorderRadius.circular(12.0)
+                  indicator: MaterialIndicator(
+                    height: 4,
+                    bottomLeftRadius: 5,
+                    bottomRightRadius: 5,
+                    horizontalPadding: 5,
+                    color: Colors.lightGreen,
                   ),
                   tabs: const [
                     Tab(
@@ -107,10 +106,10 @@ class _LeadBoxState extends State<LeadBox> {
                             child: Container(
                               margin: const EdgeInsets.fromLTRB(2, 8, 2, 8),
                               child: CustomSelector(
-                                  color: Colors.white,
-                                  textColor: Colors.black,
-                                  dim: false,
-                                  hint: 'Date')
+                                      color: Colors.white,
+                                      textColor: Colors.black,
+                                      dim: false,
+                                      hint: 'Date')
                                   .use(),
                             ),
                           ),
@@ -136,10 +135,10 @@ class _LeadBoxState extends State<LeadBox> {
                             child: Container(
                               margin: const EdgeInsets.fromLTRB(2, 8, 2, 8),
                               child: CustomSelector(
-                                  color: Colors.white,
-                                  textColor: Colors.black,
-                                  dim: false,
-                                  hint: 'Status')
+                                      color: Colors.white,
+                                      textColor: Colors.black,
+                                      dim: false,
+                                      hint: 'Status')
                                   .use(),
                             ),
                           ),
@@ -169,7 +168,6 @@ class _LeadBoxState extends State<LeadBox> {
                           Row(
                             children: [
                               Expanded(
-                                flex: 1,
                                 child: Container(
                                     height: 220,
                                     decoration: const BoxDecoration(
@@ -184,10 +182,9 @@ class _LeadBoxState extends State<LeadBox> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          flex: 2,
                                           child: Container(
-                                            width: 100,
-                                            height: 170,
+                                            margin: const EdgeInsets.all(8),
+                                            padding: const EdgeInsets.all(8),
                                             // decoration:
                                             //     BoxDecoration(border: Border.all()),
                                             child: Image.asset(
@@ -195,24 +192,42 @@ class _LeadBoxState extends State<LeadBox> {
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 2,
                                           child: Container(
-                                              width: 100,
-                                              height: 180,
                                               padding: const EdgeInsets.all(8),
+                                              margin: const EdgeInsets.fromLTRB(
+                                                  0, 18, 0, 18),
                                               // decoration:
                                               //     BoxDecoration(border: Border.all()),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Column(
                                                   children: [
-                                                    CustomContainerText(text1: 'Name', text2: 'Venkat').use(),
-                                                    CustomContainerText(text1: 'Contact', text2: '7416698106').use(),
-                                                    CustomContainerText(text1: 'Location', text2: 'LB Nagar').use(),
-                                                    CustomContainerText(text1: 'Profession', text2: 'Business').use(),
-                                                    CustomContainerText(text1: 'Buying time ', text2: '1 month').use(),
-                                                    CustomContainerText(text1: 'Property ID', text2: 'PR1214').use(),
-
+                                                    CustomContainerText(
+                                                            text1: 'Name',
+                                                            text2: 'Venkat')
+                                                        .use(),
+                                                    CustomContainerText(
+                                                            text1: 'Contact',
+                                                            text2: '7416698106')
+                                                        .use(),
+                                                    CustomContainerText(
+                                                            text1: 'Location',
+                                                            text2: 'LB Nagar')
+                                                        .use(),
+                                                    CustomContainerText(
+                                                            text1: 'Profession',
+                                                            text2: 'Business')
+                                                        .use(),
+                                                    CustomContainerText(
+                                                            text1:
+                                                                'Buying time ',
+                                                            text2: '1 month')
+                                                        .use(),
+                                                    CustomContainerText(
+                                                            text1:
+                                                                'Property ID',
+                                                            text2: 'PR1214')
+                                                        .use(),
                                                   ],
                                                 ),
                                               )),
@@ -229,7 +244,7 @@ class _LeadBoxState extends State<LeadBox> {
                                 child: Container(
                                     height: 50,
                                     padding:
-                                    const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                                        const EdgeInsets.fromLTRB(12, 0, 12, 0),
                                     decoration: BoxDecoration(
                                       color: HexColor('#203b53'),
                                       borderRadius: const BorderRadius.only(
@@ -243,7 +258,7 @@ class _LeadBoxState extends State<LeadBox> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          flex: 1,
+                                          flex: 3,
                                           child: Container(
                                             width: 100,
                                             height: 40,
@@ -260,33 +275,40 @@ class _LeadBoxState extends State<LeadBox> {
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 1,
+                                          flex: 2,
                                           child: Container(
                                             height: 40,
-                                            padding:
-                                            const EdgeInsets.only(left: 34),
+                                            //
                                             // decoration:
                                             //     BoxDecoration(border: Border.all()),
-                                            child: Row(
-                                              children: [
-                                                CircleButton(
-                                                    onTap: () {
-                                                      print("HELlo");
-                                                    },
-                                                    iconData: Image.asset(
-                                                      'assets/chat.png',
-                                                    )),
-                                                CircleButton(
-                                                    onTap: () => {},
-                                                    iconData: Image.asset(
-                                                      'assets/call.png',
-                                                    )),
-                                                CircleButton(
-                                                    onTap: () => {},
-                                                    iconData: Image.asset(
-                                                      'assets/social.png',
-                                                    )),
-                                              ],
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: CircleButton(
+                                                        onTap: () {},
+                                                        iconData: Image.asset(
+                                                          'assets/chat.png',
+                                                        )),
+                                                  ),
+                                                  Expanded(
+                                                    child: CircleButton(
+                                                        onTap: () => {},
+                                                        iconData: Image.asset(
+                                                          'assets/call.png',
+                                                        )),
+                                                  ),
+                                                  Expanded(
+                                                    child: CircleButton(
+                                                        onTap: () => {},
+                                                        iconData: Image.asset(
+                                                          'assets/social.png',
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -327,7 +349,6 @@ class CircleButton extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        margin: const EdgeInsets.all(3),
         decoration: const BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,

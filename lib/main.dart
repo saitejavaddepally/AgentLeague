@@ -1,10 +1,16 @@
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
-import 'package:agent_league/ui/Home/chat.dart';
+import 'package:agent_league/theme/colors.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-void main() {
+
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -18,10 +24,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State {
   @override
   void initState() {
-    super.initState();
+    final style = SystemUiOverlayStyle(
+      systemNavigationBarColor: CustomColors.dark,
+      systemNavigationBarIconBrightness: Brightness.light,
+    );
+    SystemChrome.setSystemUIOverlayStyle(style);
     currentTheme.addListener(() {
       setState(() {});
     });
+    super.initState();
   }
 
   @override

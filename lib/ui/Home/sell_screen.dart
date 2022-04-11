@@ -89,7 +89,8 @@ class _SellScreenState extends State<SellScreen> {
                                     Container(
                                       margin: const EdgeInsets.only(left: 58.7),
                                       child: CircularNeumorphicButton(
-                                              imageName: 'add',
+                                              imageName: 'img_2',
+                                              padding: 0,
                                               size: 50,
                                               onTap: () {
                                                 Navigator.pushNamed(
