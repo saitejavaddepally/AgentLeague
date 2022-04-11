@@ -9,7 +9,6 @@ class OtpProvider extends ChangeNotifier {
   final List<int> _otp = [];
   FirebaseAuth auth = FirebaseAuth.instance;
 
-
   UnmodifiableListView<int> get otp => UnmodifiableListView(_otp);
 
   void pushToOtp(int number) {
@@ -26,25 +25,27 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> checkOtp(String verificationId) async{
+  Future<String> checkOtp(String verificationId) async {
     bool correct = false;
     if (_otp.length == 6) {
       var userCode =
           int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: userCode.toString());
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: userCode.toString());
       print(credential);
-      await auth.signInWithCredential(credential).then((value) {
+      await auth
+          .signInWithCredential(credential)
+          .then((UserCredential userCredential) {
         correct = true;
         print("the value is");
-        print(value);
+        print(userCredential);
       }).catchError((error) {
         print(error);
       });
 
-      if(correct){
+      if (correct) {
         return "correct";
-      }
-      else{
+      } else {
         return "incorrect";
       }
     }

@@ -44,7 +44,7 @@ class RouteGenerator {
             child: const Help(), type: PageTransitionType.leftToRight);
       case '/otp':
         {
-          if (args is List) {
+          if (args is String) {
             return PageTransition(
                 child: Otp(args: args), type: PageTransitionType.leftToRight);
           }

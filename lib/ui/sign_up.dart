@@ -1,5 +1,4 @@
-// import 'package:flutter/cupertino.dart';
-import 'dart:math';
+// ignore_for_file: avoid_print
 
 import 'package:agent_league/components/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 import '../theme/colors.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:http/http.dart' as http;
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key}) : super(key: key);
@@ -23,29 +21,35 @@ class _SignUpFormState extends State<SignUpForm> {
   String name = '';
   String referralCode = '';
   bool loading = false;
-  String verificationId = '';
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  //FirebaseAuth auth = FirebaseAuth.instance;
 
-  sendOtp(String number) async {
-    auth.verifyPhoneNumber(
-        phoneNumber: "+91" + phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await auth.signInWithCredential(credential).then((value) {});
-        },
-        verificationFailed: (FirebaseAuthException exception) {
-          print(exception.message);
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          setState(() {
-            this.verificationId = verificationId;
-          });
-          print(verificationId);
-          Navigator.pushNamed(context, "/otp",
-              arguments: [verificationId, phoneNumber]);
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {});
-  }
+  // sendOtp(String number) async {
+  //   auth.verifyPhoneNumber(
+  //       phoneNumber: "+91" + phoneNumber,
+  //       verificationCompleted: (PhoneAuthCredential credential) async {
+  //         setState(() {
+  //           loading = false;
+  //         });
+  //         await auth.signInWithCredential(credential).then((value) {});
+  //       },
+  //       verificationFailed: (FirebaseAuthException exception) {
+  //         setState(() {
+  //           loading = false;
+  //         });
+  //         print(exception.message);
+  //       },
+  //       codeSent: (String verificationId, int? resendToken) {
+  //         setState(() {
+  //           loading = false;
+  //           this.verificationId = verificationId;
+  //         });
+  //         print(verificationId);
+  //         Navigator.pushNamed(context, "/otp",
+  //             arguments: [verificationId, phoneNumber]);
+  //       },
+  //       codeAutoRetrievalTimeout: (String verificationId) {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -206,26 +210,11 @@ class _SignUpFormState extends State<SignUpForm> {
                                         onClick: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-
-                                            setState(() {
-                                              loading = true;
-                                            });
-                                            await sendOtp(phoneNumber);
-                                            if (verificationId != '') {
-                                              setState(() {
-                                                loading = false;
-                                              });
-
-
-                                            } else {
-                                              setState(() {
-                                                loading = false;
-                                              });
-                                              // ScaffoldMessenger.of(context)
-                                              //     .showSnackBar(const SnackBar(
-                                              //     content: Text(
-                                              //         'Something Went Wrong!')));
-                                            }
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/otp',
+                                              arguments: phoneNumber,
+                                            );
                                           }
                                         },
                                         width:
