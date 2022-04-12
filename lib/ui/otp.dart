@@ -27,11 +27,11 @@ class _OtpState extends State<Otp> {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: "+91" + phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        print("verification complete");
-        UserCredential userCredentials =
-            await _auth.signInWithCredential(credential);
+        //   print("verification complete");
+        //   UserCredential userCredentials =
+        //       await _auth.signInWithCredential(credential);
 
-        Navigator.pushNamed(context, '/');
+        //   Navigator.pushReplacementNamed(context, '/');
       },
       verificationFailed: (FirebaseAuthException e) {
         print("Verification failed" + e.code);
@@ -48,7 +48,6 @@ class _OtpState extends State<Otp> {
         _verificationId = verificationId;
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
-      timeout: const Duration(seconds: 60),
     );
   }
 
@@ -195,7 +194,8 @@ class _OtpState extends State<Otp> {
                                   final result = await otpProvider
                                       .checkOtp(_verificationId!);
                                   if (result == "correct") {
-                                    Navigator.pushNamed(context, '/');
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context, '/', (route) => false);
                                   } else if (result == 'incorrect') {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
