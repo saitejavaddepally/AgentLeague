@@ -37,7 +37,7 @@ class _DocumentsState extends State<Documents> {
                       child: Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            boxShadow: shadow1,
+                            boxShadow: shadow2,
                             borderRadius: BorderRadius.circular(12)),
                         child: ListTile(
                             onTap: () {

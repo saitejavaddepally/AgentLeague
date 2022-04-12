@@ -6,9 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -41,7 +39,7 @@ class _MyAppState extends State {
       title: 'Agent League',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
-      initialRoute: '/sign_up',
+      initialRoute: '/',
       theme: CustomTheme.lightTheme,
       //3
       darkTheme: CustomTheme.darkTheme,

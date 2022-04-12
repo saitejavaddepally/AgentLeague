@@ -213,7 +213,7 @@ class CustomEMIContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 23, vertical: 30),
       decoration: BoxDecoration(
           color: HexColor(containerColor),
-          boxShadow: shadow1,
+          boxShadow: shadow2,
           borderRadius: BorderRadius.circular(12)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(text,

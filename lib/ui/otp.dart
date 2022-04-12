@@ -164,7 +164,7 @@ class _OtpState extends State<Otp> {
                                       color: (value.seconds == 0)
                                           ? const Color(0xFF082640)
                                           : Colors.white.withOpacity(0.3),
-                                      boxShadow: shadow1,
+                                      boxShadow: shadow2,
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Center(
                                       child: Text(
@@ -218,7 +218,7 @@ class _OtpState extends State<Otp> {
                                       Color(0xFFFD7E0E),
                                       Color(0xFFC12103)
                                     ]),
-                                    boxShadow: shadow1,
+                                    boxShadow: shadow2,
                                     borderRadius: BorderRadius.circular(30)),
                                 child: const Center(
                                     child: Text(
@@ -296,7 +296,7 @@ class _OtpState extends State<Otp> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
                                 color: const Color(0xFF082640),
-                                boxShadow: shadow1,
+                                boxShadow: shadow2,
                               ),
                               child: const Center(
                                   child: Icon(Icons.backspace_outlined)),
@@ -356,7 +356,7 @@ class _OtpState extends State<Otp> {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(40),
-          boxShadow: shadow1),
+          boxShadow: shadow2),
       child: Stack(
         children: [
           Center(
@@ -395,7 +395,7 @@ class KeyPad extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: const Color(0xFF082640),
-          boxShadow: shadow1,
+          boxShadow: shadow2,
         ),
         child: Center(
           child: Text(

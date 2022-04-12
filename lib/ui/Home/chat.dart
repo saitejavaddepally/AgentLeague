@@ -47,10 +47,8 @@ class _ChatState extends State<Chat> {
             CircleAvatar(
               radius: 23,
               backgroundColor: Colors.white.withOpacity(0.1),
-              child: IconButton(
-                  onPressed: () {},
-                  color: Colors.white.withOpacity(0.5),
-                  icon: const Icon(Icons.send)),
+              child:
+                  GestureDetector(onTap: () {}, child: const Icon(Icons.send)),
             ),
             const SizedBox(width: 10),
           ],

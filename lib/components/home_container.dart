@@ -44,7 +44,7 @@ class HomeContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: containerColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: shadow,
+        boxShadow: shadow1,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
