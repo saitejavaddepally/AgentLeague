@@ -1,3 +1,4 @@
+import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/home_container.dart';
 import 'package:agent_league/helper/constants.dart';
@@ -127,7 +128,11 @@ class _ProfileState extends State<Profile> {
                   containerColor: const Color(0xFFE4BAF3),
                   buttonWidth: 100,
                   buttonText: "Sign Out",
-                  onButtonClick: () {}),
+                  onButtonClick: () async {
+                    await AuthMethods().signOut();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/sign_up', (route) => false);
+                  }),
             ],
           ),
         ),

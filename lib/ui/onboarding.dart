@@ -1,19 +1,7 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
-
-const shadow = [
-  BoxShadow(
-      offset: Offset(-6, -6),
-      blurRadius: 12,
-      spreadRadius: 0,
-      color: Color(0xFF113B5F)),
-  BoxShadow(
-      offset: Offset(0, 6),
-      blurRadius: 12,
-      spreadRadius: 0,
-      color: Color(0xFF031E35)),
-];
+import 'package:agent_league/helper/constants.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({Key? key}) : super(key: key);
@@ -82,7 +70,8 @@ class _OnboardingState extends State<Onboarding> {
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.keyboard_backspace)),
-                  Image.asset("assets/logo_onboarding.png"),
+                  Image.asset("assets/logo_onboarding.png",
+                      width: 80, height: 70),
                   (_currentPage == 5)
                       ? const SizedBox(width: 50)
                       : GestureDetector(
@@ -128,9 +117,9 @@ class _OnboardingState extends State<Onboarding> {
             const SizedBox(height: 60),
             (_currentPage == 5)
                 ? CustomButton(
-                        text: "Sign Up",
+                        text: "Get Started",
                         onClick: () {
-                          Navigator.pushNamed(context, '/sign_in_edit');
+                          Navigator.pushNamed(context, '/sign_up');
                         },
                         radius: 30,
                         color: HexColor('FD7E0E').withOpacity(0.7),
@@ -189,11 +178,13 @@ class Page extends StatelessWidget {
   final String text3;
 
   const Page(
-      {Key? key, required this.image,
+      {Key? key,
+      required this.image,
       required this.text1,
       required this.colorText,
       required this.text2,
-      required this.text3}) : super(key: key);
+      required this.text3})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

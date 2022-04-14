@@ -29,18 +29,6 @@ class _SignInEditState extends State<SignInEdit> {
             width: 150,
             height: 74.6,
           ),
-          const SizedBox(height: 2),
-          const Padding(
-            padding: EdgeInsets.only(left: 157.0),
-            child: Text(
-              "Every lead counts",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFFFFFFFF),
-                  fontSize: 10),
-            ),
-          ),
         ]),
       ),
       CustomContainer(

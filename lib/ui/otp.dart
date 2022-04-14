@@ -21,11 +21,13 @@ class _OtpState extends State<Otp> {
   late final String phoneNumber;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
+  int? _resendToken;
   bool loading = false;
 
-  Future<void> verifyUser() async {
+  Future<void> verifyUser({int? resendToken}) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: "+91" + phoneNumber,
+      forceResendingToken: resendToken,
       verificationCompleted: (PhoneAuthCredential credential) async {
         //   print("verification complete");
         //   UserCredential userCredentials =
@@ -46,8 +48,12 @@ class _OtpState extends State<Otp> {
       codeSent: (String verificationId, int? resendToken) {
         print("code sent");
         _verificationId = verificationId;
+        _resendToken = resendToken;
       },
-      codeAutoRetrievalTimeout: (String verificationId) {},
+      codeAutoRetrievalTimeout: (String verificationId) {
+        print("Code auto retreival timeout");
+        _verificationId = verificationId;
+      },
     );
   }
 
@@ -82,9 +88,8 @@ class _OtpState extends State<Otp> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                "assets/logo_otp.png",
-                              ),
+                              Image.asset("assets/logo_onboarding.png",
+                                  width: 80, height: 70),
                             ]),
                       ),
                       const SizedBox(height: 20),
@@ -156,7 +161,12 @@ class _OtpState extends State<Otp> {
                             return Flexible(
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(30),
-                                onTap: (value.seconds == 0) ? () {} : null,
+                                onTap: (value.seconds == 0)
+                                    ? () {
+                                        verifyUser(resendToken: _resendToken)
+                                            .then((value) {});
+                                      }
+                                    : null,
                                 child: Container(
                                   width: 98,
                                   height: 36,
@@ -193,20 +203,32 @@ class _OtpState extends State<Otp> {
                                 if (_verificationId != null) {
                                   final result = await otpProvider
                                       .checkOtp(_verificationId!);
-                                  if (result == "correct") {
-                                    Navigator.pushNamedAndRemoveUntil(
-                                        context, '/', (route) => false);
-                                  } else if (result == 'incorrect') {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                "Please Enter Correct OTP"),
-                                            duration: Duration(seconds: 2)));
-                                  } else if (result == 'enterotp') {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text("Please Enter OTP"),
-                                            duration: Duration(seconds: 2)));
+                                  switch (result) {
+                                    case 'correct':
+                                      {
+                                        Navigator.pushNamed(context, '/');
+                                        break;
+                                      }
+                                    case 'incorrect':
+                                      {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "Please Enter Correct OTP"),
+                                                duration:
+                                                    Duration(seconds: 2)));
+                                        break;
+                                      }
+                                    case 'enterotp':
+                                      {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content:
+                                                    Text("Please Enter OTP"),
+                                                duration:
+                                                    Duration(seconds: 2)));
+                                        break;
+                                      }
                                   }
                                 }
                               },

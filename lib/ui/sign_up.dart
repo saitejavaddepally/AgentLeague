@@ -21,71 +21,11 @@ class _SignUpFormState extends State<SignUpForm> {
   String name = '';
   String referralCode = '';
   bool loading = false;
-
-  //FirebaseAuth auth = FirebaseAuth.instance;
-
-  // sendOtp(String number) async {
-  //   auth.verifyPhoneNumber(
-  //       phoneNumber: "+91" + phoneNumber,
-  //       verificationCompleted: (PhoneAuthCredential credential) async {
-  //         setState(() {
-  //           loading = false;
-  //         });
-  //         await auth.signInWithCredential(credential).then((value) {});
-  //       },
-  //       verificationFailed: (FirebaseAuthException exception) {
-  //         setState(() {
-  //           loading = false;
-  //         });
-  //         print(exception.message);
-  //       },
-  //       codeSent: (String verificationId, int? resendToken) {
-  //         setState(() {
-  //           loading = false;
-  //           this.verificationId = verificationId;
-  //         });
-  //         print(verificationId);
-  //         Navigator.pushNamed(context, "/otp",
-  //             arguments: [verificationId, phoneNumber]);
-  //       },
-  //       codeAutoRetrievalTimeout: (String verificationId) {});
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: loading,
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 100,
-          elevation: 0,
-          backgroundColor: CustomColors.dark,
-          title: GestureDetector(
-            onTap: () {},
-            child: Container(
-              margin: const EdgeInsets.all(14),
-              width: 75.93,
-              height: 46.05,
-              child: Image.asset("assets/logo_onboarding.png"),
-            ),
-          ),
-          actions: [
-            Container(
-              margin: const EdgeInsets.all(24),
-              child: CustomButton(
-                      text: "help_icon",
-                      onClick: () {
-                        Navigator.pushNamed(context, '/help');
-                      },
-                      width: 48,
-                      height: 48,
-                      isIcon: true,
-                      rounded: true,
-                      color: Colors.red.withOpacity(0.9))
-                  .use(),
-            )
-          ],
-        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -95,12 +35,33 @@ class _SignUpFormState extends State<SignUpForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset("assets/logo_onboarding.png",
+                            width: 80, height: 70),
+                        CustomButton(
+                                text: "help_icon",
+                                onClick: () {
+                                  Navigator.pushNamed(context, '/help');
+                                },
+                                width: 48,
+                                height: 48,
+                                isIcon: true,
+                                rounded: true,
+                                color: Colors.red.withOpacity(0.9))
+                            .use(),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text("create new account",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 18)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 20),
                         const SizedBox(
-                          height: 20,
+                          height: 25,
                         ),
                         Row(children: [
                           const SizedBox(width: 5),

@@ -1,17 +1,31 @@
+import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/theme/colors.dart';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/onboarding.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-
-
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await initialization(null);
   runApp(const MyApp());
+}
+
+Future initialization(BuildContext? context) async {
+  await Future.delayed(
+    const Duration(seconds: 3),
+    () {
+      FlutterNativeSplash.remove();
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -41,12 +55,21 @@ class _MyAppState extends State {
       title: 'Agent League',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
-      initialRoute: '/sign_up',
       theme: CustomTheme.lightTheme,
       //3
       darkTheme: CustomTheme.darkTheme,
       //4
       themeMode: currentTheme.currentTheme, //5
+      home: FutureBuilder<User?>(
+        future: AuthMethods().getCurrentUser(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return const BottomBar();
+          } else {
+            return const Onboarding();
+          }
+        },
+      ),
     );
   }
 }
