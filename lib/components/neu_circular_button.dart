@@ -52,10 +52,17 @@ class CircularNeumorphicButton {
                   ),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
               (isTextUnder)
                   ? Center(
-                      child: Text(text),
+                      child: Text(
+                        text,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            letterSpacing: -0.15,
+                            color: Colors.white.withOpacity(0.8)),
+                      ),
                     )
                   : const Text('')
             ],

@@ -23,6 +23,7 @@ dependencies:
   animations: ^2.0.2
   firebase_core: ^1.14.0
   firebase_auth: ^3.3.12
+  readmore: ^2.1.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0
@@ -32,6 +33,7 @@ dev_dependencies:
   tab_indicator_styler: ^2.0.0
   google_maps_flutter: ^2.1.3
   flutter_google_places: ^0.3.0
+  carousel_slider: ^4.0.0
 
 flutter_native_splash:
   background_image: "assets/nativeSplash.png"

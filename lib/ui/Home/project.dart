@@ -66,10 +66,16 @@ class _ProjectState extends State<Project> {
           ),
           const SizedBox(height: 10),
           Row(
-            children: const [
-              Expanded(child: CustomImage()),
-              SizedBox(width: 15),
-              Expanded(child: CustomImage())
+            children: [
+              Expanded(
+                  child: CustomImage(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/project_explorer'))),
+              const SizedBox(width: 15),
+              Expanded(
+                  child: CustomImage(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/project_explorer')))
             ],
           ),
           const SizedBox(height: 20),
@@ -82,10 +88,16 @@ class _ProjectState extends State<Project> {
           ),
           const SizedBox(height: 10),
           Row(
-            children: const [
-              Expanded(child: CustomImage()),
-              SizedBox(width: 15),
-              Expanded(child: CustomImage())
+            children: [
+              Expanded(
+                  child: CustomImage(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/project_explorer'))),
+              const SizedBox(width: 15),
+              Expanded(
+                  child: CustomImage(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/project_explorer')))
             ],
           ),
           const SizedBox(height: 20),
@@ -98,10 +110,16 @@ class _ProjectState extends State<Project> {
           ),
           const SizedBox(height: 10),
           Row(
-            children: const [
-              Expanded(child: CustomImage()),
-              SizedBox(width: 15),
-              Expanded(child: CustomImage())
+            children: [
+              Expanded(
+                  child: CustomImage(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/project_explorer'))),
+              const SizedBox(width: 15),
+              Expanded(
+                  child: CustomImage(
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/project_explorer')))
             ],
           ),
         ]),
@@ -111,15 +129,21 @@ class _ProjectState extends State<Project> {
 }
 
 class CustomImage extends StatelessWidget {
-  const CustomImage({Key? key}) : super(key: key);
+  final double height;
+  final void Function() onTap;
+  const CustomImage({required this.onTap, this.height = 100, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      decoration: BoxDecoration(
-          boxShadow: shadow1, borderRadius: BorderRadius.circular(12)),
-      child: Image.asset("assets/project.png", fit: BoxFit.fill),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+            boxShadow: shadow1, borderRadius: BorderRadius.circular(10)),
+        child: Image.asset("assets/project.png", fit: BoxFit.fill),
+      ),
     );
   }
 }
