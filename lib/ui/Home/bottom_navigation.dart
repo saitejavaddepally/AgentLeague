@@ -1,5 +1,6 @@
 import 'package:agent_league/ui/Home/chat.dart';
 import 'package:agent_league/ui/Home/home.dart';
+import 'package:agent_league/ui/Home/project.dart';
 import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
@@ -17,7 +18,7 @@ class _BottomBarState extends State<BottomBar> {
     const Home(),
     const SellScreen(),
     const Chat(),
-    Container(color: Colors.yellow),
+    const Project(),
     Container(color: Colors.cyan)
   ];
 

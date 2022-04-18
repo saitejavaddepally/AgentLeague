@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const shadow = [
+const shadow1 = [
   BoxShadow(
       offset: Offset(-6, -6),
       blurRadius: 12,
@@ -13,7 +13,7 @@ const shadow = [
       color: Color(0xFF031E35)),
 ];
 
-const shadow1 = [
+const shadow2 = [
   BoxShadow(
       offset: Offset(-6, -6),
       blurRadius: 12,

@@ -194,7 +194,7 @@ class Page extends StatelessWidget {
         margin: const EdgeInsets.only(top: 10, right: 5, left: 10, bottom: 5),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         decoration: BoxDecoration(
-            boxShadow: shadow,
+            boxShadow: shadow1,
             color: const Color(0xFF082640),
             borderRadius: BorderRadius.circular(12)),
         child: Column(

@@ -165,7 +165,7 @@ class CustomImage extends StatelessWidget {
                   ? BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.blue))
-                  : const BoxDecoration(boxShadow: shadow),
+                  : const BoxDecoration(boxShadow: shadow1),
               child: Image.asset(image, height: 40, width: 40)),
           const SizedBox(height: 3),
           Text(

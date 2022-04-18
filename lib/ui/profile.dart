@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
                           height: 54,
                           width: 54,
                           decoration: BoxDecoration(
-                              boxShadow: shadow,
+                              boxShadow: shadow1,
                               shape: BoxShape.circle,
                               border:
                                   Border.all(color: Colors.orange, width: 1.5)),

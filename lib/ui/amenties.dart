@@ -336,7 +336,7 @@ class _AmentiesState extends State<Amenties> {
                                           letterSpacing: 0.2,
                                           color: HexColor('FE7F0E'))),
                                 )
-                               ],
+                              ],
                             ),
                           ],
                         ),
@@ -389,7 +389,7 @@ class IconTextButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
         decoration: BoxDecoration(
-            boxShadow: shadow,
+            boxShadow: shadow1,
             borderRadius: BorderRadius.circular(30),
             gradient: (isSelected)
                 ? LinearGradient(

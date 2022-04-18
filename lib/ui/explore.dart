@@ -28,7 +28,7 @@ class _ExploreState extends State<Explore> {
                 padding: const EdgeInsets.only(left: 15),
                 child: Container(
                     decoration: const BoxDecoration(
-                        boxShadow: shadow,
+                        boxShadow: shadow1,
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
                             colors: [Color(0xFFFD7E0E), Color(0xFFC12103)])),
@@ -250,7 +250,7 @@ class ExploreContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: containerColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: shadow,
+        boxShadow: shadow1,
       ),
       child: Column(
         children: [

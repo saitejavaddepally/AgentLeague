@@ -94,7 +94,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                  boxShadow: shadow1,
+                  boxShadow: shadow2,
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.white),
               child: Stack(
