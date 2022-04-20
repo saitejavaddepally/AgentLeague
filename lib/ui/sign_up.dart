@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:agent_league/components/custom_button.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -173,7 +174,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                               .validate()) {
                                             Navigator.pushNamed(
                                               context,
-                                              '/otp',
+                                              RouteName.otp,
                                               arguments: phoneNumber,
                                             );
                                           }

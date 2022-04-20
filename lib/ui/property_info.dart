@@ -36,7 +36,9 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              CustomLineUnderText(text: 'Personal  Information', height: 3, width: 135).use(),
+              CustomLineUnderText(
+                      text: 'Personal  Information', height: 3, width: 135)
+                  .use(),
               CustomWidget(text: 'Facing :').use(),
               CustomWidget(text: 'Furnished :').use(),
               CustomWidget(text: 'No. of floors :').use(),
@@ -75,10 +77,10 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Expanded(
-                                child: CustomSelector(
-                                        hint: 'Sq.yd', borderRadius: 5)
-                                    .use())
+                            // Expanded(
+                            //     child: CustomSelector(
+                            //             hint: 'Sq.yd', borderRadius: 5)
+                            //         .use())
                           ],
                         )),
                   ],
@@ -95,7 +97,9 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
               const SizedBox(
                 height: 10,
               ),
-              CustomLineUnderText(text: 'Rental Income (optional)', height: 3, width: 150).use(),
+              CustomLineUnderText(
+                      text: 'Rental Income (optional)', height: 3, width: 150)
+                  .use(),
               CustomWidget(text: 'Total Portions :', isText: true).use(),
               CustomWidget(text: 'Total Income :', isText: true).use(),
               const SizedBox(
@@ -128,12 +132,11 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                       child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: CustomButton(
-                            text: "Next",
-                            color: HexColor('FD7E0E'),
-                            onClick: () {
-                              Navigator.pushNamed(context, '/amenties');
-                            })
-                        .use(),
+                        text: "Next",
+                        color: HexColor('FD7E0E'),
+                        onClick: () {
+                          Navigator.pushNamed(context, '/amenties');
+                        }).use(),
                   )),
                 ],
               )
@@ -184,7 +187,8 @@ class CustomWidget {
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(10))),
                     )
-                  : CustomSelector(hint: hint, borderRadius: 5).use())
+                  : Container() //CustomSelector(hint: hint, borderRadius: 5).use(),
+              )
         ],
       ),
     );

@@ -29,6 +29,8 @@ class _SellScreenState extends State<SellScreen> {
 
   int counter = 0;
 
+  String _currentValue = "one";
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -124,6 +126,7 @@ class _SellScreenState extends State<SellScreen> {
                           borderRadius: BorderRadius.circular(10.0)),
                       child: Center(
                         child: TextField(
+                          onChanged: (value) {},
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.all(8),
@@ -146,7 +149,7 @@ class _SellScreenState extends State<SellScreen> {
                       children: [
                         for (var element in data1)
                           Expanded(
-                            child: Container(
+                            child: SizedBox(
                               height: 100,
                               child: CircularNeumorphicButton(
                                       imageName: element['img'].toString(),
@@ -163,7 +166,7 @@ class _SellScreenState extends State<SellScreen> {
                       children: [
                         for (var element in data2)
                           Expanded(
-                            child: Container(
+                            child: SizedBox(
                               height: 100,
                               child: CircularNeumorphicButton(
                                       imageName: element['img'].toString(),
@@ -188,13 +191,19 @@ class _SellScreenState extends State<SellScreen> {
                           ),
                         ),
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             height: 50,
                             child: CustomSelector(
-                                    color: Colors.white,
-                                    textColor: Colors.black,
-                                    dim: true)
-                                .use(),
+                              dropDownItems: ['one', 'two', 'three'],
+                              onChanged: (value) {
+                                setState(() {
+                                  _currentValue = value;
+                                });
+                              },
+                              chosenValue: _currentValue,
+                              color: Colors.white,
+                              textColor: Colors.black,
+                            ).use(),
                           ),
                         ),
                       ],

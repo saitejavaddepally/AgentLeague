@@ -73,8 +73,8 @@ class _LeadBoxState extends State<LeadBox> {
                       Expanded(
                           flex: 1,
                           child: Container(
-                            child: CustomSelector().use(),
-                          ))
+                              //child: CustomSelector().use(),
+                              ))
                     ],
                   ),
                   Container(
@@ -105,12 +105,12 @@ class _LeadBoxState extends State<LeadBox> {
                             // decoration: BoxDecoration(border: Border.all()),
                             child: Container(
                               margin: const EdgeInsets.fromLTRB(2, 8, 2, 8),
-                              child: CustomSelector(
-                                      color: Colors.white,
-                                      textColor: Colors.black,
-                                      dim: false,
-                                      hint: 'Date')
-                                  .use(),
+                              // child: CustomSelector(
+                              //         color: Colors.white,
+                              //         textColor: Colors.black,
+                              //         dim: false,
+                              //         hint: 'Date')
+                              //     .use(),
                             ),
                           ),
                         ),
@@ -134,12 +134,12 @@ class _LeadBoxState extends State<LeadBox> {
                             // decoration: BoxDecoration(border: Border.all()),
                             child: Container(
                               margin: const EdgeInsets.fromLTRB(2, 8, 2, 8),
-                              child: CustomSelector(
-                                      color: Colors.white,
-                                      textColor: Colors.black,
-                                      dim: false,
-                                      hint: 'Status')
-                                  .use(),
+                              // child: CustomSelector(
+                              //         color: Colors.white,
+                              //         textColor: Colors.black,
+                              //         dim: false,
+                              //         hint: 'Status')
+                              //     .use(),
                             ),
                           ),
                         ),

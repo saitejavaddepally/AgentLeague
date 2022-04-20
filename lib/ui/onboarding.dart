@@ -3,6 +3,8 @@ import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:agent_league/helper/constants.dart';
 
+import '../route_generator.dart';
+
 class Onboarding extends StatefulWidget {
   const Onboarding({Key? key}) : super(key: key);
 
@@ -119,7 +121,7 @@ class _OnboardingState extends State<Onboarding> {
                 ? CustomButton(
                         text: "Get Started",
                         onClick: () {
-                          Navigator.pushNamed(context, '/sign_up');
+                          Navigator.pushNamed(context, RouteName.signUp);
                         },
                         radius: 30,
                         color: HexColor('FD7E0E').withOpacity(0.7),

@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
+import '../route_generator.dart';
+
 class Otp extends StatefulWidget {
   final String args;
   const Otp({required this.args, Key? key}) : super(key: key);
@@ -52,7 +54,7 @@ class _OtpState extends State<Otp> {
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         print("Code auto retreival timeout");
-        _verificationId = verificationId;
+        // _verificationId = verificationId;
       },
     );
   }
@@ -71,7 +73,7 @@ class _OtpState extends State<Otp> {
           ChangeNotifierProvider(create: (context) => OtpTimer()),
           ChangeNotifierProvider(create: (context) => OtpProvider())
         ],
-        builder: (context, widget) {
+        builder: (context, child) {
           final otpProvider = Provider.of<OtpProvider>(context, listen: false);
           return ModalProgressHUD(
             inAsyncCall: loading,
@@ -201,16 +203,22 @@ class _OtpState extends State<Otp> {
                             child: GestureDetector(
                               onTap: () async {
                                 if (_verificationId != null) {
+                                  setState(() => loading = true);
                                   final result = await otpProvider
                                       .checkOtp(_verificationId!);
                                   switch (result) {
                                     case 'correct':
                                       {
-                                        Navigator.pushNamed(context, '/');
+                                        setState(() => loading = false);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            RouteName.bottomBar,
+                                            (route) => false);
                                         break;
                                       }
                                     case 'incorrect':
                                       {
+                                        setState(() => loading = false);
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
                                                 content: Text(
@@ -221,6 +229,7 @@ class _OtpState extends State<Otp> {
                                       }
                                     case 'enterotp':
                                       {
+                                        setState(() => loading = false);
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
                                                 content:
@@ -310,7 +319,7 @@ class _OtpState extends State<Otp> {
                           KeyPad(
                               number: '0',
                               onTap: () => otpProvider.pushToOtp(0)),
-                          GestureDetector(
+                          InkWell(
                             onTap: () => otpProvider.popFromOtp(),
                             child: Container(
                               height: 48,
@@ -409,7 +418,7 @@ class KeyPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Container(
         height: 48,

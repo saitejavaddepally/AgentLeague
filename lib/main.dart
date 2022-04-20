@@ -15,11 +15,11 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await initialization(null);
+  await initialization();
   runApp(const MyApp());
 }
 
-Future initialization(BuildContext? context) async {
+Future initialization() async {
   await Future.delayed(
     const Duration(seconds: 3),
     () {

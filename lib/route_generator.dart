@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
 class RouteName {
-  static const String bottomBar = '/';
+  static const String bottomBar = '/bottomBar';
   static const String onboard = '/onboard';
   static const String signInEdit = '/sign_in_edit';
   static const String signUp = '/sign_up';
@@ -46,7 +46,7 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
-
+    print("Route name : ${settings.name}");
     switch (settings.name) {
       case RouteName.bottomBar:
         return PageTransition(
