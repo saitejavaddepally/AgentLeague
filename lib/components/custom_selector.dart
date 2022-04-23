@@ -7,11 +7,13 @@ class CustomSelector<T> {
   late Color color;
   late Color textColor;
   late Widget? hint;
+  final double borderRadius;
 
   CustomSelector({
     required this.dropDownItems,
     required this.onChanged,
     required this.chosenValue,
+    this.borderRadius = 31,
     this.hint,
     this.color = const Color(0xFF213C53),
     this.textColor = Colors.white,
@@ -31,7 +33,7 @@ class CustomSelector<T> {
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(31),
+                  borderRadius: BorderRadius.circular(borderRadius),
                   borderSide: BorderSide.none),
             ),
             items: dropDownItems

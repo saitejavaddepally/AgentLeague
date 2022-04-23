@@ -9,13 +9,20 @@ import '../components/custom_button.dart';
 import '../helper/constants.dart';
 
 class Amenties extends StatefulWidget {
-  const Amenties({Key? key}) : super(key: key);
+  final Map<String, dynamic> formData;
+  const Amenties({required this.formData, Key? key}) : super(key: key);
 
   @override
   State<Amenties> createState() => _AmentiesState();
 }
 
 class _AmentiesState extends State<Amenties> {
+  @override
+  void initState() {
+    super.initState();
+    print(widget.formData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

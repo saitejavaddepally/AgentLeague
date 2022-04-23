@@ -1,8 +1,7 @@
 import 'dart:collection';
+import 'package:flutter/material.dart';
 
-import 'package:flutter/foundation.dart';
-
-class PostYourPropertyProvider extends ChangeNotifier {
+class PostYourPropertyProviderOne extends ChangeNotifier {
   // for propertyCategoryDropDown
   final List<String> _propertyCategoryDropDown = ['abc', 'def'];
   String? _propertyCategoryChosenValue;
@@ -78,9 +77,42 @@ class PostYourPropertyProvider extends ChangeNotifier {
 
   // for priceTextField
 
-  String price = '';
+  final TextEditingController _controller = TextEditingController();
+
+  TextEditingController get controller => _controller;
+
+  String _price = '';
   onPriceSubmitted(String price) {
-    print(price);
-    this.price = price;
+    _price = price;
+  }
+
+  String? validatePrice(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Price can't be empty";
+    } else {
+      return null;
+    }
+  }
+
+  // retreive all data
+  Map<String, dynamic> getMap() {
+    return {
+      'propertyCategory': _propertyCategoryChosenValue,
+      'propertyType': _propertyTypeChosenValue,
+      'possessionStatus': _possessionStatusChosenValue,
+      'location': _locationChosenValue,
+      'age': _ageChosenValue,
+      'price': _price
+    };
+  }
+
+  void resetAllData() {
+    _propertyCategoryChosenValue = null;
+    _propertyTypeChosenValue = null;
+    _possessionStatusChosenValue = null;
+    _locationChosenValue = null;
+    _ageChosenValue = null;
+    _controller.text = '';
+    notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/colors.dart';
@@ -21,23 +22,30 @@ class _ProjectState extends State<Project> {
         padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
         child: Column(children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Icon(Icons.keyboard_backspace_rounded),
-            Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: shadow1,
-                    border: Border.all(color: HexColor('FD7E0E'))),
-                child: Row(children: const [
-                  Icon(Icons.add),
-                  Text(
-                    " Add Your Project",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        letterSpacing: 0.4),
-                  )
-                ]))
+            GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Icon(Icons.keyboard_backspace_rounded)),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, RouteName.addProject);
+              },
+              child: Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: shadow1,
+                      border: Border.all(color: HexColor('FD7E0E'))),
+                  child: Row(children: const [
+                    Icon(Icons.add),
+                    Text(
+                      " Add Your Project",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          letterSpacing: 0.4),
+                    )
+                  ])),
+            )
           ]),
           const SizedBox(height: 25),
           TextField(

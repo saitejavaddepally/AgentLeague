@@ -52,7 +52,7 @@ class _SellScreenState extends State<SellScreen> {
                   bottomLeftRadius: 5,
                   bottomRightRadius: 5,
                   horizontalPadding: 5,
-                  color: Colors.lightGreen,
+                  color: HexColor('FE7F0E'),
                 ),
                 tabs: const [
                   Tab(
@@ -79,43 +79,38 @@ class _SellScreenState extends State<SellScreen> {
                 margin: const EdgeInsets.fromLTRB(24, 16, 24, 16),
                 child: Column(
                   children: [
-                    Container(
+                    SizedBox(
                         height: 100,
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Expanded(flex: 1, child: Container()),
-                            Expanded(
-                                flex: 1,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 58.7),
-                                      child: CircularNeumorphicButton(
-                                              imageName: 'img_2',
-                                              padding: 0,
-                                              size: 50,
-                                              onTap: () {
-                                                Navigator.pushNamed(
-                                                    context, '/post_page_one');
-                                              },
-                                              isNeu: false,
-                                              isTextUnder: true,
-                                              text: 'Add')
-                                          .use(),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 7),
-                                      child: CircularNeumorphicButton(
-                                              imageName: 'save',
-                                              size: 50,
-                                              onTap: () {},
-                                              isNeu: false,
-                                              isTextUnder: true,
-                                              text: 'Saved')
-                                          .use(),
-                                    ),
-                                  ],
-                                )),
+                            Container(
+                              child: CircularNeumorphicButton(
+                                      imageName: 'img_2',
+                                      padding: 0,
+                                      color: HexColor('082640'),
+                                      size: 50,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, '/post_page_one');
+                                      },
+                                      isNeu: true,
+                                      isTextUnder: true,
+                                      text: 'Add')
+                                  .use(),
+                            ),
+                            const SizedBox(width: 20),
+                            Container(
+                              child: CircularNeumorphicButton(
+                                      imageName: 'save',
+                                      size: 50,
+                                      onTap: () {},
+                                      color: HexColor('082640'),
+                                      isNeu: true,
+                                      isTextUnder: true,
+                                      text: 'Saved')
+                                  .use(),
+                            ),
                           ],
                         )),
                     Container(
@@ -141,8 +136,12 @@ class _SellScreenState extends State<SellScreen> {
                       child: const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "Choose Property",
-                            style: TextStyle(fontSize: 22),
+                            "Choose property category",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              letterSpacing: -0.15,
+                            ),
                           )),
                     ),
                     Row(
@@ -184,17 +183,20 @@ class _SellScreenState extends State<SellScreen> {
                     ),
                     Row(
                       children: [
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            height: 50,
-                          ),
-                        ),
-                        Expanded(
+                        const Spacer(),
+                        const SizedBox(width: 40),
+                        const Text('Sort by',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                letterSpacing: -0.15)),
+                        const SizedBox(width: 10),
+                        Flexible(
                           child: SizedBox(
-                            height: 50,
+                            height: 40,
                             child: CustomSelector(
                               dropDownItems: ['one', 'two', 'three'],
+                              borderRadius: 10,
                               onChanged: (value) {
                                 setState(() {
                                   _currentValue = value;
@@ -214,7 +216,11 @@ class _SellScreenState extends State<SellScreen> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "25 properties are available",
-                            style: TextStyle(fontSize: 22),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              letterSpacing: -0.15,
+                            ),
                           )),
                     ),
                     Neumorphic(

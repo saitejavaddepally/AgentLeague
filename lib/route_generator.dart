@@ -1,4 +1,5 @@
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/add_project.dart';
 import 'package:agent_league/ui/amenties.dart';
 import 'package:agent_league/ui/documents.dart';
 import 'package:agent_league/ui/emi.dart';
@@ -40,6 +41,7 @@ class RouteName {
   static const String location = '/location';
   static const String gallery = '/gallery';
   static const String projectExplorer = '/project_explorer';
+  static const String addProject = '/add_project';
 }
 
 class RouteGenerator {
@@ -84,8 +86,14 @@ class RouteGenerator {
         return PageTransition(
             child: const RealtorCard(), type: PageTransitionType.leftToRight);
       case RouteName.amenities:
-        return PageTransition(
-            child: const Amenties(), type: PageTransitionType.leftToRight);
+        {
+          if (args is Map<String, dynamic>) {
+            return PageTransition(
+                child: Amenties(formData: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.emi:
         return PageTransition(
             child: const EMI(), type: PageTransitionType.leftToRight);
@@ -100,9 +108,14 @@ class RouteGenerator {
             child: const PostYourPropertyPageOne(),
             type: PageTransitionType.leftToRight);
       case RouteName.postYourPropertyPageTwo:
-        return PageTransition(
-            child: const PostYourPropertyPageTwo(),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is Map<String, dynamic>) {
+            return PageTransition(
+                child: PostYourPropertyPageTwo(pageOneData: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.location:
         return PageTransition(
             child: const LocationScreen(),
@@ -114,6 +127,9 @@ class RouteGenerator {
         return PageTransition(
             child: const ProjectExplorer(),
             type: PageTransitionType.leftToRight);
+      case RouteName.addProject:
+        return PageTransition(
+            child: const AddProject(), type: PageTransitionType.leftToRight);
       default:
         return _errorRoute();
     }
