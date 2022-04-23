@@ -12,6 +12,7 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
+
   int _currentIndex = 0;
   List screens = <Widget>[
     const Home(),
@@ -20,6 +21,7 @@ class _BottomBarState extends State<BottomBar> {
     Container(color: Colors.yellow),
     Container(color: Colors.cyan)
   ];
+
 
   @override
   Widget build(BuildContext context) {

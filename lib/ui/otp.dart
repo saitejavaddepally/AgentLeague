@@ -64,6 +64,12 @@ class _OtpState extends State<Otp> {
     verifyUser().then((value) {});
   }
 
+  Future<bool> _onBackPressed() async{
+    print("pressed");
+    Navigator.of(context).pop(false);
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -73,8 +79,8 @@ class _OtpState extends State<Otp> {
         ],
         builder: (context, widget) {
           final otpProvider = Provider.of<OtpProvider>(context, listen: false);
-          return ModalProgressHUD(
-            inAsyncCall: loading,
+          return WillPopScope(
+            onWillPop: _onBackPressed,
             child: Scaffold(
               body: SafeArea(
                 child: SingleChildScrollView(
@@ -206,7 +212,8 @@ class _OtpState extends State<Otp> {
                                   switch (result) {
                                     case 'correct':
                                       {
-                                        Navigator.pushNamed(context, '/');
+                                        print(result);
+                                        Navigator.pushReplacementNamed(context, '/');
                                         break;
                                       }
                                     case 'incorrect':
