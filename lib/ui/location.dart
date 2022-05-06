@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -26,7 +27,6 @@ class _LocationScreenState extends State<LocationScreen> {
   Set<Marker> _markers = {};
   late LatLng _userLocation;
   var address = '';
-  @override
   void initState() {
     super.initState();
     _currentLocation = Geolocator.getCurrentPosition();

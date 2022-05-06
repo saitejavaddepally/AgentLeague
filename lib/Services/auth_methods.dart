@@ -8,6 +8,10 @@ class AuthMethods {
     return await _auth.currentUser;
   }
 
+  Future<String?> getUserId() async{
+    return await _auth.currentUser?.uid;
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }
