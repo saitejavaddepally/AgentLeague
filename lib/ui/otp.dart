@@ -212,10 +212,10 @@ class _OtpState extends State<Otp> {
                                     case 'correct':
                                       {
                                         setState(() => loading = false);
-                                        // Navigator.pushNamedAndRemoveUntil(
-                                        //     context,
-                                        //     RouteName.bottomBar,
-                                        //     (route) => false);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            RouteName.bottomBar,
+                                            (route) => false);
                                         break;
                                       }
                                     case 'incorrect':

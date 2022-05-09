@@ -27,9 +27,9 @@ dependencies:
   readmore: ^2.1.0
   fluttertoast: ^8.0.9
   file_picker: ^4.5.1
-  dialogflow_flutter: ^1.0.0
-  bubble:
   cloud_firestore: ^3.1.14
+  geolocator:
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
   flutter_lints: ^1.0.0
@@ -49,7 +49,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-    - assets/service/service.json
   #   - images/a_dot_ham.jpeg
   # example:
 #  fonts:

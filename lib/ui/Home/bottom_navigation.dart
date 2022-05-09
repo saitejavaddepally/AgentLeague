@@ -17,7 +17,7 @@ class _BottomBarState extends State<BottomBar> {
   List screens = <Widget>[
     const Home(),
     const SellScreen(),
-    const Chat(),
+    Container(),
     const Project(),
     Container(color: Colors.cyan)
   ];

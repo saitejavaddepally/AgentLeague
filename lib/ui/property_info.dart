@@ -1,7 +1,10 @@
+import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_selector.dart';
+import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/post_your_property_provider_two.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +13,7 @@ import '../theme/colors.dart';
 
 class PostYourPropertyPageTwo extends StatefulWidget {
   final Map<String, dynamic> pageOneData;
+
   const PostYourPropertyPageTwo({required this.pageOneData, Key? key})
       : super(key: key);
 
@@ -20,6 +24,23 @@ class PostYourPropertyPageTwo extends StatefulWidget {
 
 class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
   final _formKey = GlobalKey<FormState>();
+  String? currentPlot = '';
+
+  void postPropertyPageTwo(Map<String, dynamic> data) async {
+    await SharedPreferencesHelper()
+        .getCurrentPlot()
+        .then((value) => currentPlot = value);
+
+    AuthMethods().getUserId().then((value) => {
+          FirebaseFirestore.instance
+              .collection("sell_plots")
+              .doc(value)
+              .collection("standlone")
+              .doc(currentPlot)
+              .collection("page_2")
+              .add(data)
+        });
+  }
 
   @override
   void initState() {
@@ -229,6 +250,8 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                 color: HexColor('FD7E0E'),
                                 onClick: () {
                                   if (_formKey.currentState!.validate()) {
+                                    postPropertyPageTwo(_propertyTwo
+                                        .getMap(widget.pageOneData));
                                     Navigator.pushNamed(
                                         context, RouteName.amenities,
                                         arguments: _propertyTwo

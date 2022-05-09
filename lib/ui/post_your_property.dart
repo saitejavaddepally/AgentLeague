@@ -1,8 +1,11 @@
+import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
+import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/post_your_property_provider_one.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -20,6 +23,59 @@ class PostYourPropertyPageOne extends StatefulWidget {
 
 class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
   final _formKey = GlobalKey<FormState>();
+  late var currentPlot = '';
+
+  void postProperty(Map<String, dynamic> data) async {
+    await fetchPlot();
+    AuthMethods().getUserId().then((value) async {
+      CollectionReference ref = FirebaseFirestore.instance
+          .collection("sell_plots")
+          .doc(value)
+          .collection("standlone");
+
+      ref.doc(currentPlot).set({"data": 1});
+      await ref.doc(currentPlot).collection("page_1").add(data);
+    });
+
+    SharedPreferencesHelper().saveCurrentPlot(currentPlot);
+
+    SharedPreferencesHelper().getCurrentPlot().then((value) => print("value is $value"));
+
+    if (_formKey.currentState!.validate()) {
+      Navigator.pushNamed(context, RouteName.postYourPropertyPageTwo,
+          arguments: data);
+    }
+  }
+
+  fetchPlot() async{
+     await AuthMethods().getUserId().then((value) async {
+      CollectionReference ref = FirebaseFirestore.instance
+          .collection("sell_plots")
+          .doc(value)
+          .collection("standlone");
+
+      ref.snapshots().listen((event) {
+        if(event.docs.isEmpty){
+          setState(() {
+            currentPlot = 'plot_1';
+          });
+        }
+        else{
+          int length = event.docs.length;
+          print(length);
+          final List<DocumentSnapshot> documents = event.docs;
+          var id = documents[length-1].id.substring(5);
+
+          int autoId = int.parse(id)+1;
+          setState(() {
+            currentPlot = 'plot_$autoId';
+            print(currentPlot);
+          });
+        }
+
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,15 +223,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                               text: 'next',
                                               color: HexColor('FD7E0E'),
                                               onClick: () {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  Navigator.pushNamed(
-                                                      context,
-                                                      RouteName
-                                                          .postYourPropertyPageTwo,
-                                                      arguments:
-                                                          propertyOne.getMap());
-                                                }
+                                                postProperty(
+                                                    propertyOne.getMap());
                                               }).use())),
                                 ],
                               )
@@ -197,6 +246,7 @@ class CommonWidget {
   final List dropDownItems;
   final dynamic selectedValue;
   late Widget? hint;
+
   CommonWidget({
     required this.onChanged,
     required this.dropDownItems,
