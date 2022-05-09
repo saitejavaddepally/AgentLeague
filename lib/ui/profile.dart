@@ -2,6 +2,7 @@ import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/home_container.dart';
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -77,7 +78,9 @@ class _ProfileState extends State<Profile> {
                   image: "assets/calendar.png",
                   containerColor: const Color(0xFFB2E2D1),
                   buttonText: "AL Wallet",
-                  onButtonClick: () {}),
+                  onButtonClick: () {
+                    Navigator.pushNamed(context, RouteName.wallet);
+                  }),
               const SizedBox(height: 20),
               HomeContainer(
                   text:

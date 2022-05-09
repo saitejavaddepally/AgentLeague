@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,20 +26,21 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> checkOtp(String verificationId) async {
+  Future<String> checkOtp(String verificationId, String name) async {
     bool correct = false;
     if (_otp.length == 6) {
       var userCode =
           int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userCode.toString());
-      print(credential);
       await auth
           .signInWithCredential(credential)
-          .then((UserCredential userCredential) {
+          .then((UserCredential userCredential) async {
         correct = true;
-        print("the value is");
-        print(userCredential);
+        if (userCredential.user != null) {
+          var userId = userCredential.user!.uid;
+          await registerUser(userId, name);
+        }
       }).catchError((error) {
         print(error);
       });
@@ -50,6 +52,17 @@ class OtpProvider extends ChangeNotifier {
       }
     }
     return "enterotp";
+  }
+
+  Future<void> registerUser(String userId, String name) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .set({'name': name});
+    } on Exception catch (e) {
+      print(e);
+    }
   }
 }
 

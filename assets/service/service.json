@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "agent-fly-a5f08",
+  "private_key_id": "6abc1be2de0a83f05f276e44c72ffa96914b6a48",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCtj6Dr24pXWSYw\nBojq6g+IWBEYhF2+VafqX4GAl5HKr8ysD2ghQoC5yBlkKQL+7c8vPJVKJ9PugyH9\neAo2cSv94jIUcyCOsvI4OKZf035rLYb3cFNKAFrBDQL8oDjy8k45jBAxEnRBw234\nHUvJ+7WLhNyIs5dx7rHFl7CSHcLFbi6HxK01kVufGYQJhmKrI99VD6y8/2UnZ0zd\nlw19rdDyzcFHGHvGBFvuO7J1DwK9YlIE5rNtRUr5VYFwS/o8WtJRePKE+aJYM4+Z\n3aVBAfHY73rIzfpfjZLdrxUlnAQ4N1byIW1uifjE4ZvABHq+SWfEWiR/AqjV7BAa\nw93MsefNAgMBAAECggEADSJa465j/DM3ZBgCgYB/92nutUPDElXKFL7wfmo58rQ2\nEWlDEI1HT4fYgA9odiFJ9gGoLInyDFEpH9TXNQKAeUCGWKzTsGjTUrTaxlKrdPHn\njk8WRnnbZFOXP8XiOWRjzhAO45/JY3amGkohQ6JEPVArHj80/T66fkD58DzHUghi\nC+RRytki4J5AaBfEz4efdQZlYLe11qo91ayVWFSRV4/pzT1eLoD+wKsm1FVxrYIl\n1VBDdb1DYWXt2exo+F9UjofcE5xct5DwH11UDLT2Bg2SX18rQDRBvaVYVJ8XJO3h\nGlNhilY+bRup7mb7YOtMGhT+VvDmyf+S3zbXie9bYQKBgQDhpGGbCiU1u1It6c0q\nYX2zD8vv6kwWuG55nwVkzoH5mStlEd/1xapf7csQtDSTW/6OJOaJVEKPU0DZQMB1\nO1F6vRVY7Bd8YExHyu1Q8313EicSr61SdGjCVWv6wAFPvTZOnIXC8ZidCQluC7gl\n0+pGP4DUUI1pJBUyBOA25kQGMQKBgQDE6XWD0vPkWPHyJc4uitIF772wvRFgoqM3\ncIODuus7dO1RE4f+WwkPTGak00rpC/iCyVxxiXmaczHv9+Me915PJbLG0PGd6CBI\ncB5tv6ueuk/ocxHpoorkaQdbOyBvDZkmQyfKTKOvcK8QC9jSWkVE6M1rVgLGFmye\nS+WF4EQoXQKBgDR3q7aIYmSfHRnN/sX3C2qCptIvseeqlQ20u2VYW4K1ahDDWkdk\n4hwSSCCnNn55arSUwgJ21E9NdYvO8bGQzH50zyzxIPjrz3D2L76eD7OLRgijTvMY\nXG+ru0MAOI3ZGnKnFLdixDDntAihsv0gzJ3vED7OSEOFf2Q1HAnH+1NRAoGAbZSa\nICUqMt5Irn/ZcM8yN7mF77AX1pZLjFOh7JH9zFWyp5bd7G/O5+OVj45CNtTBlE7o\nkgp2ULxggvGJRDdXFWaeScQHYd/G72jtlhe/MxLt2ycGReV9s8S7IksSLpr7qm5e\n21axFLX5xk1BeTZhLAr+Hgh8fK4H/kOwVENMysUCgYB4O5KvXTi3bd1y53VwJniy\nlk7MXGo6ixrEL1WYKxBWVcQNb6lF+TsL4CaISPNlLuznY/aqRXdkO8lGJn8R7LNf\nf3tABvsTcTLrOriqMX8h7mtvEO55YQ67i3XRRg1rR+PGkg0zRzpEBSf1iyFpmvxk\nx85KNyRGJRMufjDyFLnKHw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "agentfly@agent-fly-a5f08.iam.gserviceaccount.com",
+  "client_id": "104703181305339758267",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/agentfly%40agent-fly-a5f08.iam.gserviceaccount.com"
+}

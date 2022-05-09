@@ -257,24 +257,32 @@ class CustomWidget {
   final void Function(String)? submitted;
   final TextEditingController? controller;
   late bool isText;
+  final int flex;
 
-  CustomWidget({
-    required this.text,
-    this.onChanged,
-    this.chosenValue,
-    this.validator,
-    this.submitted,
-    this.controller,
-    this.dropDownItems = const [],
-    this.isText = false,
-  });
+  CustomWidget(
+      {required this.text,
+      this.onChanged,
+      this.chosenValue,
+      this.validator,
+      this.submitted,
+      this.controller,
+      this.dropDownItems = const [],
+      this.isText = false,
+      this.flex = 1});
 
   use() {
     return Container(
-      margin: const EdgeInsets.only(top: 16),
+      margin: const EdgeInsets.only(top: 12),
       child: Row(
         children: [
-          Expanded(child: Text(text)),
+          Expanded(
+            flex: flex,
+            child: Text(text,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    letterSpacing: -0.15)),
+          ),
           Expanded(
             flex: 2,
             child: (isText)
