@@ -207,7 +207,7 @@ class _OtpState extends State<Otp> {
                                 if (_verificationId != null) {
                                   setState(() => loading = true);
                                   final result = await otpProvider.checkOtp(
-                                      _verificationId!, name);
+                                      _verificationId!, name, phoneNumber);
                                   switch (result) {
                                     case 'correct':
                                       {

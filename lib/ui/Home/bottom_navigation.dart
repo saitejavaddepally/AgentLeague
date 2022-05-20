@@ -1,5 +1,5 @@
-import 'package:agent_league/ui/Home/chat.dart';
 import 'package:agent_league/ui/Home/home.dart';
+import 'package:agent_league/ui/Home/Chat/people.dart';
 import 'package:agent_league/ui/Home/project.dart';
 import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class _BottomBarState extends State<BottomBar> {
   List screens = <Widget>[
     const Home(),
     const SellScreen(),
-    Container(),
+    const People(),
     const Project(),
     Container(color: Colors.cyan)
   ];

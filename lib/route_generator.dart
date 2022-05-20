@@ -1,3 +1,4 @@
+import 'package:agent_league/ui/Home/Chat/chat_detail.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/add_project.dart';
 import 'package:agent_league/ui/amenties.dart';
@@ -48,6 +49,7 @@ class RouteName {
   static const String property = '/property';
   static const String wallet = '/wallet';
   static const String uploads = '/uploads';
+  static const String chatDetail = '/chat_detail';
 }
 
 class RouteGenerator {
@@ -146,6 +148,15 @@ class RouteGenerator {
       case RouteName.uploads:
         return PageTransition(
             child: const UploadsScreen(), type: PageTransitionType.leftToRight);
+      case RouteName.chatDetail:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: ChatDetail(friendName: args[0], friendUid: args[1]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       default:
         return _errorRoute();
     }

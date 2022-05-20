@@ -26,7 +26,8 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> checkOtp(String verificationId, String name) async {
+  Future<String> checkOtp(
+      String verificationId, String name, String phoneNumber) async {
     bool correct = false;
     if (_otp.length == 6) {
       var userCode =
@@ -39,7 +40,7 @@ class OtpProvider extends ChangeNotifier {
         correct = true;
         if (userCredential.user != null) {
           var userId = userCredential.user!.uid;
-          await registerUser(userId, name);
+          await registerUser(userId, name, phoneNumber);
         }
       }).catchError((error) {
         print(error);
@@ -54,12 +55,13 @@ class OtpProvider extends ChangeNotifier {
     return "enterotp";
   }
 
-  Future<void> registerUser(String userId, String name) async {
+  static Future<void> registerUser(
+      String userId, String name, String phoneNumber) async {
     try {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
-          .set({'name': name});
+          .set({'name': name, 'uid': userId, 'phone': phoneNumber});
     } on Exception catch (e) {
       print(e);
     }

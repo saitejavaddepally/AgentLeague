@@ -45,6 +45,13 @@
             {
               "client_id": "36906349039-vk0jncoun7m2ghgadm32pk09ob8dvlc6.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "36906349039-uplnq4b16ecqmcbap9604vf9ic4jk9ph.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.agentLeague"
+              }
             }
           ]
         }
