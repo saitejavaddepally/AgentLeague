@@ -43,6 +43,7 @@ class _MyAppState extends State {
       systemNavigationBarIconBrightness: Brightness.light,
     );
     SystemChrome.setSystemUIOverlayStyle(style);
+
     currentTheme.addListener(() {
       setState(() {});
     });

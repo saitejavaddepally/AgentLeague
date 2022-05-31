@@ -6,7 +6,7 @@ import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/post_your_property_provider_one.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
@@ -25,56 +25,89 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
   final _formKey = GlobalKey<FormState>();
   late var currentPlot = '';
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void postProperty(Map<String, dynamic> data) async {
-    await fetchPlot();
     AuthMethods().getUserId().then((value) async {
       CollectionReference ref = FirebaseFirestore.instance
           .collection("sell_plots")
           .doc(value)
           .collection("standlone");
 
-      ref.doc(currentPlot).set({"data": 1});
-      await ref.doc(currentPlot).collection("page_1").add(data);
+      ref.get().then((event) {
+        if (event.docs.isEmpty) {
+          setState(() {
+            currentPlot = 'plot_1';
+          });
+        } else {
+          int length = event.docs.length;
+          print(length);
+          final List<DocumentSnapshot> documents = event.docs;
+          var id = documents[length - 1].id.substring(5);
+
+          int autoId = int.parse(id) + 1;
+          setState(() {
+            currentPlot = 'plot_$autoId';
+          });
+        }
+        return currentPlot;
+      }).then((value) async {
+        print("Value is : " + value);
+        SharedPreferencesHelper().saveCurrentPlot(value);
+        AuthMethods().getUserId().then((value) async {
+          CollectionReference ref = FirebaseFirestore.instance
+              .collection("sell_plots")
+              .doc(value)
+              .collection("standlone");
+
+          ref.doc(currentPlot).set({"data": 1});
+          await ref.doc(currentPlot).collection("page_1").add(data);
+          print("I am Done here");
+        }).then((value) {
+          print("I am here now!!");
+          SharedPreferencesHelper()
+              .getCurrentPlot()
+              .then((value) => print("value is $value"));
+        }).then((value) {
+          if (_formKey.currentState!.validate()) {
+            Navigator.pushNamed(context, RouteName.postYourPropertyPageTwo,
+                arguments: data);
+          }
+        });
+      });
     });
-
-    SharedPreferencesHelper().saveCurrentPlot(currentPlot);
-
-    SharedPreferencesHelper().getCurrentPlot().then((value) => print("value is $value"));
-
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushNamed(context, RouteName.postYourPropertyPageTwo,
-          arguments: data);
-    }
   }
 
-  fetchPlot() async{
-     await AuthMethods().getUserId().then((value) async {
+  Future<String> fetchPlot() async {
+    AuthMethods().getUserId().then((value) async {
       CollectionReference ref = FirebaseFirestore.instance
           .collection("sell_plots")
           .doc(value)
           .collection("standlone");
 
       ref.snapshots().listen((event) {
-        if(event.docs.isEmpty){
+        if (event.docs.isEmpty) {
+          print("Am I here? ");
           setState(() {
             currentPlot = 'plot_1';
           });
-        }
-        else{
+        } else {
           int length = event.docs.length;
           print(length);
           final List<DocumentSnapshot> documents = event.docs;
-          var id = documents[length-1].id.substring(5);
+          var id = documents[length - 1].id.substring(5);
 
-          int autoId = int.parse(id)+1;
+          int autoId = int.parse(id) + 1;
           setState(() {
             currentPlot = 'plot_$autoId';
-            print(currentPlot);
           });
         }
-
       });
     });
+    return currentPlot;
   }
 
   @override

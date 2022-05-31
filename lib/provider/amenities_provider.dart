@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AmenitiesProvider extends ChangeNotifier {
@@ -111,14 +112,14 @@ class PropertyPhotosProvider extends ChangeNotifier {
 class PropertyDocumentsProvider extends ChangeNotifier {
   List<File?> _images = List.generate(5, (index) => null);
 
-  UnmodifiableListView<File?> get images => UnmodifiableListView(_images);
+  UnmodifiableListView<File?> get docs => UnmodifiableListView(_images);
 
-  void pickImage(int index) async {
-    final image = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 50);
-    if (image == null) return;
+  void pickDocuments(int index) async {
+    final path = await FlutterDocumentPicker.openDocument();
 
-    final imageTemporary = File(image.path);
+    if (path == null) return;
+
+    final imageTemporary = File(path);
     _images[index] = imageTemporary;
     notifyListeners();
   }
