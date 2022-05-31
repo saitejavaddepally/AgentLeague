@@ -1,4 +1,5 @@
 import 'package:agent_league/Services/auth_methods.dart';
+import 'package:agent_league/firebase_options.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
@@ -13,7 +14,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await initialization();
   runApp(const MyApp());

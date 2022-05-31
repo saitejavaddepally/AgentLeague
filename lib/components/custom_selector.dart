@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomSelector<T> {
+class CustomSelector {
   final List dropDownItems;
   final void Function(dynamic)? onChanged;
   dynamic chosenValue;
@@ -42,6 +42,7 @@ class CustomSelector<T> {
             validator: (value) => value == null ? 'Field Required' : null,
             hint: hint,
             value: chosenValue,
+            isExpanded: true,
             style: TextStyle(
                 fontWeight: FontWeight.w500, fontSize: 16, color: textColor),
             onChanged: onChanged),

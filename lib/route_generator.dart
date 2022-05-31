@@ -1,6 +1,8 @@
+import 'package:agent_league/ui/Home/Chat/chat_detail.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/add_project.dart';
 import 'package:agent_league/ui/amenties.dart';
+import 'package:agent_league/ui/coinsfly_wallet.dart';
 import 'package:agent_league/ui/documents.dart';
 import 'package:agent_league/ui/emi.dart';
 import 'package:agent_league/ui/explore.dart';
@@ -13,11 +15,13 @@ import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/post_your_property.dart';
 import 'package:agent_league/ui/profile.dart';
 import 'package:agent_league/ui/project_explorer.dart';
+import 'package:agent_league/ui/property.dart';
 import 'package:agent_league/ui/property_info.dart';
 import 'package:agent_league/ui/realtor_card.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:agent_league/ui/tour.dart';
+import 'package:agent_league/ui/uploads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -42,13 +46,17 @@ class RouteName {
   static const String gallery = '/gallery';
   static const String projectExplorer = '/project_explorer';
   static const String addProject = '/add_project';
+  static const String property = '/property';
+  static const String wallet = '/wallet';
+  static const String uploads = '/uploads';
+  static const String chatDetail = '/chat_detail';
 }
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
-    print("Route name : ${settings.name}");
+
     switch (settings.name) {
       case RouteName.bottomBar:
         return PageTransition(
@@ -67,7 +75,7 @@ class RouteGenerator {
             child: const Help(), type: PageTransitionType.leftToRight);
       case RouteName.otp:
         {
-          if (args is String) {
+          if (args is List) {
             return PageTransition(
                 child: Otp(args: args), type: PageTransitionType.leftToRight);
           }
@@ -130,6 +138,25 @@ class RouteGenerator {
       case RouteName.addProject:
         return PageTransition(
             child: const AddProject(), type: PageTransitionType.leftToRight);
+      case RouteName.property:
+        return PageTransition(
+            child: const Property(), type: PageTransitionType.leftToRight);
+      case RouteName.wallet:
+        return PageTransition(
+            child: const CoinsflyWallet(),
+            type: PageTransitionType.leftToRight);
+      case RouteName.uploads:
+        return PageTransition(
+            child: const UploadsScreen(), type: PageTransitionType.leftToRight);
+      case RouteName.chatDetail:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: ChatDetail(friendName: args[0], friendUid: args[1]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       default:
         return _errorRoute();
     }

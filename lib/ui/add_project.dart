@@ -1,5 +1,6 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/colors.dart';
@@ -34,7 +35,9 @@ class _AddProjectState extends State<AddProject> {
           const SizedBox(width: 20),
           CustomButton(
             text: 'Proceed',
-            onClick: () {},
+            onClick: () {
+              Navigator.pushNamed(context, RouteName.property);
+            },
             color: HexColor('FD7E0E'),
             width: 110,
             height: 40,

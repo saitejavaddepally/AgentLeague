@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../route_generator.dart';
 
 class Otp extends StatefulWidget {
-  final String args;
+  final List args;
   const Otp({required this.args, Key? key}) : super(key: key);
 
   @override
@@ -21,6 +21,7 @@ class Otp extends StatefulWidget {
 
 class _OtpState extends State<Otp> {
   late final String phoneNumber;
+  late final String name;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
   int? _resendToken;
@@ -54,7 +55,7 @@ class _OtpState extends State<Otp> {
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         print("Code auto retreival timeout");
-        // _verificationId = verificationId;
+        _verificationId = verificationId;
       },
     );
   }
@@ -62,7 +63,8 @@ class _OtpState extends State<Otp> {
   @override
   void initState() {
     super.initState();
-    phoneNumber = widget.args;
+    phoneNumber = widget.args[0];
+    name = widget.args[1];
     verifyUser().then((value) {});
   }
 
@@ -204,8 +206,8 @@ class _OtpState extends State<Otp> {
                               onTap: () async {
                                 if (_verificationId != null) {
                                   setState(() => loading = true);
-                                  final result = await otpProvider
-                                      .checkOtp(_verificationId!);
+                                  final result = await otpProvider.checkOtp(
+                                      _verificationId!, name, phoneNumber);
                                   switch (result) {
                                     case 'correct':
                                       {
@@ -245,10 +247,7 @@ class _OtpState extends State<Otp> {
                                 width: 98,
                                 height: 36,
                                 decoration: BoxDecoration(
-                                    gradient: const LinearGradient(colors: [
-                                      Color(0xFFFD7E0E),
-                                      Color(0xFFC12103)
-                                    ]),
+                                    color: const Color(0xFFFD7E0E),
                                     boxShadow: shadow2,
                                     borderRadius: BorderRadius.circular(30)),
                                 child: const Center(

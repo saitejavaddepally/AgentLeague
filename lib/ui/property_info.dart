@@ -141,7 +141,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             ),
                                           ),
                                           const SizedBox(
-                                            width: 10,
+                                            width: 5,
                                           ),
                                           Expanded(
                                               child: CustomSelector(
@@ -179,17 +179,15 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                             ).use(),
                             CustomWidget(
                               text: 'Car Park :',
-                              isText: true,
-                              controller: value.carparkController,
-                              submitted: value.onSubmittedCarpark,
-                              validator: value.validateCarpark,
+                              chosenValue: value.carParkChosenValue,
+                              dropDownItems: value.carParkDropDown,
+                              onChanged: value.onChangedCarPark,
                             ).use(),
                             CustomWidget(
                               text: 'Extra rooms :',
-                              isText: true,
-                              controller: value.extraRoomController,
-                              submitted: value.onSubmittedExtraRoom,
-                              validator: value.validateExtraRoom,
+                              chosenValue: value.extraRoomChosenValue,
+                              dropDownItems: value.extraRoomDropDown,
+                              onChanged: value.onChangedExtraRoom,
                             ).use(),
                             const SizedBox(
                               height: 30,
@@ -280,24 +278,32 @@ class CustomWidget {
   final void Function(String)? submitted;
   final TextEditingController? controller;
   late bool isText;
+  final int flex;
 
-  CustomWidget({
-    required this.text,
-    this.onChanged,
-    this.chosenValue,
-    this.validator,
-    this.submitted,
-    this.controller,
-    this.dropDownItems = const [],
-    this.isText = false,
-  });
+  CustomWidget(
+      {required this.text,
+      this.onChanged,
+      this.chosenValue,
+      this.validator,
+      this.submitted,
+      this.controller,
+      this.dropDownItems = const [],
+      this.isText = false,
+      this.flex = 1});
 
   use() {
     return Container(
-      margin: const EdgeInsets.only(top: 16),
+      margin: const EdgeInsets.only(top: 12),
       child: Row(
         children: [
-          Expanded(child: Text(text)),
+          Expanded(
+            flex: flex,
+            child: Text(text,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    letterSpacing: -0.15)),
+          ),
           Expanded(
             flex: 2,
             child: (isText)

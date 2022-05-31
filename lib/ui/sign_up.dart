@@ -122,6 +122,12 @@ class _SignUpFormState extends State<SignUpForm> {
                           onChanged: (value) {
                             name = value;
                           },
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "Name not be empty";
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(10),
                               hintText: "    Enter your name",
@@ -131,6 +137,14 @@ class _SignUpFormState extends State<SignUpForm> {
                                   color: Colors.white.withOpacity(0.3)),
                               fillColor: Colors.white.withOpacity(0.1),
                               filled: true,
+                              errorBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.red, width: 0.5),
+                                  borderRadius: BorderRadius.circular(31)),
+                              focusedErrorBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.red, width: 0.5),
+                                  borderRadius: BorderRadius.circular(31)),
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(31)),
@@ -175,7 +189,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                             Navigator.pushNamed(
                                               context,
                                               RouteName.otp,
-                                              arguments: phoneNumber,
+                                              arguments: [phoneNumber, name],
                                             );
                                           }
                                         },
@@ -202,7 +216,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             child: CustomButton(
                                     text: "sign in",
                                     onClick: () {
-                                      Navigator.pushNamed(context, '/');
+                                      // Navigator.pushNamed(context, '/');
                                     },
                                     height: 43,
                                     radius: 30,

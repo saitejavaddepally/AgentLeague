@@ -27,11 +27,11 @@ class _ExploreState extends State<Explore> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Container(
-                    decoration: const BoxDecoration(
-                        boxShadow: shadow1,
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                            colors: [Color(0xFFFD7E0E), Color(0xFFC12103)])),
+                    decoration: BoxDecoration(
+                      boxShadow: shadow1,
+                      shape: BoxShape.circle,
+                      color: HexColor('F37F20'),
+                    ),
                     child:
                         const Icon(Icons.arrow_back_ios_new_rounded, size: 20)),
               ),
@@ -97,7 +97,6 @@ class ForYou extends StatelessWidget {
             HomeContainer(
                 text: "Don’t worry about your real estate commision any more.",
                 isSecondText: true,
-                isSizedBox: true,
                 text2:
                     'we help you to legalize your sale with an escrow account to guarantee your commission',
                 image: "assets/rupee.png",
@@ -111,7 +110,6 @@ class ForYou extends StatelessWidget {
             HomeContainer(
                 text: "Looing for an instant Personal loan upto INR 500000",
                 isSecondText: true,
-                isSizedBox: true,
                 text2:
                     'We are partnering with major fintech companies to fulfill your financial needs',
                 image: "assets/apply_now.png",
@@ -198,10 +196,9 @@ class ForYourCustomers extends StatelessWidget {
             HomeContainer(
                 text:
                     'How much loan your customer can attorel to buy his dream home. Use our customized home loan calculator for EMI.',
-                image: 'assets/emi.png',
+                image: 'assets/emii.png',
                 containerColor: HexColor('E4C8F5'),
                 buttonText: 'Monthly EMI',
-                isSizedBox: true,
                 buttonWidth: 121,
                 onButtonClick: () {})
           ],
