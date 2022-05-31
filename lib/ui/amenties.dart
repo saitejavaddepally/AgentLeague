@@ -1,15 +1,23 @@
+import 'dart:io';
+
+import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_title.dart';
+import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/amenities_provider.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../components/custom_button.dart';
 import '../helper/constants.dart';
 
 class Amenties extends StatefulWidget {
   final Map<String, dynamic> formData;
+
   const Amenties({required this.formData, Key? key}) : super(key: key);
 
   @override
@@ -17,10 +25,42 @@ class Amenties extends StatefulWidget {
 }
 
 class _AmentiesState extends State<Amenties> {
+  late List<File?> _images;
+  late List<File?> _docs;
+  late List<File?> _videos;
+  static const String _IMAGE = 'images';
+  static const String _VIDEO = 'videos';
+  static const String _DOCS = 'docs';
+  String? currentPlot = '';
+  String? currentUser = '';
+
   @override
   void initState() {
     super.initState();
     print(widget.formData);
+  }
+
+  Future<void> uploadToFireStore(List<File?> list, String type) async {
+    await SharedPreferencesHelper()
+        .getCurrentPlot()
+        .then((value) => currentPlot = value);
+    final _firebaseStorage = FirebaseStorage.instance;
+    dynamic snapshot;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] != null) {
+        AuthMethods().getUserId().then((value) async {
+          currentUser = value;
+
+          snapshot = await _firebaseStorage
+              .ref()
+              .child(
+                  'sell_images/$value/standlone/$currentPlot/$type/${type}_$i')
+              .putFile(list[i]!)
+              .whenComplete(() => print("Uploaded $type successfully"));
+        });
+      }
+    }
+
   }
 
   @override
@@ -177,6 +217,8 @@ class _AmentiesState extends State<Amenties> {
                                     child: GestureDetector(
                                       onTap: () {
                                         value.pickImage(index);
+                                        _images = value.images;
+                                        print(_images);
                                       },
                                       child: Container(
                                         height: 55,
@@ -237,7 +279,9 @@ class _AmentiesState extends State<Amenties> {
                                     padding: const EdgeInsets.only(right: 20),
                                     child: GestureDetector(
                                       onTap: () {
-                                        value.pickImage(index);
+                                        value.pickDocuments(index);
+                                        _docs = value.docs;
+                                        print(_docs);
                                       },
                                       child: Container(
                                         height: 55,
@@ -247,8 +291,8 @@ class _AmentiesState extends State<Amenties> {
                                                 Colors.white.withOpacity(0.1),
                                             borderRadius:
                                                 BorderRadius.circular(10)),
-                                        child: (value.images[index] != null)
-                                            ? Image.file(value.images[index]!)
+                                        child: (value.docs[index] != null)
+                                            ? Image.file(value.docs[index]!)
                                             : Image.asset('assets/picker.png'),
                                       ),
                                     ),
@@ -299,6 +343,8 @@ class _AmentiesState extends State<Amenties> {
                                     child: GestureDetector(
                                       onTap: () {
                                         value.pickVideo(index);
+                                        _videos = value.videos;
+                                        print(_videos);
                                       },
                                       child: Container(
                                         height: 55,
@@ -345,23 +391,43 @@ class _AmentiesState extends State<Amenties> {
                                 )
                               ],
                             ),
+                            const SizedBox(height: 30),
+                            CustomButton(
+                                    text: 'Submit',
+                                    onClick: () async {
+
+                                      await uploadToFireStore(_images, _IMAGE);
+                                      await uploadToFireStore(_videos, _VIDEO);
+                                      await uploadToFireStore(_docs, _DOCS);
+                                      CollectionReference ref = FirebaseFirestore.instance
+                                          .collection("sell_plots")
+                                          .doc(currentUser)
+                                          .collection("standlone")
+                                          .doc(currentPlot)
+                                          .collection("page_3");
+
+                                      await ref.add({
+                                        "path_to_storage": "sell_images/$currentUser/standlone/$currentPlot/"
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "Thank you for posting your property!"),
+                                        duration: Duration(seconds: 2),
+                                        
+                                        
+                                      ));
+                                      Navigator.pushNamedAndRemoveUntil(context, RouteName.bottomBar, (r) => false);
+                                      
+                                    },
+                                    width: 102,
+                                    height: 40,
+                                    color: HexColor('FD7E0E'))
+                                .use(),
+                              
                           ],
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      CustomButton(
-                              text: 'Submit',
-                              onClick: () {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text(
-                                      "Thank you for posting your property"),
-                                ));
-                              },
-                              width: 102,
-                              height: 40,
-                              color: HexColor('FD7E0E'))
-                          .use(),
                       const SizedBox(height: 20),
                     ],
                   ),

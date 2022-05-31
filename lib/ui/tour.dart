@@ -1,7 +1,9 @@
 import 'package:agent_league/helper/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
+import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 class Tour extends StatefulWidget {
@@ -12,50 +14,67 @@ class Tour extends StatefulWidget {
 }
 
 class _TourState extends State<Tour> {
+  late List res;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.keyboard_backspace_rounded)),
-              GestureDetector(
-                  onTap: () {}, child: const Icon(Icons.share_outlined))
-            ],
-          ),
-          const SizedBox(height: 30),
-          Text(
-              '150 Sq.yards  G+1 House at SaiNagar, LB Nagar for 7000000'
-                  .toLowerCase(),
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  letterSpacing: -0.15,
-                  color: Colors.white.withOpacity(0.87))),
-          const SizedBox(height: 20),
-          Flexible(
-              child: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    var videoLink =
-                        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4';
+    return FutureBuilder(
+      future: FirestoreDataProvider().getFirestoreFiles("VIDEOS"),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const SpinKitThreeBounce(
+            size: 30,
+            color: Colors.white,
+          );
+        }
+        if (snapshot.hasData) {
+          res = snapshot.data as List;
+        }
 
-                    return VideoPlayPage(videoLink: videoLink);
-                  }))
-        ]),
-      ),
-    ));
+        return Scaffold(
+            body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(Icons.keyboard_backspace_rounded)),
+                  GestureDetector(
+                      onTap: () {}, child: const Icon(Icons.share_outlined))
+                ],
+              ),
+              const SizedBox(height: 30),
+              Text(
+                  '150 Sq.yards  G+1 House at SaiNagar, LB Nagar for 7000000'
+                      .toLowerCase(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      letterSpacing: -0.15,
+                      color: Colors.white.withOpacity(0.87))),
+              const SizedBox(height: 20),
+              Flexible(
+                  child: ListView.builder(
+                      itemCount: res.length,
+                      itemBuilder: (context, index) {
+                        var videoLink =
+                            res[index];
+
+                        return VideoPlayPage(videoLink: videoLink);
+                      }))
+            ]),
+          ),
+        ));
+      },
+    );
   }
 }
 
 class VideoPlayPage extends StatefulWidget {
   final String videoLink;
+
   const VideoPlayPage({required this.videoLink, Key? key}) : super(key: key);
 
   @override

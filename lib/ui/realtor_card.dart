@@ -1,11 +1,21 @@
+import 'dart:convert';
+
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_title.dart';
+import 'package:agent_league/helper/shared_preferences.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-
 import '../theme/colors.dart';
+
+var currentPage = 0;
+String userId = "";
+String path = "";
+String imageUrl = "";
+bool loading = false;
+PageController? controller;
+late List profileImages = [];
+bool isIncremented = false;
 
 class RealtorCard extends StatefulWidget {
   const RealtorCard({Key? key}) : super(key: key);
@@ -15,55 +25,91 @@ class RealtorCard extends StatefulWidget {
 }
 
 class _RealtorCardState extends State<RealtorCard> {
-  List pages = [const RealtorPage(), const RealtorPage()];
+  late List pages = [];
+
+  var page = RealtorPage();
   Color color = CustomColors.dark;
+  String numberOfProperties = "0";
 
   @override
   void initState() {
-    _updateState();
+    Future.delayed(const Duration(seconds: 1), () async {
+      await SharedPreferencesHelper().getUserId().then((value) {
+        setState(() {
+          userId = value!;
+        });
+      });
+    });
+    print("User Id is  $userId");
+    Future.delayed(Duration.zero, () async {
+      await SharedPreferencesHelper().getListOfCardImages().then((value) {
+        setState(() {
+          profileImages = value as List;
+        });
+      });
+    });
+
+    SharedPreferencesHelper().getCurrentPage().then((value) {
+      setState(() {
+        controller = PageController(initialPage: currentPage);
+      });
+    });
+    Future.delayed(Duration.zero, () async {
+      await SharedPreferencesHelper().getNumProperties().then((value) {
+        numberOfProperties = value.toString();
+        return numberOfProperties;
+      }).then((value) {
+        for (var i = 0; i < int.parse(numberOfProperties); i++) {
+          setState(() {
+            pages.add(const RealtorPage());
+          });
+        }
+      });
+    });
+
     super.initState();
-  }
+    print("Now the page is");
 
-  void _updateState() {
-    final style = SystemUiOverlayStyle(
-      systemNavigationBarColor: CustomColors.dark,
-      systemNavigationBarIconBrightness: Brightness.light,
-    );
-    SystemChrome.setSystemUIOverlayStyle(style);
   }
-
-  // @override
-  // void dispose() {
-  //   var brightness = SchedulerBinding.instance!.window.platformBrightness;
-  //   bool isDarkMode = brightness == Brightness.dark;
-  //   print(isDarkMode);
-  //   SystemUiOverlayStyle value =
-  //       (!isDarkMode) ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light;
-  //   SystemChrome.setSystemUIOverlayStyle(value);
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: color,
-        body: SafeArea(
-            child: Stack(children: [
-          PageView.builder(
-            itemCount: 2,
-            onPageChanged: (int page) {
-              setState(() {
-                // color = colorList[page];
-              });
-            },
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              return pages[index];
-            },
-          ),
-        ])));
+    return (numberOfProperties != "0")
+        ? Scaffold(
+            backgroundColor: color,
+            body: SafeArea(
+                child: Stack(children: [
+              PageView.builder(
+                itemCount: int.parse(numberOfProperties),
+                controller: controller,
+                onPageChanged: (int page) async {
+                  print("I am here second? ");
+                  SharedPreferencesHelper().saveCurrentPage(page.toString());
+                  setState(() {
+                    currentPage = page;
+                    path =
+                        'sell_images/$userId/standlone/plot_${(currentPage) + 1}/images/';
+                  });
+                  SharedPreferencesHelper()
+                      .getCurrentPage()
+                      .then((value) => print("value is $value"));
+                },
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return pages[index];
+                },
+              ),
+            ])))
+        : const Center(
+            child: Text("No properties found"),
+          );
   }
 }
+
+// const SpinKitThreeBounce(
+// size: 30,
+// color: Colors.white,
+// );
 
 class RealtorPage extends StatefulWidget {
   const RealtorPage({Key? key}) : super(key: key);
@@ -75,11 +121,14 @@ class RealtorPage extends StatefulWidget {
 class _RealtorPageState extends State<RealtorPage> {
   @override
   void initState() {
-    final style = SystemUiOverlayStyle(
-      systemNavigationBarColor: CustomColors.dark,
-      systemNavigationBarIconBrightness: Brightness.light,
-    );
-    SystemChrome.setSystemUIOverlayStyle(style);
+    controller?.addListener(() {
+      var current = (controller?.page)!;
+      setState(() {
+
+      });
+    });
+
+    print("Am I here? then");
     super.initState();
   }
 
@@ -102,11 +151,13 @@ class _RealtorPageState extends State<RealtorPage> {
   @override
   Widget build(BuildContext context) {
     var iconFunctionalities = [
-      () => Navigator.pushNamed(context, '/location'),
-      () => Navigator.pushNamed(context, '/gallery'),
-      () => Navigator.pushNamed(context, '/tour'),
-      () => Navigator.pushNamed(context, '/documents'),
-      () => Navigator.pushNamed(context, '/emi'),
+      () => Navigator.pushNamed(context, '/location', arguments: currentPage),
+      () {
+        Navigator.pushNamed(context, RouteName.gallery);
+      },
+      () => Navigator.pushNamed(context, '/tour', arguments: currentPage),
+      () => Navigator.pushNamed(context, '/documents', arguments: currentPage),
+      () => Navigator.pushNamed(context, '/emi', arguments: currentPage),
     ];
     return Stack(children: [
       Column(children: [
@@ -139,7 +190,13 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset("assets/card.png"),
+                      Container(
+                          width: 200,
+                          height: 200,
+                          child: Image.network(
+                            profileImages[currentPage],
+                            fit: BoxFit.fitHeight,
+                          )),
                       const SizedBox(height: 20),
                       const CustomTitle(text: 'Property Highlights'),
                       const SizedBox(height: 20),
