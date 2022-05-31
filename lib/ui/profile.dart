@@ -88,7 +88,6 @@ class _ProfileState extends State<Profile> {
                   image: "assets/tasks.png",
                   containerColor: const Color(0xFFC0D9FF),
                   buttonText: "Edit Profile",
-                  isSizedBox: true,
                   buttonWidth: 112,
                   onButtonClick: () {}),
               const SizedBox(height: 20),

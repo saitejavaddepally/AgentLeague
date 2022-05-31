@@ -97,7 +97,6 @@ class ForYou extends StatelessWidget {
             HomeContainer(
                 text: "Don’t worry about your real estate commision any more.",
                 isSecondText: true,
-                isSizedBox: true,
                 text2:
                     'we help you to legalize your sale with an escrow account to guarantee your commission',
                 image: "assets/rupee.png",
@@ -111,7 +110,6 @@ class ForYou extends StatelessWidget {
             HomeContainer(
                 text: "Looing for an instant Personal loan upto INR 500000",
                 isSecondText: true,
-                isSizedBox: true,
                 text2:
                     'We are partnering with major fintech companies to fulfill your financial needs',
                 image: "assets/apply_now.png",
@@ -201,7 +199,6 @@ class ForYourCustomers extends StatelessWidget {
                 image: 'assets/emii.png',
                 containerColor: HexColor('E4C8F5'),
                 buttonText: 'Monthly EMI',
-                isSizedBox: true,
                 buttonWidth: 121,
                 onButtonClick: () {})
           ],

@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GetUserLocation {
   /// Determine the current position of the device.
@@ -41,5 +45,17 @@ class GetUserLocation {
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+  }
+
+  Future<String> getAddressFromCoordinates(LatLng userLocation) async {
+    var url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLocation.latitude},${userLocation.longitude}&sensor=true&key=AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0');
+    var _response = await http.get(url);
+    var data = _response.body;
+    Map<String, dynamic> data2 = jsonDecode(data);
+    List<dynamic> list = data2['results'];
+
+    var result = list[0]['formatted_address'].toString();
+    return result;
   }
 }

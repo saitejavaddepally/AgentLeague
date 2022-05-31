@@ -141,7 +141,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             ),
                                           ),
                                           const SizedBox(
-                                            width: 10,
+                                            width: 5,
                                           ),
                                           Expanded(
                                               child: CustomSelector(
@@ -179,17 +179,15 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                             ).use(),
                             CustomWidget(
                               text: 'Car Park :',
-                              isText: true,
-                              controller: value.carparkController,
-                              submitted: value.onSubmittedCarpark,
-                              validator: value.validateCarpark,
+                              chosenValue: value.carParkChosenValue,
+                              dropDownItems: value.carParkDropDown,
+                              onChanged: value.onChangedCarPark,
                             ).use(),
                             CustomWidget(
                               text: 'Extra rooms :',
-                              isText: true,
-                              controller: value.extraRoomController,
-                              submitted: value.onSubmittedExtraRoom,
-                              validator: value.validateExtraRoom,
+                              chosenValue: value.extraRoomChosenValue,
+                              dropDownItems: value.extraRoomDropDown,
+                              onChanged: value.onChangedExtraRoom,
                             ).use(),
                             const SizedBox(
                               height: 30,

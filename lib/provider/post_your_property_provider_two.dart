@@ -4,7 +4,19 @@ import 'package:flutter/material.dart';
 
 class PostYourPropertyProviderTwo extends ChangeNotifier {
   // for facingDropDown
-  final List<String> _facingDropDown = ['abc', 'def'];
+  final List<String> _facingDropDown = [
+    'East',
+    'West',
+    'North',
+    'South',
+    'East - West',
+    'East - North',
+    'East - South',
+    'North - West',
+    'North - South',
+    'South - North',
+    'South - West'
+  ];
   String? _facingChosenValue;
 
   String? get facingChosenValue => _facingChosenValue;
@@ -18,7 +30,7 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
   }
 
   // for furnishedDropDown
-  final List<String> _furnishedDropDown = ['abc', 'def'];
+  final List<String> _furnishedDropDown = ['Semi', 'Fully', 'None'];
   String? _furnishedChosenValue;
 
   String? get furnishedChosenValue => _furnishedChosenValue;
@@ -32,12 +44,20 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
   }
 
   // for floorsDropDown
-  final List<int> _floorsDropDown = [1, 2];
-  int? _floorsChosenValue;
+  final List<String> _floorsDropDown = [
+    'Ground',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '5+'
+  ];
+  String? _floorsChosenValue;
 
-  int? get floorsChosenValue => _floorsChosenValue;
+  String? get floorsChosenValue => _floorsChosenValue;
 
-  UnmodifiableListView<int> get floorsDropDown =>
+  UnmodifiableListView<String> get floorsDropDown =>
       UnmodifiableListView(_floorsDropDown);
 
   void onChangedFloors(value) {
@@ -46,7 +66,7 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
   }
 
   // for sizeDropDown
-  final List<String> _sizeDropDown = ['Sq.yd', 'abcd'];
+  final List<String> _sizeDropDown = ['Sq.feets', 'Sq.yards'];
   String? _sizeChosenValue;
 
   String? get sizeChosenValue => _sizeChosenValue;
@@ -96,12 +116,12 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
   }
 
   // for bedRoomDropDown
-  final List<int> _bedRoomDropDown = [1, 2];
-  int? _bedRoomChosenValue;
+  final List<String> _bedRoomDropDown = ['1', '2', '3', '4', '5', '5+'];
+  String? _bedRoomChosenValue;
 
-  int? get bedRoomChosenValue => _bedRoomChosenValue;
+  String? get bedRoomChosenValue => _bedRoomChosenValue;
 
-  UnmodifiableListView<int> get bedRoomDropDown =>
+  UnmodifiableListView<String> get bedRoomDropDown =>
       UnmodifiableListView(_bedRoomDropDown);
 
   void onChangedBedRoom(value) {
@@ -110,12 +130,12 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
   }
 
   // for bathRoomDropDown
-  final List<int> _bathRoomDropDown = [1, 2];
-  int? _bathRoomChosenValue;
+  final List<String> _bathRoomDropDown = ['1', '2', '3', '4', '5', '5+'];
+  String? _bathRoomChosenValue;
 
-  int? get bathRoomChosenValue => _bathRoomChosenValue;
+  String? get bathRoomChosenValue => _bathRoomChosenValue;
 
-  UnmodifiableListView<int> get bathRoomDropDown =>
+  UnmodifiableListView<String> get bathRoomDropDown =>
       UnmodifiableListView(_bathRoomDropDown);
 
   void onChangedBathRoom(value) {
@@ -123,40 +143,40 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
     notifyListeners();
   }
 
-// for carparkTextField
-  final TextEditingController _carparkController = TextEditingController();
-  String _carpark = '';
+// for carparkDropDown
 
-  TextEditingController get carparkController => _carparkController;
+  final List<String> _carParkDropDown = ['1', '2', '3'];
+  String? _carParkChosenValue;
 
-  onSubmittedCarpark(value) {
-    _carpark = value;
+  String? get carParkChosenValue => _carParkChosenValue;
+
+  UnmodifiableListView<String> get carParkDropDown =>
+      UnmodifiableListView(_carParkDropDown);
+
+  void onChangedCarPark(value) {
+    _carParkChosenValue = value;
+    notifyListeners();
   }
 
-  String? validateCarpark(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Car Park Required';
-    } else {
-      return null;
-    }
-  }
+  // for extraRoomDropDown
 
-  // for extraRoomTextField
-  final TextEditingController _extraRoomController = TextEditingController();
-  String _extraRoom = '';
+  final List<String> _extraRoomDropDown = [
+    'Servant',
+    'Puja',
+    'Stove',
+    'Study',
+    'Guest'
+  ];
+  String? _extraRoomChosenValue;
 
-  TextEditingController get extraRoomController => _extraRoomController;
+  String? get extraRoomChosenValue => _extraRoomChosenValue;
 
-  onSubmittedExtraRoom(value) {
-    _extraRoom = value;
-  }
+  UnmodifiableListView<String> get extraRoomDropDown =>
+      UnmodifiableListView(_extraRoomDropDown);
 
-  String? validateExtraRoom(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Extra Room Required';
-    } else {
-      return null;
-    }
+  void onChangedExtraRoom(value) {
+    _extraRoomChosenValue = value;
+    notifyListeners();
   }
 
   // for totalPortionTextField
@@ -188,8 +208,8 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
     _carpetAreaController.clear();
     _bedRoomChosenValue = null;
     _bathRoomChosenValue = null;
-    _carparkController.clear();
-    _extraRoomController.clear();
+    _carParkChosenValue = null;
+    _extraRoomChosenValue = null;
     _totalPortionController.clear();
     _totalIncomeController.clear();
     notifyListeners();
@@ -206,8 +226,8 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
       'carpet_area': _carpetArea,
       'bed_room': _bedRoomChosenValue,
       'bath_room': _bathRoomChosenValue,
-      'car_park': _carpark,
-      'extra_room': _extraRoom,
+      'car_park': _carParkChosenValue,
+      'extra_room': _extraRoomChosenValue,
       'total_portion': _totalPortion,
       'total_income': _totalIncome,
     };

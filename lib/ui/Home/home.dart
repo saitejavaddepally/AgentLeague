@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../components/custom_button.dart';
 import '../../components/custom_title.dart';
 import '../../components/home_container.dart';
 import '../../helper/constants.dart';
+import '../../theme/colors.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -74,58 +76,112 @@ class _HomeState extends State<Home> {
                         TextStyle(fontWeight: FontWeight.w400, fontSize: 14)),
                 const SizedBox(height: 20),
                 Container(
-                  height: 360,
-                  width: double.maxFinite,
-                  padding: const EdgeInsets.all(30),
+                  padding: const EdgeInsets.only(
+                      top: 20, right: 20, left: 20, bottom: 12),
                   decoration: BoxDecoration(
-                      image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/frame.png')),
-                      boxShadow: const [
-                        BoxShadow(
-                            offset: Offset(-6, -6),
-                            blurRadius: 12,
-                            spreadRadius: 0,
-                            color: Color(0xFF113B5F)),
-                        BoxShadow(
-                            offset: Offset(6, 6),
-                            blurRadius: 12,
-                            spreadRadius: 0,
-                            color: Color(0xFF031E35)),
-                      ],
-                      borderRadius: BorderRadius.circular(12)),
+                    gradient: LinearGradient(colors: [
+                      HexColor('11073E'),
+                      HexColor('53439B').withOpacity(0.40)
+                    ]),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: const Offset(-6, -6),
+                          spreadRadius: 0,
+                          color: HexColor('113B5F'),
+                          blurRadius: 12)
+                    ],
+                  ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RichText(
-                          text: const TextSpan(
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 18),
-                              children: [
-                            TextSpan(text: "Introducing LeadsBox "),
-                            TextSpan(
-                                text: "(The Agent Genie)",
-                                style: TextStyle(fontWeight: FontWeight.w400))
-                          ])),
-                      const Text(
-                          'Tired of asking referrals from friends? Just rub the LeadsBox lantern and ask your genie how many leads you want right now.',
+                      Text('Digitalize your property',
                           style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.87))),
+                      const SizedBox(height: 5),
+                      Text(
+                          'Don’t carry property docs to demonstrate, just digitalize',
+                          style: TextStyle(
+                              fontSize: 14,
+                              height: 1.4,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.87))),
+                      const SizedBox(height: 5),
+                      Text('One free digitalization.',
+                          style: TextStyle(
+                              fontSize: 14,
+                              height: 1.4,
                               fontWeight: FontWeight.w400,
-                              fontSize: 12,
-                              letterSpacing: 0.4)),
+                              color: Colors.white.withOpacity(0.7))),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset("assets/digital.png"),
+                          CustomButton(
+                                  text: 'Go Digital',
+                                  onClick: () {},
+                                  color: HexColor('F3F4F6'),
+                                  textColor: HexColor('21293A'),
+                                  width: 109)
+                              .use(),
+                        ],
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 30),
-                const CustomTitle(text: "Refer Your Friends"),
-                const SizedBox(height: 10),
                 HomeContainer(
-                    text:
-                        "Earn 200 INR into your AL money by referring your friend",
+                    text: "Refer and Earn",
+                    isSecondText: true,
+                    text2:
+                        'Earn one more free difitalization by referring your friends.',
                     image: "assets/refer.png",
-                    containerColor: const Color(0xFF5BE4CC),
+                    isGradient: true,
+                    gradient: LinearGradient(colors: [
+                      HexColor('6AFFE4').withOpacity(0.40),
+                      HexColor('4CCDB6').withOpacity(0.80)
+                    ]),
+                    textColor: Colors.white.withOpacity(0.87),
                     buttonWidth: 109,
                     buttonText: "Refer Now",
+                    buttonTextColor: const Color(0xFF21293A),
+                    buttonColor: const Color(0xFFF3F4F6),
+                    onButtonClick: () {}),
+                const SizedBox(height: 30),
+                HomeContainer(
+                    text: "Are you a Corporate Agent selling project?",
+                    isSecondText: true,
+                    text2: 'Subscribe to your project now.',
+                    image: "assets/subscribe.png",
+                    isGradient: true,
+                    gradient: LinearGradient(colors: [
+                      HexColor('EC6780').withOpacity(0.20),
+                      HexColor('EE6881').withOpacity(0.70)
+                    ]),
+                    textColor: Colors.white.withOpacity(0.87),
+                    buttonWidth: 109,
+                    buttonText: "Subscribe",
+                    buttonTextColor: const Color(0xFF21293A),
+                    buttonColor: const Color(0xFFF3F4F6),
+                    onButtonClick: () {}),
+                const SizedBox(height: 30),
+                HomeContainer(
+                    text:
+                        "Are your customers confused to which project they can afford?",
+                    isSecondText: true,
+                    text2: 'Property buying score will help you.',
+                    image: "assets/check_now.png",
+                    isGradient: true,
+                    gradient: LinearGradient(colors: [
+                      HexColor('D29AF3').withOpacity(0.30),
+                      HexColor('A461CD').withOpacity(0.70)
+                    ]),
+                    textColor: Colors.white.withOpacity(0.87),
+                    buttonWidth: 117,
+                    buttonText: "Check Now",
                     buttonTextColor: const Color(0xFF21293A),
                     buttonColor: const Color(0xFFF3F4F6),
                     onButtonClick: () {}),
