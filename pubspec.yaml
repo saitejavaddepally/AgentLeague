@@ -37,7 +37,7 @@ dependencies:
   uuid: ^3.0.6
   open_file: ^3.2.1
   url_launcher: ^6.1.2
-  google_maps_place_picker_mb: ^2.0.0-mb.18
+  google_maps_place_picker_mb: ^2.0.0-mb.19
   google_place: ^0.4.7
 
 dev_dependencies:
