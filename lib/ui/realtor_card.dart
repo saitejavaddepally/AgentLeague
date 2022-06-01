@@ -6,6 +6,8 @@ import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 var currentPage = 0;
@@ -16,6 +18,7 @@ bool loading = false;
 PageController? controller;
 late List profileImages = [];
 bool isIncremented = false;
+String profileImage = "";
 
 class RealtorCard extends StatefulWidget {
   const RealtorCard({Key? key}) : super(key: key);
@@ -33,29 +36,29 @@ class _RealtorCardState extends State<RealtorCard> {
 
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 1), () async {
-      await SharedPreferencesHelper().getUserId().then((value) {
+
+    print("I am here waiting for value");
+    Future.delayed(const Duration(seconds: 0), () {
+      SharedPreferencesHelper().getUserId().then((value) {
         setState(() {
           userId = value!;
         });
       });
     });
-    print("User Id is  $userId");
-    Future.delayed(Duration.zero, () async {
-      await SharedPreferencesHelper().getListOfCardImages().then((value) {
-        setState(() {
-          profileImages = value as List;
-        });
-      });
-    });
-
     SharedPreferencesHelper().getCurrentPage().then((value) {
+      print("value is $value");
+
       setState(() {
-        controller = PageController(initialPage: currentPage);
+        currentPage = int.parse(value!);
+        profileImage =
+        "sell_images/$userId/standlone/plot_${currentPage + 1}/images/";
       });
+      print(profileImage);
+      controller = PageController(initialPage: int.parse(value!));
     });
-    Future.delayed(Duration.zero, () async {
-      await SharedPreferencesHelper().getNumProperties().then((value) {
+    print("User Id is  $userId");
+    Future.delayed(const Duration(seconds: 0), () {
+      SharedPreferencesHelper().getNumProperties().then((value) {
         numberOfProperties = value.toString();
         return numberOfProperties;
       }).then((value) {
@@ -66,10 +69,7 @@ class _RealtorCardState extends State<RealtorCard> {
         }
       });
     });
-
     super.initState();
-    print("Now the page is");
-
   }
 
   @override
@@ -124,12 +124,25 @@ class _RealtorPageState extends State<RealtorPage> {
     controller?.addListener(() {
       var current = (controller?.page)!;
       setState(() {
+        currentPage = current.toInt();
+        print("Now the current Page is : $currentPage");
 
       });
     });
 
+    setState(() {
+      profileImage =
+      "sell_images/$userId/standlone/plot_${currentPage+1}/images/";
+    });
+
     print("Am I here? then");
     super.initState();
+  }
+
+  Future getProfileImages() async{
+    List<String>? images = await SharedPreferencesHelper().getListOfCardImages();
+    print("Images are: $images");
+    return images;
   }
 
   var textList = [
@@ -190,13 +203,38 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                          width: 200,
-                          height: 200,
-                          child: Image.network(
-                            profileImages[currentPage],
-                            fit: BoxFit.fitHeight,
-                          )),
+                      FutureBuilder(
+                          future: getProfileImages(),
+                          builder: (context, snapshot) {
+
+                            if(snapshot.hasData){
+                              print(snapshot.data);
+                            }
+                            if (snapshot.connectionState !=
+                                ConnectionState.done) {
+                              return Container(
+                                width: 200,
+                                height: 200,
+                                child: const SpinKitThreeBounce(
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }
+
+                            List<String>? data = snapshot.data as List<String>?;
+
+                            return Container(
+                              width: 200,
+                              height: 200,
+                              // decoration:
+                              //     BoxDecoration(border: Border.all()),
+                              child: Image.network(
+                                data![currentPage],
+                                fit: BoxFit.fill,
+                              ),
+                            );
+                          }),
                       const SizedBox(height: 20),
                       const CustomTitle(text: 'Property Highlights'),
                       const SizedBox(height: 20),

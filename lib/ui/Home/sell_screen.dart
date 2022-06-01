@@ -3,6 +3,7 @@ import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/ui/realtor_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -33,6 +34,7 @@ class _SellScreenState extends State<SellScreen> {
 
   int counter = 0;
   List<String> profileImages = [];
+  Map profileImagesSorted = {};
   String _currentValue = "one";
   String numberOfProperties = "No";
   bool loading = false;
@@ -44,6 +46,17 @@ class _SellScreenState extends State<SellScreen> {
     });
 
     super.initState();
+  }
+
+  Future getPlotInformation(int index) async {
+    String? userId = await SharedPreferencesHelper().getUserId();
+    List detailsOfPages =
+        await FirestoreDataProvider().getPlotPagesInformation(index);
+    String profilePicture = await FirestoreDataProvider()
+        .getProfileImage("sell_images/$userId/standlone/plot_$index/images/");
+    profileImagesSorted.putIfAbsent(index, () => profilePicture);
+    detailsOfPages.add({"picture": profilePicture});
+    return detailsOfPages;
   }
 
   @override
@@ -254,8 +267,7 @@ class _SellScreenState extends State<SellScreen> {
                                 i <= int.parse(numberOfProperties);
                                 i++)
                               FutureBuilder(
-                                  future: FirestoreDataProvider()
-                                      .getPlotPagesInformation(i),
+                                  future: getPlotInformation(i),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState !=
                                         ConnectionState.done) {
@@ -281,9 +293,7 @@ class _SellScreenState extends State<SellScreen> {
                                       location = data[0]['location'];
                                       price = data[0]['price'];
                                       possession = data[0]['possessionStatus'];
-                                      profileImage = data[2]
-                                              ['path_to_storage'] +
-                                          'images/';
+                                      profileImage = data[3]['picture'];
                                     }
                                     return Neumorphic(
                                       style: NeumorphicStyle(
@@ -296,11 +306,23 @@ class _SellScreenState extends State<SellScreen> {
                                       child: Column(
                                         children: [
                                           GestureDetector(
-                                            onTap: ()
-                                            async {
-                                              await SharedPreferencesHelper().saveCurrentPage((index-1).toString());
-                                              await SharedPreferencesHelper().saveListOfCardImages(profileImages);
-                                              print('Profile images is $profileImages');
+                                            onTap: () async {
+                                              print(profileImagesSorted);
+                                              final keysAsc = profileImagesSorted.keys.toList()..sort((a, b) => a.compareTo(b));
+                                              print("Keys are : $keysAsc");
+                                              for (final key in keysAsc) {
+                                                profileImages.add(profileImagesSorted[key]);
+                                              }
+                                              print("Profile Images are: ");
+                                              print(profileImages);
+                                              await SharedPreferencesHelper()
+                                                  .saveCurrentPage(
+                                                      (index - 1).toString());
+                                              await SharedPreferencesHelper()
+                                                  .saveListOfCardImages(
+                                                      profileImages);
+                                              print(
+                                                  'Profile images is $profileImages');
                                               Navigator.pushNamed(
                                                   context, '/realtor_card');
                                             },
@@ -330,48 +352,19 @@ class _SellScreenState extends State<SellScreen> {
                                                       child: Row(
                                                         children: [
                                                           Expanded(
-                                                            flex: 1,
-                                                            child:
-                                                                FutureBuilder(
-                                                                    future: FirestoreDataProvider()
-                                                                        .getProfileImage(
-                                                                            profileImage),
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
-                                                                      if (snapshot
-                                                                              .connectionState !=
-                                                                          ConnectionState
-                                                                              .done) {
-                                                                        return const SpinKitThreeBounce(
-                                                                          size:
-                                                                              30,
-                                                                          color:
-                                                                              Colors.black,
-                                                                        );
-                                                                      }
-
-                                                                      if(snapshot.hasData){
-                                                                        profileImages.add(snapshot.data as String);
-                                                                      }
-
-                                                                      return Container(
-                                                                        width:
-                                                                            100,
-                                                                        height:
-                                                                            170,
-                                                                        // decoration:
-                                                                        //     BoxDecoration(border: Border.all()),
-                                                                        child: Image
-                                                                            .network(
-                                                                          snapshot.data
-                                                                              as String,
-                                                                          fit: BoxFit
-                                                                              .fill,
-                                                                        ),
-                                                                      );
-                                                                    }),
-                                                          ),
+                                                              flex: 1,
+                                                              child: Container(
+                                                                width: 100,
+                                                                height: 170,
+                                                                // decoration:
+                                                                //     BoxDecoration(border: Border.all()),
+                                                                child: Image
+                                                                    .network(
+                                                                  profileImage,
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                              )),
                                                           Expanded(
                                                             flex: 2,
                                                             child: Container(
