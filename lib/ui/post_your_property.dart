@@ -100,7 +100,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
     super.initState();
   }
 
-  void postProperty(Map<String, dynamic> data) async {
+  Future postProperty(Map<String, dynamic> data) async {
     AuthMethods().getUserId().then((value) async {
       CollectionReference ref = FirebaseFirestore.instance
           .collection("sell_plots")
@@ -353,8 +353,10 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                             child: CustomButton(
                                                 text: 'next',
                                                 color: HexColor('FD7E0E'),
-                                                onClick: () {
-                                                  postProperty(
+                                                onClick: () async {
+                                                  setState(
+                                                      () => isLoading = true);
+                                                  await postProperty(
                                                       propertyOne.getMap());
                                                 }).use())),
                                   ],

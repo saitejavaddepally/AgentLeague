@@ -9,6 +9,7 @@ import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -33,6 +34,7 @@ class _AmentiesState extends State<Amenties> {
   static const String _DOCS = 'docs';
   String? currentPlot = '';
   String? currentUser = '';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -60,7 +62,6 @@ class _AmentiesState extends State<Amenties> {
         });
       }
     }
-
   }
 
   @override
@@ -76,363 +77,373 @@ class _AmentiesState extends State<Amenties> {
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, bottom: 20),
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.keyboard_backspace_sharp)),
-                      const CustomTitle(text: 'Post Your Property')
-                    ],
+            child: ModalProgressHUD(
+              inAsyncCall: isLoading,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, bottom: 20),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.keyboard_backspace_sharp)),
+                        const CustomTitle(text: 'Post Your Property')
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Column(
-                    children: [
-                      CustomLineUnderText(
-                              text: 'Amenities',
-                              height: 3,
-                              width: 65,
-                              color: HexColor('FE7F0E'))
-                          .use(),
-                      const SizedBox(height: 20),
-                      Consumer<AmenitiesProvider>(
-                        builder: (context, value, child) => Column(
-                          children: [
-                            Row(
-                              children: [
-                                IconTextButton(
-                                    image: 'assets/gyms.png',
-                                    text: 'Gyms',
-                                    onTap: () => value.toggleGyms(),
-                                    isSelected: value.gyms),
-                                const SizedBox(width: 25),
-                                IconTextButton(
-                                  image: 'assets/automation.png',
-                                  text: 'Home Automation',
-                                  onTap: () => value.toggleAutomation(),
-                                  isSelected: value.automation,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            Row(
-                              children: [
-                                IconTextButton(
-                                  image: 'assets/elevator.png',
-                                  text: 'Elevator',
-                                  onTap: () => value.toggleElevator(),
-                                  isSelected: value.elevator,
-                                ),
-                                const SizedBox(width: 25),
-                                IconTextButton(
-                                  image: 'assets/pipe.png',
-                                  text: 'Piped Gas',
-                                  onTap: () => value.togglePipedGas(),
-                                  isSelected: value.pipedGas,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            Row(
-                              children: [
-                                IconTextButton(
-                                  image: 'assets/balcony.png',
-                                  text: 'Balcony',
-                                  onTap: () => value.toggleBalcony(),
-                                  isSelected: value.balcony,
-                                ),
-                                const SizedBox(width: 25),
-                                IconTextButton(
-                                  image: 'assets/bore_water.png',
-                                  text: 'Bore Water',
-                                  onTap: () => value.toggleBoreWater(),
-                                  isSelected: value.boreWater,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            Row(
-                              children: [
-                                IconTextButton(
-                                  image: 'assets/servant.png',
-                                  text: 'Servent',
-                                  onTap: () => value.toggleServant(),
-                                  isSelected: value.servant,
-                                ),
-                                const SizedBox(width: 25),
-                                IconTextButton(
-                                    image: 'assets/backup.png',
-                                    text: 'Backup Power',
-                                    onTap: () => value.toggleBackup(),
-                                    isSelected: value.backup),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            Row(
-                              children: [
-                                IconTextButton(
-                                  image: 'assets/gated.png',
-                                  text: 'Gated',
-                                  onTap: () => value.toggleGated(),
-                                  isSelected: value.gated,
-                                ),
-                                const SizedBox(width: 25),
-                                IconTextButton(
-                                  image: 'assets/municipal_water.png',
-                                  text: 'Municipal Water',
-                                  onTap: () => value.toggleMunicipalWater(),
-                                  isSelected: value.municipalWater,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 35),
-                      CustomLineUnderText(
-                              text: 'Upload Property photos',
-                              height: 3,
-                              width: 150,
-                              color: HexColor('FE7F0E'))
-                          .use(),
-                      const SizedBox(height: 20),
-                      Consumer<PropertyPhotosProvider>(
-                        builder: (context, value, child) => Column(
-                          children: [
-                            SizedBox(
-                              height: 60,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 5,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        value.pickImage(index);
-                                        _images = value.images;
-                                        print(_images);
-                                      },
-                                      child: Container(
-                                        height: 55,
-                                        width: 55,
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: (value.images[index] != null)
-                                            ? Image.file(value.images[index]!)
-                                            : Image.asset('assets/picker.png'),
-                                      ),
-                                    ),
-                                  );
-                                },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Column(
+                      children: [
+                        CustomLineUnderText(
+                                text: 'Amenities',
+                                height: 3,
+                                width: 65,
+                                color: HexColor('FE7F0E'))
+                            .use(),
+                        const SizedBox(height: 20),
+                        Consumer<AmenitiesProvider>(
+                          builder: (context, value, child) => Column(
+                            children: [
+                              Row(
+                                children: [
+                                  IconTextButton(
+                                      image: 'assets/gyms.png',
+                                      text: 'Gyms',
+                                      onTap: () => value.toggleGyms(),
+                                      isSelected: value.gyms),
+                                  const SizedBox(width: 25),
+                                  IconTextButton(
+                                    image: 'assets/automation.png',
+                                    text: 'Home Automation',
+                                    onTap: () => value.toggleAutomation(),
+                                    isSelected: value.automation,
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    value.reset();
+                              const SizedBox(height: 25),
+                              Row(
+                                children: [
+                                  IconTextButton(
+                                    image: 'assets/elevator.png',
+                                    text: 'Elevator',
+                                    onTap: () => value.toggleElevator(),
+                                    isSelected: value.elevator,
+                                  ),
+                                  const SizedBox(width: 25),
+                                  IconTextButton(
+                                    image: 'assets/pipe.png',
+                                    text: 'Piped Gas',
+                                    onTap: () => value.togglePipedGas(),
+                                    isSelected: value.pipedGas,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              Row(
+                                children: [
+                                  IconTextButton(
+                                    image: 'assets/balcony.png',
+                                    text: 'Balcony',
+                                    onTap: () => value.toggleBalcony(),
+                                    isSelected: value.balcony,
+                                  ),
+                                  const SizedBox(width: 25),
+                                  IconTextButton(
+                                    image: 'assets/bore_water.png',
+                                    text: 'Bore Water',
+                                    onTap: () => value.toggleBoreWater(),
+                                    isSelected: value.boreWater,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              Row(
+                                children: [
+                                  IconTextButton(
+                                    image: 'assets/servant.png',
+                                    text: 'Servent',
+                                    onTap: () => value.toggleServant(),
+                                    isSelected: value.servant,
+                                  ),
+                                  const SizedBox(width: 25),
+                                  IconTextButton(
+                                      image: 'assets/backup.png',
+                                      text: 'Backup Power',
+                                      onTap: () => value.toggleBackup(),
+                                      isSelected: value.backup),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              Row(
+                                children: [
+                                  IconTextButton(
+                                    image: 'assets/gated.png',
+                                    text: 'Gated',
+                                    onTap: () => value.toggleGated(),
+                                    isSelected: value.gated,
+                                  ),
+                                  const SizedBox(width: 25),
+                                  IconTextButton(
+                                    image: 'assets/municipal_water.png',
+                                    text: 'Municipal Water',
+                                    onTap: () => value.toggleMunicipalWater(),
+                                    isSelected: value.municipalWater,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 35),
+                        CustomLineUnderText(
+                                text: 'Upload Property photos',
+                                height: 3,
+                                width: 150,
+                                color: HexColor('FE7F0E'))
+                            .use(),
+                        const SizedBox(height: 20),
+                        Consumer<PropertyPhotosProvider>(
+                          builder: (context, value, child) => Column(
+                            children: [
+                              SizedBox(
+                                height: 60,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 5,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 20),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          value.pickImage(index);
+                                          _images = value.images;
+                                          print(_images);
+                                        },
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Colors.white.withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: (value.images[index] != null)
+                                              ? Image.file(value.images[index]!)
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                        ),
+                                      ),
+                                    );
                                   },
-                                  child: Text('Reset',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14,
-                                          letterSpacing: 0.2,
-                                          color: HexColor('FE7F0E'))),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 35),
-                      CustomLineUnderText(
-                              text: 'Upload Property Documents',
-                              height: 3,
-                              width: 175,
-                              color: HexColor('FE7F0E'))
-                          .use(),
-                      const SizedBox(height: 20),
-                      Consumer<PropertyDocumentsProvider>(
-                        builder: (context, value, child) => Column(
-                          children: [
-                            SizedBox(
-                              height: 60,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 5,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        value.pickDocuments(index);
-                                        _docs = value.docs;
-                                        print(_docs);
-                                      },
-                                      child: Container(
-                                        height: 55,
-                                        width: 55,
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: (value.docs[index] != null)
-                                            ? Image.file(value.docs[index]!)
-                                            : Image.asset('assets/picker.png'),
-                                      ),
-                                    ),
-                                  );
-                                },
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    value.reset();
-                                  },
-                                  child: Text('Reset',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14,
-                                          letterSpacing: 0.2,
-                                          color: HexColor('FE7F0E'))),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 35),
-                      CustomLineUnderText(
-                              text: 'Upload Property video',
-                              height: 3,
-                              width: 140,
-                              color: HexColor('FE7F0E'))
-                          .use(),
-                      const SizedBox(height: 20),
-                      Consumer<PropertyVideoProvider>(
-                        builder: (context, value, child) => Column(
-                          children: [
-                            SizedBox(
-                              height: 60,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 5,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        value.pickVideo(index);
-                                        _videos = value.videos;
-                                        print(_videos);
-                                      },
-                                      child: Container(
-                                        height: 55,
-                                        width: 55,
-                                        decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: (value.videos[index] != null)
-                                            ? Stack(children: [
-                                                Image.asset(
-                                                    'assets/lead_box_image.png',
-                                                    fit: BoxFit.fill),
-                                                Center(
-                                                  child: Icon(
-                                                      Icons.play_arrow_rounded,
-                                                      size: 35,
-                                                      color: Colors.orange
-                                                          .withOpacity(0.7)),
-                                                )
-                                              ])
-                                            : Image.asset('assets/picker.png'),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    value.reset();
-                                  },
-                                  child: Text('Reset',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14,
-                                          letterSpacing: 0.2,
-                                          color: HexColor('FE7F0E'))),
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 30),
-                            CustomButton(
-                                    text: 'Submit',
-                                    onClick: () async {
-
-                                      await uploadToFireStore(_images, _IMAGE);
-                                      await uploadToFireStore(_videos, _VIDEO);
-                                      await uploadToFireStore(_docs, _DOCS);
-                                      CollectionReference ref = FirebaseFirestore.instance
-                                          .collection("sell_plots")
-                                          .doc(currentUser)
-                                          .collection("standlone")
-                                          .doc(currentPlot)
-                                          .collection("page_3");
-
-                                      await ref.add({
-                                        "path_to_storage": "sell_images/$currentUser/standlone/$currentPlot/"
-                                      });
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text(
-                                            "Thank you for posting your property!"),
-                                        duration: Duration(seconds: 2),
-                                        
-                                        
-                                      ));
-                                      Navigator.pushNamedAndRemoveUntil(context, RouteName.bottomBar, (r) => false);
-                                      
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      value.reset();
                                     },
-                                    width: 102,
-                                    height: 40,
-                                    color: HexColor('FD7E0E'))
-                                .use(),
-                              
-                          ],
+                                    child: Text('Reset',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
+                                            color: HexColor('FE7F0E'))),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                )
-              ],
+                        const SizedBox(height: 35),
+                        CustomLineUnderText(
+                                text: 'Upload Property Documents',
+                                height: 3,
+                                width: 175,
+                                color: HexColor('FE7F0E'))
+                            .use(),
+                        const SizedBox(height: 20),
+                        Consumer<PropertyDocumentsProvider>(
+                          builder: (context, value, child) => Column(
+                            children: [
+                              SizedBox(
+                                height: 60,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 5,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 20),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          value.pickDocuments(index);
+                                          _docs = value.docs;
+                                          print(_docs);
+                                        },
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Colors.white.withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: (value.docs[index] != null)
+                                              ? Image.file(value.docs[index]!)
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      value.reset();
+                                    },
+                                    child: Text('Reset',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
+                                            color: HexColor('FE7F0E'))),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 35),
+                        CustomLineUnderText(
+                                text: 'Upload Property video',
+                                height: 3,
+                                width: 140,
+                                color: HexColor('FE7F0E'))
+                            .use(),
+                        const SizedBox(height: 20),
+                        Consumer<PropertyVideoProvider>(
+                          builder: (context, value, child) => Column(
+                            children: [
+                              SizedBox(
+                                height: 60,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 5,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 20),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          value.pickVideo(index);
+                                          _videos = value.videos;
+                                          print(_videos);
+                                        },
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Colors.white.withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: (value.videos[index] != null)
+                                              ? Stack(children: [
+                                                  Image.asset(
+                                                      'assets/lead_box_image.png',
+                                                      fit: BoxFit.fill),
+                                                  Center(
+                                                    child: Icon(
+                                                        Icons
+                                                            .play_arrow_rounded,
+                                                        size: 35,
+                                                        color: Colors.orange
+                                                            .withOpacity(0.7)),
+                                                  )
+                                                ])
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      value.reset();
+                                    },
+                                    child: Text('Reset',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
+                                            color: HexColor('FE7F0E'))),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 30),
+                              CustomButton(
+                                      text: 'Submit',
+                                      onClick: () async {
+                                        await uploadToFireStore(
+                                            _images, _IMAGE);
+                                        await uploadToFireStore(
+                                            _videos, _VIDEO);
+                                        await uploadToFireStore(_docs, _DOCS);
+                                        CollectionReference ref =
+                                            FirebaseFirestore.instance
+                                                .collection("sell_plots")
+                                                .doc(currentUser)
+                                                .collection("standlone")
+                                                .doc(currentPlot)
+                                                .collection("page_3");
+
+                                        await ref.add({
+                                          "path_to_storage":
+                                              "sell_images/$currentUser/standlone/$currentPlot/"
+                                        });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                              "Thank you for posting your property!"),
+                                          duration: Duration(seconds: 2),
+                                        ));
+
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            RouteName.bottomBar,
+                                            (r) => false);
+                                      },
+                                      width: 102,
+                                      height: 40,
+                                      color: HexColor('FD7E0E'))
+                                  .use(),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

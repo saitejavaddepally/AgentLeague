@@ -14,7 +14,6 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
     'East - South',
     'North - West',
     'North - South',
-    'South - North',
     'South - West'
   ];
   String? _facingChosenValue;
