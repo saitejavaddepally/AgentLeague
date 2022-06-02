@@ -214,9 +214,8 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> getMap(Map<String, dynamic> previous) {
+  Map<String, dynamic> getMap() {
     return {
-      ...previous,
       'facing': _facingChosenValue,
       'furnished': _furnishedChosenValue,
       'floors': _floorsChosenValue,

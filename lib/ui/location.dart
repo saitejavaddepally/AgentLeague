@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/location_service.dart';
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,6 +27,21 @@ class _LocationScreenState extends State<LocationScreen> {
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
+  Future<Position> getPlotLocation() async{
+    var number = await SharedPreferencesHelper().getCurrentPage();
+    print(number);
+    List data = await FirestoreDataProvider().getPlotPagesInformation(int.parse(number!));
+    var location = data[0]['location'];
+    return location;
+  }
+
+
 
   Future<void> getNearbyLocations(
       double lat, double long, String type, double color) async {
@@ -98,7 +115,7 @@ class _LocationScreenState extends State<LocationScreen> {
         ],
       ),
       body: FutureBuilder<Position>(
-          future: GetUserLocation().determinePosition(),
+          future: getPlotLocation(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final double _lat = snapshot.data!.latitude;

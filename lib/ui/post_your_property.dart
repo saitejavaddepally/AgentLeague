@@ -15,7 +15,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
 import '../components/custom_text_field.dart';
 import '../places_services.dart';
 import '../theme/colors.dart';
@@ -354,10 +353,22 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                 text: 'next',
                                                 color: HexColor('FD7E0E'),
                                                 onClick: () async {
-                                                  setState(
-                                                      () => isLoading = true);
-                                                  await postProperty(
-                                                      propertyOne.getMap());
+                                                  // setState(
+                                                  //     () => isLoading = true);
+                                                  // await postProperty(
+                                                  //     propertyOne.getMap());
+
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    await SharedPreferencesHelper().savePageOneInformation(propertyOne.getMap());
+
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        RouteName
+                                                            .postYourPropertyPageTwo,
+                                                        arguments: propertyOne
+                                                            .getMap());
+                                                  }
                                                 }).use())),
                                   ],
                                 )
