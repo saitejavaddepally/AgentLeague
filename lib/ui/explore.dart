@@ -1,5 +1,6 @@
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/components/home_container.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_button.dart';
@@ -191,7 +192,8 @@ class ForYourCustomers extends StatelessWidget {
                 isSecondText: false,
                 buttonText: 'Property Buying score',
                 buttonWidth: 183,
-                onButtonClick: () {}),
+                onButtonClick: () => Navigator.pushNamed(
+                    context, RouteName.propertyBuyingScore)),
             const SizedBox(height: 20),
             HomeContainer(
                 text:

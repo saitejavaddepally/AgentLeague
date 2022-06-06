@@ -1,28 +1,23 @@
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
+import 'package:agent_league/components/custom_snackbar.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/location_service.dart';
 import 'package:agent_league/provider/post_your_property_provider_one.dart';
 import 'package:agent_league/route_generator.dart';
-import 'package:agent_league/ui/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 import '../components/custom_text_field.dart';
-import '../places_services.dart';
 import '../theme/colors.dart';
-import 'package:flutter/material.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:io' show Platform;
 
 class PostYourPropertyPageOne extends StatefulWidget {
   const PostYourPropertyPageOne({Key? key}) : super(key: key);
@@ -33,8 +28,6 @@ class PostYourPropertyPageOne extends StatefulWidget {
 }
 
 class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
-  final _menuKey = GlobalKey();
-
   final _formKey = GlobalKey<FormState>();
   late var currentPlot = '';
   bool isLoading = false;
@@ -48,17 +41,14 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
       return address;
     } on Exception catch (e) {
       if (e.toString() == 'Location services are disabled.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Please Turn On Location Service First")));
+        mySnackBar(context, 'Please Turn On Location Service First');
       } else if (e.toString() == 'Location permissions are denied') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Please Allow Location Permission otherwise you didn't use this feature.")));
+        mySnackBar(context,
+            "Please Allow Location Permission otherwise you didn't use this feature.");
       } else if (e.toString() ==
           'Location permissions are permanently denied, we cannot request permissions.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Sorry You are not allowed to use this feature because you didn't allow permission.")));
+        mySnackBar(context,
+            "Sorry You are not allowed to use this feature because you didn't allow permission.");
       }
       return null;
     }

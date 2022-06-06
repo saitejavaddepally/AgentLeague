@@ -16,6 +16,7 @@ import 'package:agent_league/ui/post_your_property.dart';
 import 'package:agent_league/ui/profile.dart';
 import 'package:agent_league/ui/project_explorer.dart';
 import 'package:agent_league/ui/property.dart';
+import 'package:agent_league/ui/property_buying_score.dart';
 import 'package:agent_league/ui/property_info.dart';
 import 'package:agent_league/ui/realtor_card.dart';
 import 'package:agent_league/ui/sign_up.dart';
@@ -50,6 +51,7 @@ class RouteName {
   static const String wallet = '/wallet';
   static const String uploads = '/uploads';
   static const String chatDetail = '/chat_detail';
+  static const String propertyBuyingScore = '/property_buying_score';
 }
 
 class RouteGenerator {
@@ -148,6 +150,10 @@ class RouteGenerator {
       case RouteName.uploads:
         return PageTransition(
             child: const UploadsScreen(), type: PageTransitionType.leftToRight);
+      case RouteName.propertyBuyingScore:
+        return PageTransition(
+            child: const PropertyBuyingScore(),
+            type: PageTransitionType.leftToRight);
       case RouteName.chatDetail:
         {
           if (args is List) {
