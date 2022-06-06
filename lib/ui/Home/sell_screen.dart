@@ -49,6 +49,7 @@ class _SellScreenState extends State<SellScreen> {
   }
 
   Future getPlotInformation(int index) async {
+    print("Am I here?");
     String? userId = await SharedPreferencesHelper().getUserId();
     List detailsOfPages =
         await FirestoreDataProvider().getPlotPagesInformation(index);
@@ -56,6 +57,7 @@ class _SellScreenState extends State<SellScreen> {
         .getProfileImage("sell_images/$userId/standlone/plot_$index/images/");
     profileImagesSorted.putIfAbsent(index, () => profilePicture);
     detailsOfPages.add({"picture": profilePicture});
+    print(detailsOfPages);
     return detailsOfPages;
   }
 
