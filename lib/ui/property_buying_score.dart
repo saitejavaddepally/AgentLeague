@@ -63,59 +63,74 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
             Flexible(
               child: Row(
                 children: const [
-                  Expanded(child: CustomLabel(text: 'Age :')),
+                  Expanded(child: CustomLabel(text: 'DOB :')),
                   Expanded(
                     child: SizedBox(height: 35, child: CustomTextField()),
                   ),
+                  SizedBox(width: 5),
+                  Icon(Icons.calendar_month)
                 ],
               ),
             ),
-            const SizedBox(height: 10),
-            const Flexible(child: CustomLabel(text: 'Profession :')),
+            // const SizedBox(height: 10),
+            // const Flexible(child: CustomLabel(text: 'Profession :')),
+            // Flexible(
+            //   child: Row(
+            //     children: [
+            //       TextButton(
+            //           onPressed: () {},
+            //           child: Text('Employee',
+            //               style: TextStyle(
+            //                 fontSize: 14,
+            //                 fontWeight: FontWeight.w400,
+            //                 color: Colors.white.withOpacity(0.8),
+            //               )),
+            //           style: TextButton.styleFrom(
+            //             backgroundColor: Colors.white.withOpacity(0.1),
+            //             minimumSize: const Size(85, 30),
+            //           )),
+            //       const SizedBox(width: 5),
+            //       TextButton(
+            //           onPressed: () {},
+            //           child: Text('Freelancer',
+            //               style: TextStyle(
+            //                 fontSize: 14,
+            //                 fontWeight: FontWeight.w400,
+            //                 color: HexColor('131415'),
+            //               )),
+            //           style: TextButton.styleFrom(
+            //             backgroundColor: HexColor('FE7F0E'),
+            //             minimumSize: const Size(90, 30),
+            //           )),
+            //       const SizedBox(width: 5),
+            //       TextButton(
+            //           onPressed: () {},
+            //           child: Text('Business',
+            //               style: TextStyle(
+            //                 fontSize: 14,
+            //                 fontWeight: FontWeight.w400,
+            //                 color: Colors.white.withOpacity(0.8),
+            //               )),
+            //           style: TextButton.styleFrom(
+            //             backgroundColor: Colors.white.withOpacity(0.1),
+            //             minimumSize: const Size(85, 30),
+            //           )),
+            //     ],
+            //   ),
+            // ),
+            const SizedBox(height: 5),
             Flexible(
               child: Row(
-                children: [
-                  TextButton(
-                      onPressed: () {},
-                      child: Text('Employee',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withOpacity(0.8),
-                          )),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                        minimumSize: const Size(85, 30),
-                      )),
-                  const SizedBox(width: 5),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text('Freelancer',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: HexColor('131415'),
-                          )),
-                      style: TextButton.styleFrom(
-                        backgroundColor: HexColor('FE7F0E'),
-                        minimumSize: const Size(90, 30),
-                      )),
-                  const SizedBox(width: 5),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text('Business',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withOpacity(0.8),
-                          )),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                        minimumSize: const Size(85, 30),
-                      )),
+                children: const [
+                  Expanded(child: CustomLabel(text: 'Profession :')),
+                  Expanded(
+                      child: SizedBox(height: 35, child: CustomTextField())),
+                  SizedBox(width: 28)
                 ],
               ),
             ),
+            const SizedBox(height: 5),
+
             Flexible(
               child: Row(
                 children: const [
@@ -167,6 +182,9 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
+            Divider(color: HexColor('FE7F0E'), thickness: 2),
+            const SizedBox(height: 10),
             Flexible(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,27 +219,30 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                 ],
               ),
             ),
-            Flexible(
-              child: Row(
-                children: const [
-                  CustomLabel(text: 'Co-borrower monthly income :'),
-                  SizedBox(width: 5),
-                  Expanded(
-                      child: SizedBox(height: 35, child: CustomTextField()))
-                ],
-              ),
-            ),
-            const SizedBox(height: 5),
-            Flexible(
-              child: Row(
-                children: const [
-                  CustomLabel(text: "Co-borrower existing EMI’s :"),
-                  SizedBox(width: 5),
-                  Expanded(
-                      child: SizedBox(height: 35, child: CustomTextField()))
-                ],
-              ),
-            ),
+            const SizedBox(height: 10),
+            Divider(color: HexColor('FE7F0E'), thickness: 2),
+
+            // Flexible(
+            //   child: Row(
+            //     children: const [
+            //       CustomLabel(text: 'Co-borrower monthly income :'),
+            //       SizedBox(width: 5),
+            //       Expanded(
+            //           child: SizedBox(height: 35, child: CustomTextField()))
+            //     ],
+            //   ),
+            // ),
+            // const SizedBox(height: 5),
+            // Flexible(
+            //   child: Row(
+            //     children: const [
+            //       CustomLabel(text: "Co-borrower existing EMI’s :"),
+            //       SizedBox(width: 5),
+            //       Expanded(
+            //           child: SizedBox(height: 35, child: CustomTextField()))
+            //     ],
+            //   ),
+            // ),
             Flexible(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
