@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/location_service.dart';
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -24,6 +26,24 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<Map<String, dynamic>> getPlotLocation() async {
+    var number = await SharedPreferencesHelper().getCurrentPage();
+    print("number is $number");
+    List data = await FirestoreDataProvider()
+        .getPlotPagesInformation(int.parse(number!) + 1);
+    Map locationData = data[0];
+    double _lat = locationData['latitude'];
+    double _long = locationData['longitude'];
+    print("Am I here $_lat and $_long");
+
+    return {"latitude": _lat, "longitude": _long};
   }
 
   Future<void> getNearbyLocations(
@@ -97,12 +117,14 @@ class _LocationScreenState extends State<LocationScreen> {
                   icon: Image.asset('assets/location_info.png')))
         ],
       ),
-      body: FutureBuilder<Position>(
-          future: GetUserLocation().determinePosition(),
+      body: FutureBuilder(
+          future: getPlotLocation(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final double _lat = snapshot.data!.latitude;
-              final double _long = snapshot.data!.longitude;
+              print("data is ${snapshot.data}");
+              Map? locationCoordinates = snapshot.data as Map?;
+              final double _lat = locationCoordinates!['latitude'];
+              final double _long = locationCoordinates['longitude'];
               final LatLng _latlng = LatLng(_lat, _long);
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -110,28 +132,28 @@ class _LocationScreenState extends State<LocationScreen> {
                   children: [
                     Expanded(
                         child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 8),
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: GoogleMap(
-                          onMapCreated: _onMapCreated,
-                          markers: Set.from(_markers
-                            ..add(Marker(
-                                markerId: const MarkerId("User Location"),
-                                position: _latlng,
-                                infoWindow:
-                                    const InfoWindow(title: "Your Location")))),
-                          initialCameraPosition: CameraPosition(
-                            target: _latlng,
-                            zoom: 15.0,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 8),
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white,
                           ),
-                        ),
-                      ),
-                    )),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: GoogleMap(
+                              onMapCreated: _onMapCreated,
+                              markers: Set.from(_markers
+                                ..add(Marker(
+                                    markerId: const MarkerId("User Location"),
+                                    position: _latlng,
+                                    infoWindow:
+                                    const InfoWindow(title: "Your Location")))),
+                              initialCameraPosition: CameraPosition(
+                                target: _latlng,
+                                zoom: 15.0,
+                              ),
+                            ),
+                          ),
+                        )),
                     const SizedBox(height: 30),
                     SizedBox(
                       height: 70,
@@ -157,8 +179,9 @@ class _LocationScreenState extends State<LocationScreen> {
                                 width: 24,
                                 padding: 8,
                                 onTap: () async {
-                                  await getNearbyLocations(_lat, _long,
-                                      "school", BitmapDescriptor.hueCyan);
+                                  await getNearbyLocations(
+                                      _lat, _long, "school",
+                                      BitmapDescriptor.hueCyan);
                                 }).use(),
                           ),
                           Expanded(
@@ -169,9 +192,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                 width: 24,
                                 padding: 8,
                                 onTap: () async {
-                                  await getNearbyLocations(
-                                      _lat,
-                                      _long,
+                                  await getNearbyLocations(_lat, _long,
                                       "supermarket",
                                       BitmapDescriptor.hueMagenta);
                                 }).use(),
@@ -209,18 +230,16 @@ class _LocationScreenState extends State<LocationScreen> {
                   ],
                 ),
               );
-            } else if (snapshot.hasError) {
+            }
+           else  if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             } else {
               return const Center(child: CircularProgressIndicator());
             }
-          }),
+          })
     );
   }
 }
-
-
-
 
 // import 'dart:async';
 // import 'dart:convert';

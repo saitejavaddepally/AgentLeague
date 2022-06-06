@@ -1,18 +1,23 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:agent_league/Services/auth_methods.dart';
+import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/amenities_provider.dart';
+import 'package:agent_league/provider/post_your_property_provider_one.dart';
+import 'package:agent_league/provider/post_your_property_provider_two.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../components/custom_button.dart';
 import '../helper/constants.dart';
 
@@ -35,33 +40,94 @@ class _AmentiesState extends State<Amenties> {
   String? currentPlot = '';
   String? currentUser = '';
   bool isLoading = false;
+  late Map pageOneDataForFirestore ;
+  late Map pageTwoDataForFirestore;
 
   @override
   void initState() {
     super.initState();
-    print(widget.formData);
+    print("Am I here? ");
+    pageOneDataForFirestore = widget.formData['pageOneData'];
+    pageTwoDataForFirestore = widget.formData['pageTwoData'];
+    print(pageOneDataForFirestore);
+    print(pageTwoDataForFirestore);
+    configLoading();
   }
 
-  Future<void> uploadToFireStore(List<File?> list, String type) async {
+  void configLoading() {
+    EasyLoading.instance
+      ..displayDuration = const Duration(milliseconds: 2000)
+      ..indicatorType = EasyLoadingIndicatorType.spinningCircle
+      ..loadingStyle = EasyLoadingStyle.dark
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..progressColor = Colors.yellow
+      ..backgroundColor = Colors.green
+      ..indicatorColor = Colors.yellow
+      ..textColor = Colors.white
+      ..maskColor = Colors.blue.withOpacity(0.5)
+      ..userInteractions = true
+      ..dismissOnTap = false;
+  }
+
+  Future uploadData() async {
+    await EasyLoading.show(
+      status: 'Uploading...please do not close app',
+      maskType: EasyLoadingMaskType.black,
+    );
+
+    await UploadPropertiesToFirestore()
+        .postPropertyPageOne(pageOneDataForFirestore as Map<String, dynamic>).then((value) async {
+      await UploadPropertiesToFirestore()
+          .postPropertyPageTwo(pageTwoDataForFirestore as Map<String, dynamic>).then((value) async {
+        await uploadToFireStore(_images, _IMAGE).then((value) async {
+          print(value);
+          await uploadToFireStore(_videos, _VIDEO).then((value) async {
+            print(value);
+            await uploadToFireStore(_docs, _DOCS).then((value) async {
+              print(value);
+              CollectionReference ref = FirebaseFirestore.instance
+                  .collection("sell_plots")
+                  .doc(currentUser)
+                  .collection("standlone")
+                  .doc(currentPlot)
+                  .collection("page_3");
+
+              await ref.add({
+                "path_to_storage":
+                    "sell_images/$currentUser/standlone/$currentPlot/"
+              });
+            }).then((value) async {
+              await EasyLoading.showSuccess('Success!');
+            });
+          });
+        });
+      });
+    });
+  }
+
+  Future uploadToFireStore(List<File?> list, String type) async {
     await SharedPreferencesHelper()
         .getCurrentPlot()
         .then((value) => currentPlot = value);
+
+    print(currentPlot);
     final _firebaseStorage = FirebaseStorage.instance;
     dynamic snapshot;
     for (var i = 0; i < list.length; i++) {
       if (list[i] != null) {
-        AuthMethods().getUserId().then((value) async {
+        await AuthMethods().getUserId().then((value) async {
           currentUser = value;
 
           snapshot = await _firebaseStorage
               .ref()
               .child(
                   'sell_images/$value/standlone/$currentPlot/$type/${type}_$i')
-              .putFile(list[i]!)
-              .whenComplete(() => print("Uploaded $type successfully"));
+              .putFile(list[i]!);
         });
       }
     }
+    return "Updated $type successfully";
   }
 
   @override
@@ -402,34 +468,24 @@ class _AmentiesState extends State<Amenties> {
                               CustomButton(
                                       text: 'Submit',
                                       onClick: () async {
-                                        await uploadToFireStore(
-                                            _images, _IMAGE);
-                                        await uploadToFireStore(
-                                            _videos, _VIDEO);
-                                        await uploadToFireStore(_docs, _DOCS);
-                                        CollectionReference ref =
-                                            FirebaseFirestore.instance
-                                                .collection("sell_plots")
-                                                .doc(currentUser)
-                                                .collection("standlone")
-                                                .doc(currentPlot)
-                                                .collection("page_3");
-
-                                        await ref.add({
-                                          "path_to_storage":
-                                              "sell_images/$currentUser/standlone/$currentPlot/"
+                                        // await uploadToFireStore(
+                                        //     _images, _IMAGE);
+                                        // await uploadToFireStore(
+                                        //     _videos, _VIDEO);
+                                        // await uploadToFireStore(_docs, _DOCS);
+                                        // CollectionReference ref =
+                                        //     FirebaseFirestore.instance
+                                        //         .collection("sell_plots")
+                                        //         .doc(currentUser)
+                                        //         .collection("standlone")
+                                        //         .doc(currentPlot)
+                                        //         .collection("page_3");
+                                        await uploadData().then((value) {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              RouteName.bottomBar,
+                                              (r) => false);
                                         });
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                          content: Text(
-                                              "Thank you for posting your property!"),
-                                          duration: Duration(seconds: 2),
-                                        ));
-
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            RouteName.bottomBar,
-                                            (r) => false);
                                       },
                                       width: 102,
                                       height: 40,

@@ -27,7 +27,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
   final _formKey = GlobalKey<FormState>();
   String? currentPlot = '';
   bool isLoading = false;
-
+  late Map pageOneDataforFirestore ;
   Future postPropertyPageTwo(Map<String, dynamic> data) async {
     await SharedPreferencesHelper()
         .getCurrentPlot()
@@ -47,7 +47,9 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
   @override
   void initState() {
     super.initState();
-    print(widget.pageOneData);
+    print("Hello !");
+    pageOneDataforFirestore = (widget.pageOneData);
+    print(pageOneDataforFirestore);
   }
 
   @override
@@ -257,13 +259,18 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                   color: HexColor('FD7E0E'),
                                   onClick: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      setState(() => isLoading = true);
-                                      await postPropertyPageTwo(_propertyTwo
-                                          .getMap(widget.pageOneData));
+                                      // setState(() => isLoading = true);
+                                      // await postPropertyPageTwo(_propertyTwo
+                                      //     .getMap());
+                                      await SharedPreferencesHelper().savePageTwoInformation(_propertyTwo.getMap());
+
                                       Navigator.pushNamed(
                                           context, RouteName.amenities,
-                                          arguments: _propertyTwo
-                                              .getMap(widget.pageOneData));
+                                          arguments: {
+                                            "pageOneData" : pageOneDataforFirestore,
+                                            "pageTwoData" : _propertyTwo
+                                                .getMap()
+                                          });
                                     }
                                   }).use(),
                             )),

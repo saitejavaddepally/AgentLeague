@@ -1,19 +1,19 @@
 import 'package:agent_league/Services/auth_methods.dart';
+import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
-import 'package:agent_league/components/custom_snackbar.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/location_service.dart';
 import 'package:agent_league/provider/post_your_property_provider_one.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-
 import '../components/custom_text_field.dart';
 import '../theme/colors.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
@@ -28,6 +28,8 @@ class PostYourPropertyPageOne extends StatefulWidget {
 }
 
 class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
+  late double _latitude;
+  late double _longitude;
   final _formKey = GlobalKey<FormState>();
   late var currentPlot = '';
   bool isLoading = false;
@@ -36,19 +38,26 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
     try {
       final location = GetUserLocation();
       final Position position = await location.determinePosition();
+
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+
       final address = await location.getAddressFromCoordinates(
           LatLng(position.latitude, position.longitude));
       return address;
     } on Exception catch (e) {
       if (e.toString() == 'Location services are disabled.') {
-        mySnackBar(context, 'Please Turn On Location Service First');
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Please Turn On Location Service First")));
       } else if (e.toString() == 'Location permissions are denied') {
-        mySnackBar(context,
-            "Please Allow Location Permission otherwise you didn't use this feature.");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                "Please Allow Location Permission otherwise you didn't use this feature.")));
       } else if (e.toString() ==
           'Location permissions are permanently denied, we cannot request permissions.') {
-        mySnackBar(context,
-            "Sorry You are not allowed to use this feature because you didn't allow permission.");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                "Sorry You are not allowed to use this feature because you didn't allow permission.")));
       }
       return null;
     }
@@ -65,6 +74,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                 return PlacePicker(
                   apiKey: 'AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0',
                   onPlacePicked: (result) {
+                    _latitude = result.geometry!.location.lat;
+                    _longitude = result.geometry!.location.lng;
                     Navigator.of(context).pop(result.formattedAddress);
                   },
                   hintText: "Search",
@@ -87,7 +98,15 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
 
   @override
   void initState() {
+    getPlotStatus();
     super.initState();
+  }
+
+  Future getPlotStatus() async {
+    await EasyLoading.show(
+        maskType: EasyLoadingMaskType.black, status: "Please wait !!");
+    await UploadPropertiesToFirestore().getPlotStatus();
+    await EasyLoading.dismiss();
   }
 
   Future postProperty(Map<String, dynamic> data) async {
@@ -344,10 +363,29 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                 text: 'next',
                                                 color: HexColor('FD7E0E'),
                                                 onClick: () async {
-                                                  setState(
-                                                      () => isLoading = true);
-                                                  await postProperty(
-                                                      propertyOne.getMap());
+                                                  // setState(
+                                                  //     () => isLoading = true);
+                                                  // await postProperty(
+                                                  //     propertyOne.getMap());
+
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    await SharedPreferencesHelper()
+                                                        .savePageOneInformation(
+                                                            propertyOne
+                                                                .getMap());
+                                                    Map<String, dynamic> data =
+                                                        propertyOne.getMap();
+                                                    data.addAll({
+                                                      "latitude": _latitude,
+                                                      "longitude": _longitude
+                                                    });
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        RouteName
+                                                            .postYourPropertyPageTwo,
+                                                        arguments: data);
+                                                  }
                                                 }).use())),
                                   ],
                                 )

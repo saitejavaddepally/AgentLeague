@@ -9,6 +9,7 @@ import 'package:agent_league/ui/onboarding.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -64,6 +65,7 @@ class _MyAppState extends State {
       darkTheme: CustomTheme.darkTheme,
       //4
       themeMode: currentTheme.currentTheme, //5
+      builder: EasyLoading.init(),
       home: FutureBuilder<User?>(
         future: AuthMethods().getCurrentUser(),
         builder: (context, snapshot) {
