@@ -257,13 +257,15 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                   color: HexColor('FD7E0E'),
                                   onClick: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      setState(() => isLoading = true);
-                                      await postPropertyPageTwo(_propertyTwo
-                                          .getMap(widget.pageOneData));
+                                      // setState(() => isLoading = true);
+                                      // await postPropertyPageTwo(_propertyTwo
+                                      //     .getMap());
+                                      await SharedPreferencesHelper().savePageTwoInformation(_propertyTwo.getMap());
+
                                       Navigator.pushNamed(
                                           context, RouteName.amenities,
                                           arguments: _propertyTwo
-                                              .getMap(widget.pageOneData));
+                                              .getMap());
                                     }
                                   }).use(),
                             )),
