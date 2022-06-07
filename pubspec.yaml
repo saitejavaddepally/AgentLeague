@@ -44,6 +44,7 @@ dependencies:
   app_utils: ^0.0.4
   path_provider:
 
+
 dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:
