@@ -40,10 +40,17 @@ class _AmentiesState extends State<Amenties> {
   String? currentPlot = '';
   String? currentUser = '';
   bool isLoading = false;
+  late Map pageOneDataForFirestore ;
+  late Map pageTwoDataForFirestore;
 
   @override
   void initState() {
     super.initState();
+    print("Am I here? ");
+    pageOneDataForFirestore = widget.formData['pageOneData'];
+    pageTwoDataForFirestore = widget.formData['pageTwoData'];
+    print(pageOneDataForFirestore);
+    print(pageTwoDataForFirestore);
     configLoading();
   }
 
@@ -70,9 +77,9 @@ class _AmentiesState extends State<Amenties> {
     );
 
     await UploadPropertiesToFirestore()
-        .postPropertyPageOne({"pageOne": "test1"}).then((value) async {
+        .postPropertyPageOne(pageOneDataForFirestore as Map<String, dynamic>).then((value) async {
       await UploadPropertiesToFirestore()
-          .postPropertyPageTwo({"pageTwo": "test2"}).then((value) async {
+          .postPropertyPageTwo(pageTwoDataForFirestore as Map<String, dynamic>).then((value) async {
         await uploadToFireStore(_images, _IMAGE).then((value) async {
           print(value);
           await uploadToFireStore(_videos, _VIDEO).then((value) async {
