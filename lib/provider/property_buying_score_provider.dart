@@ -28,21 +28,56 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
     }
   }
 
-  // for professionTextField
-  final TextEditingController professionController = TextEditingController();
-  String _profession = '';
+  bool _employee = false;
+  bool _freelancer = true;
+  bool _business = false;
 
-  onSubmittedProfession(value) {
-    _profession = value;
-  }
+  bool get employee => _employee;
+  bool get freelancer => _freelancer;
+  bool get business => _business;
 
-  String? validateProfession(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Profession Required";
-    } else {
-      return null;
+  void onEmployeeClick() {
+    if (_employee == false) {
+      _employee = true;
+      _freelancer = false;
+      _business = false;
+      notifyListeners();
     }
   }
+
+  void onFreelancerClick() {
+    if (_freelancer == false) {
+      _employee = false;
+      _freelancer = true;
+      _business = false;
+      notifyListeners();
+    }
+  }
+
+  void onBusinessClick() {
+    if (_business == false) {
+      _employee = false;
+      _freelancer = false;
+      _business = true;
+      notifyListeners();
+    }
+  }
+
+  // // for professionTextField
+  // final TextEditingController professionController = TextEditingController();
+  // String _profession = '';
+
+  // onSubmittedProfession(value) {
+  //   _profession = value;
+  // }
+
+  // String? validateProfession(String? value) {
+  //   if (value == null || value.trim().isEmpty) {
+  //     return "Profession Required";
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   // for monthlyIncomeTextField
   final TextEditingController monthlyIncomeController = TextEditingController();
@@ -109,7 +144,7 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
   }
 
   // incomeTaxButtom
-  bool _incomeTax = false;
+  bool _incomeTax = true;
 
   bool get incomeTax => _incomeTax;
 
@@ -179,7 +214,6 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
   void resetAllData() {
     dobController.clear();
-    professionController.clear();
     monthlyIncomeController.clear();
     monthlyEmiController.clear();
     extraIncomeController.clear();

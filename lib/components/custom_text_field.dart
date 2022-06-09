@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
@@ -9,6 +10,9 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool readOnly;
   final double borderradius;
+  final String? hint;
+  final bool? isDense;
+  final int? maxLength;
   const CustomTextField(
       {this.validator,
       this.onChanged,
@@ -18,12 +22,16 @@ class CustomTextField extends StatelessWidget {
       this.readOnly = false,
       this.borderradius = 10,
       this.icon,
+      this.hint,
+      this.isDense,
+      this.maxLength,
       Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: maxLength,
       validator: validator,
       onChanged: onChanged,
       controller: controller,
@@ -32,9 +40,11 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       cursorColor: Colors.white.withOpacity(0.1),
       decoration: InputDecoration(
+        isDense: isDense,
         suffixIcon: icon,
-        contentPadding: const EdgeInsets.all(10),
-        hintText: "",
+        counterText: '',
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+        hintText: hint,
         hintStyle: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,

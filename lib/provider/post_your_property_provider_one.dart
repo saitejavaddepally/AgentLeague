@@ -45,11 +45,23 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
   // for propertyTypeDropDown
 
   String? get propertyTypeChosenValue => _propertyTypeChosenValue;
-
+  bool isSkipPageTwo = true;
+  final List<String> _skipList = [
+    'Flat',
+    'Villa',
+    'Rental',
+    'House',
+    'Farm House'
+  ];
   UnmodifiableListView<String> get propertyTypeDropDown =>
       UnmodifiableListView(_propertyTypeDropDown);
 
   void onChangedPropertyType(value) {
+    if (_skipList.contains(value)) {
+      isSkipPageTwo = false;
+    } else {
+      isSkipPageTwo = true;
+    }
     _propertyTypeChosenValue = value;
     notifyListeners();
   }
@@ -63,12 +75,31 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
   ];
   String? _possessionStatusChosenValue;
 
+  bool _isVisible = false;
+  bool get isVisible => _isVisible;
+
+  bool _disableAge = false;
+  bool get disableAge => _disableAge;
+
   String? get possessionStatusChosenValue => _possessionStatusChosenValue;
 
   UnmodifiableListView<String> get possessionStatusDropDown =>
       UnmodifiableListView(_possessionStatusDropDown);
 
   void onChangedPossessionStatus(value) {
+    if (value == 'Under Construction') {
+      _isVisible = true;
+    } else {
+      _isVisible = false;
+    }
+
+    if (value == 'Ready to Move' || value == 'Under Construction') {
+      _ageChosenValue = 'New';
+      _disableAge = true;
+    } else {
+      _disableAge = false;
+    }
+
     _possessionStatusChosenValue = value;
     notifyListeners();
   }
@@ -120,6 +151,95 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
     }
   }
 
+  // for facingDropDown
+  final List<String> _facingDropDown = [
+    'East',
+    'West',
+    'North',
+    'South',
+    'East - West',
+    'East - North',
+    'East - South',
+    'North - West',
+    'North - South',
+    'South - West'
+  ];
+  String? _facingChosenValue;
+
+  String? get facingChosenValue => _facingChosenValue;
+
+  UnmodifiableListView<String> get facingDropDown =>
+      UnmodifiableListView(_facingDropDown);
+
+  void onChangedFacing(value) {
+    _facingChosenValue = value;
+    notifyListeners();
+  }
+
+  // for sizeDropDown
+  final List<String> _sizeDropDown = ['Sq.feets', 'Sq.yards'];
+  String? _sizeChosenValue;
+
+  String? get sizeChosenValue => _sizeChosenValue;
+
+  UnmodifiableListView<String> get sizeDropDown =>
+      UnmodifiableListView(_sizeDropDown);
+
+  void onChangedSize(value) {
+    _sizeChosenValue = value;
+    notifyListeners();
+  }
+
+  // for sizeTextField
+  final TextEditingController _sizeController = TextEditingController();
+  String _size = '';
+
+  TextEditingController get sizeController => _sizeController;
+
+  onSubmittedSize(value) {
+    _size = value;
+  }
+
+  String? validateSize(String? size) {
+    if (size == null || size.trim().isEmpty) {
+      return 'Size Required';
+    } else {
+      return null;
+    }
+  }
+
+  // for handOverYearTextField
+  final TextEditingController handOverYearController = TextEditingController();
+  String _handOverYear = '';
+
+  onSubmittedHandOverYear(value) {
+    _handOverYear = value;
+  }
+
+  String? validateHandOverYear(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'HandOver Year Required';
+    } else {
+      return null;
+    }
+  }
+
+  // for handOverYearTextField
+  final TextEditingController handOverMonthController = TextEditingController();
+  String _handOverMonth = '';
+
+  onSubmittedHandOverMonth(value) {
+    _handOverMonth = value;
+  }
+
+  String? validateHandOverMonth(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'HandOver Month Required';
+    } else {
+      return null;
+    }
+  }
+
   // retreive all data
   Map<String, dynamic> getMap() {
     return {
@@ -128,7 +248,11 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       'possessionStatus': _possessionStatusChosenValue,
       'location': _locationController.text,
       'age': _ageChosenValue,
-      'price': _price
+      'price': _price,
+      'facing': _facingChosenValue,
+      'handOverYear': _handOverYear,
+      'handOverMonth': _handOverMonth,
+      'size': _size + ' ' + _sizeChosenValue!,
     };
   }
 

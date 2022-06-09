@@ -89,7 +89,7 @@ class AmenitiesProvider extends ChangeNotifier {
 }
 
 class PropertyPhotosProvider extends ChangeNotifier {
-  List<File?> _images = List.generate(5, (index) => null);
+  List<File?> _images = List.generate(8, (index) => null);
 
   UnmodifiableListView<File?> get images => UnmodifiableListView(_images);
 
@@ -104,13 +104,13 @@ class PropertyPhotosProvider extends ChangeNotifier {
   }
 
   void reset() {
-    _images = List.generate(5, (index) => null);
+    _images = List.generate(8, (index) => null);
     notifyListeners();
   }
 }
 
 class PropertyDocumentsProvider extends ChangeNotifier {
-  List<File?> _images = List.generate(5, (index) => null);
+  List<File?> _images = List.generate(4, (index) => null);
 
   UnmodifiableListView<File?> get docs => UnmodifiableListView(_images);
 
@@ -125,13 +125,13 @@ class PropertyDocumentsProvider extends ChangeNotifier {
   }
 
   void reset() {
-    _images = List.generate(5, (index) => null);
+    _images = List.generate(4, (index) => null);
     notifyListeners();
   }
 }
 
 class PropertyVideoProvider extends ChangeNotifier {
-  List<File?> _videos = List.generate(5, (index) => null);
+  List<File?> _videos = List.generate(4, (index) => null);
 
   UnmodifiableListView<File?> get videos => UnmodifiableListView(_videos);
 
@@ -145,7 +145,7 @@ class PropertyVideoProvider extends ChangeNotifier {
   }
 
   void reset() {
-    _videos = List.generate(5, (index) => null);
+    _videos = List.generate(4, (index) => null);
     notifyListeners();
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_button.dart';
+import '../components/custom_label.dart';
 import '../components/custom_title.dart';
 import '../theme/colors.dart';
 
@@ -95,68 +96,84 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                             ],
                           ),
                         ),
-                        // const SizedBox(height: 10),
-                        // const Flexible(child: CustomLabel(text: 'Profession :')),
+                        const SizedBox(height: 10),
+                        const Flexible(
+                            child: CustomLabel(text: 'Profession :')),
+
+                        Flexible(
+                          child: Consumer<PropertyBuyingScoreProvider>(
+                            builder: (context, value, child) => Row(
+                              children: [
+                                TextButton(
+                                    onPressed: value.onEmployeeClick,
+                                    child: Text('Employee',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: (value.employee)
+                                              ? HexColor('131415')
+                                              : Colors.white.withOpacity(0.8),
+                                        )),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: (value.employee)
+                                          ? HexColor('FE7F0E')
+                                          : Colors.white.withOpacity(0.1),
+                                      minimumSize: const Size(85, 30),
+                                    )),
+                                const SizedBox(width: 5),
+                                TextButton(
+                                    onPressed: value.onFreelancerClick,
+                                    child: Text('Freelancer',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: (value.freelancer)
+                                              ? HexColor('131415')
+                                              : Colors.white.withOpacity(0.8),
+                                        )),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: (value.freelancer)
+                                          ? HexColor('FE7F0E')
+                                          : Colors.white.withOpacity(0.1),
+                                      minimumSize: const Size(90, 30),
+                                    )),
+                                const SizedBox(width: 5),
+                                TextButton(
+                                    onPressed: value.onBusinessClick,
+                                    child: Text('Business',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: (value.business)
+                                              ? HexColor('131415')
+                                              : Colors.white.withOpacity(0.8),
+                                        )),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: (value.business)
+                                          ? HexColor('FE7F0E')
+                                          : Colors.white.withOpacity(0.1),
+                                      minimumSize: const Size(85, 30),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // const SizedBox(height: 5),
                         // Flexible(
                         //   child: Row(
                         //     children: [
-                        //       TextButton(
-                        //           onPressed: () {},
-                        //           child: Text('Employee',
-                        //               style: TextStyle(
-                        //                 fontSize: 14,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 color: Colors.white.withOpacity(0.8),
-                        //               )),
-                        //           style: TextButton.styleFrom(
-                        //             backgroundColor: Colors.white.withOpacity(0.1),
-                        //             minimumSize: const Size(85, 30),
-                        //           )),
-                        //       const SizedBox(width: 5),
-                        //       TextButton(
-                        //           onPressed: () {},
-                        //           child: Text('Freelancer',
-                        //               style: TextStyle(
-                        //                 fontSize: 14,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 color: HexColor('131415'),
-                        //               )),
-                        //           style: TextButton.styleFrom(
-                        //             backgroundColor: HexColor('FE7F0E'),
-                        //             minimumSize: const Size(90, 30),
-                        //           )),
-                        //       const SizedBox(width: 5),
-                        //       TextButton(
-                        //           onPressed: () {},
-                        //           child: Text('Business',
-                        //               style: TextStyle(
-                        //                 fontSize: 14,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 color: Colors.white.withOpacity(0.8),
-                        //               )),
-                        //           style: TextButton.styleFrom(
-                        //             backgroundColor: Colors.white.withOpacity(0.1),
-                        //             minimumSize: const Size(85, 30),
-                        //           )),
+                        //       const Expanded(
+                        //           child: CustomLabel(text: 'Profession :')),
+                        //       Expanded(
+                        //           child: CustomTextField(
+                        //         controller: _pr.professionController,
+                        //         onChanged: _pr.onSubmittedProfession,
+                        //         validator: _pr.validateProfession,
+                        //       )),
+                        //       const SizedBox(width: 28)
                         //     ],
                         //   ),
                         // ),
-                        const SizedBox(height: 5),
-                        Flexible(
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                  child: CustomLabel(text: 'Profession :')),
-                              Expanded(
-                                  child: CustomTextField(
-                                controller: _pr.professionController,
-                                onChanged: _pr.onSubmittedProfession,
-                                validator: _pr.validateProfession,
-                              )),
-                              const SizedBox(width: 28)
-                            ],
-                          ),
-                        ),
                         const SizedBox(height: 5),
                         Flexible(
                           child: Row(
@@ -402,18 +419,6 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
             ),
           );
         });
-  }
-}
-
-class CustomLabel extends StatelessWidget {
-  final String text;
-  const CustomLabel({required this.text, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text,
-        style: const TextStyle(
-            fontWeight: FontWeight.w400, fontSize: 16, letterSpacing: -0.15));
   }
 }
 

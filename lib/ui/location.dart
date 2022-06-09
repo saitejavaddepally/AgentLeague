@@ -29,19 +29,18 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
-  Future<Position> getPlotLocation() async{
+  Future<Position> getPlotLocation() async {
     var number = await SharedPreferencesHelper().getCurrentPage();
     print(number);
-    List data = await FirestoreDataProvider().getPlotPagesInformation(int.parse(number!));
+    List data = await FirestoreDataProvider()
+        .getPlotPagesInformation(int.parse(number!));
     var location = data[0]['location'];
     return location;
   }
-
-
 
   Future<void> getNearbyLocations(
       double lat, double long, String type, double color) async {

@@ -14,6 +14,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
+import '../components/custom_label.dart';
 import '../components/custom_text_field.dart';
 import '../theme/colors.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
@@ -231,114 +232,265 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        CommonWidget(
-                                                text: "Property category*",
-                                                dropDownItems: value
-                                                    .propertyCategoryDropDown,
-                                                onChanged: value
-                                                    .onChangedPropertyCategory,
-                                                selectedValue: value
-                                                    .propertyCategoryChosenValue,
-                                                hint: const Text('Select'))
-                                            .use(),
-                                        CommonWidget(
-                                                text: "Property type*",
-                                                hint: const Text('Select'),
-                                                dropDownItems:
-                                                    value.propertyTypeDropDown,
-                                                selectedValue: value
-                                                    .propertyTypeChosenValue,
-                                                onChanged:
-                                                    value.onChangedPropertyType)
-                                            .use(),
-                                        CommonWidget(
-                                                text: "Possession Status*",
-                                                hint: const Text('Select'),
-                                                dropDownItems: value
-                                                    .possessionStatusDropDown,
-                                                selectedValue: value
-                                                    .possessionStatusChosenValue,
-                                                onChanged: value
-                                                    .onChangedPossessionStatus)
-                                            .use(),
-                                        const SizedBox(height: 10),
-                                        const Text('  Price*'),
-                                        const SizedBox(height: 15),
-                                        TextFormField(
-                                          controller: value.controller,
-                                          cursorColor:
-                                              Colors.white.withOpacity(0.1),
-                                          keyboardType: TextInputType.number,
-                                          onChanged: value.onPriceSubmitted,
-                                          validator: value.validatePrice,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                const EdgeInsets.all(10),
-                                            hintText: "    Enter price",
-                                            hintStyle: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16,
-                                                color: Colors.white
-                                                    .withOpacity(0.7)),
-                                            fillColor:
-                                                Colors.white.withOpacity(0.1),
-                                            filled: true,
-                                            border: OutlineInputBorder(
-                                                borderSide: BorderSide.none,
-                                                borderRadius:
-                                                    BorderRadius.circular(31)),
-                                          ),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text:
+                                                        'Property Category :')),
+                                            Flexible(
+                                              child: CustomSelector(
+                                                      isDense: true,
+                                                      borderRadius: 10,
+                                                      dropDownItems: value
+                                                          .propertyCategoryDropDown,
+                                                      chosenValue: value
+                                                          .propertyCategoryChosenValue,
+                                                      onChanged: value
+                                                          .onChangedPropertyCategory)
+                                                  .use(),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(height: 25),
-                                        const Text('Location*'),
-                                        const SizedBox(height: 15),
-                                        CustomTextField(
-                                          controller: value.locationController,
-                                          readOnly: true,
-                                          borderradius: 31,
-                                          validator: value.validateLocation,
-                                          onTap: () async {
-                                            final result = await showDialog(
-                                                barrierDismissible: false,
-                                                context: context,
-                                                builder: (context) =>
-                                                    const CustomDialog());
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text: 'Property Type :')),
+                                            Flexible(
+                                              child: CustomSelector(
+                                                      isDense: true,
+                                                      borderRadius: 10,
+                                                      dropDownItems: value
+                                                          .propertyTypeDropDown,
+                                                      chosenValue: value
+                                                          .propertyTypeChosenValue,
+                                                      onChanged: value
+                                                          .onChangedPropertyType)
+                                                  .use(),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text:
+                                                        'Possession Status :')),
+                                            Flexible(
+                                              child: CustomSelector(
+                                                      isDense: true,
+                                                      borderRadius: 10,
+                                                      dropDownItems: value
+                                                          .possessionStatusDropDown,
+                                                      chosenValue: value
+                                                          .possessionStatusChosenValue,
+                                                      onChanged: value
+                                                          .onChangedPossessionStatus)
+                                                  .use(),
+                                            ),
+                                          ],
+                                        ),
+                                        Visibility(
+                                          visible: value.isVisible,
+                                          child: Column(children: [
+                                            const SizedBox(height: 10),
+                                            Row(children: [
+                                              const Expanded(
+                                                child: CustomLabel(
+                                                    text: 'Hand Over :'),
+                                              ),
+                                              Expanded(
+                                                child: Row(
+                                                  children: [
+                                                    Flexible(
+                                                        child: CustomTextField(
+                                                            maxLength: 4,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            controller: value
+                                                                .handOverYearController,
+                                                            validator: value
+                                                                .validateHandOverYear,
+                                                            onChanged: value
+                                                                .onSubmittedHandOverYear,
+                                                            isDense: true,
+                                                            hint: 'year')),
+                                                    const SizedBox(width: 5),
+                                                    Flexible(
+                                                      child: CustomTextField(
+                                                          maxLength: 2,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          controller: value
+                                                              .handOverMonthController,
+                                                          validator: value
+                                                              .validateHandOverMonth,
+                                                          onChanged: value
+                                                              .onSubmittedHandOverMonth,
+                                                          isDense: true,
+                                                          hint: 'month'),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ]),
+                                          ]),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text: 'Price :')),
+                                            Expanded(
+                                                child: CustomTextField(
+                                              isDense: true,
+                                              controller: value.controller,
+                                              validator: value.validatePrice,
+                                              onChanged: value.onPriceSubmitted,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            )),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text: 'Location :')),
+                                            Expanded(
+                                              child: CustomTextField(
+                                                isDense: true,
+                                                controller:
+                                                    value.locationController,
+                                                readOnly: true,
+                                                borderradius: 10,
+                                                validator:
+                                                    value.validateLocation,
+                                                onTap: () async {
+                                                  final result = await showDialog(
+                                                      barrierDismissible: false,
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          const CustomMapDialog());
 
-                                            if (result == 1) {
-                                              setState(() => isLoading = true);
-                                              final res =
-                                                  await getCurrentLocation();
-                                              setState(() => isLoading = false);
-                                              if (res != null &&
-                                                  res.isNotEmpty) {
-                                                value.locationController.text =
-                                                    res;
-                                              }
-                                            }
-                                            if (result == 2) {
-                                              final res =
-                                                  await getMapLocation();
-                                              if (res != null &&
-                                                  res.isNotEmpty) {
-                                                value.locationController.text =
-                                                    res;
-                                              }
-                                            }
-                                          },
+                                                  if (result == 1) {
+                                                    setState(
+                                                        () => isLoading = true);
+                                                    final res =
+                                                        await getCurrentLocation();
+                                                    setState(() =>
+                                                        isLoading = false);
+                                                    if (res != null &&
+                                                        res.isNotEmpty) {
+                                                      value.locationController
+                                                          .text = res;
+                                                    }
+                                                  }
+                                                  if (result == 2) {
+                                                    final res =
+                                                        await getMapLocation();
+                                                    if (res != null &&
+                                                        res.isNotEmpty) {
+                                                      value.locationController
+                                                          .text = res;
+                                                    }
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(height: 15),
-                                        CommonWidget(
-                                                text: "Age*",
-                                                hint: const Text('Select'),
-                                                dropDownItems:
-                                                    value.ageDropDown,
-                                                selectedValue:
-                                                    value.ageChosenValue,
-                                                onChanged: value.onChangedAge)
-                                            .use(),
                                         const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child:
+                                                    CustomLabel(text: 'Age :')),
+                                            Flexible(
+                                              child: CustomSelector(
+                                                      isDense: true,
+                                                      borderRadius: 10,
+                                                      dropDownItems:
+                                                          value.ageDropDown,
+                                                      chosenValue:
+                                                          value.ageChosenValue,
+                                                      onChanged: (value
+                                                              .disableAge)
+                                                          ? null
+                                                          : value.onChangedAge)
+                                                  .use(),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text: 'Facing :')),
+                                            Flexible(
+                                              child: CustomSelector(
+                                                      isDense: true,
+                                                      borderRadius: 10,
+                                                      dropDownItems:
+                                                          value.facingDropDown,
+                                                      chosenValue: value
+                                                          .facingChosenValue,
+                                                      onChanged:
+                                                          value.onChangedFacing)
+                                                  .use(),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Expanded(
+                                                child: CustomLabel(
+                                                    text: 'Size :')),
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  Flexible(
+                                                      child: CustomTextField(
+                                                    isDense: true,
+                                                    controller:
+                                                        value.sizeController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    validator:
+                                                        value.validateSize,
+                                                    onChanged:
+                                                        value.onSubmittedSize,
+                                                  )),
+                                                  const SizedBox(width: 5),
+                                                  Flexible(
+                                                    child: CustomSelector(
+                                                            isDense: true,
+                                                            borderRadius: 10,
+                                                            dropDownItems: value
+                                                                .sizeDropDown,
+                                                            chosenValue: value
+                                                                .sizeChosenValue,
+                                                            onChanged: value
+                                                                .onChangedSize)
+                                                        .use(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ]),
                                 ),
+                                const SizedBox(height: 25),
                                 const Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text('*Note: All are Required')),
@@ -370,21 +522,31 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
 
                                                   if (_formKey.currentState!
                                                       .validate()) {
-                                                    await SharedPreferencesHelper()
-                                                        .savePageOneInformation(
-                                                            propertyOne
-                                                                .getMap());
-                                                    Map<String, dynamic> data =
-                                                        propertyOne.getMap();
-                                                    data.addAll({
-                                                      "latitude": _latitude,
-                                                      "longitude": _longitude
-                                                    });
-                                                    Navigator.pushNamed(
-                                                        context,
-                                                        RouteName
-                                                            .postYourPropertyPageTwo,
-                                                        arguments: data);
+                                                    if (propertyOne
+                                                        .isSkipPageTwo) {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          RouteName.amenities,
+                                                          arguments: <String,
+                                                              dynamic>{});
+                                                    } else {
+                                                      await SharedPreferencesHelper()
+                                                          .savePageOneInformation(
+                                                              propertyOne
+                                                                  .getMap());
+                                                      Map<String, dynamic>
+                                                          data =
+                                                          propertyOne.getMap();
+                                                      data.addAll({
+                                                        "latitude": _latitude,
+                                                        "longitude": _longitude
+                                                      });
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          RouteName
+                                                              .postYourPropertyPageTwo,
+                                                          arguments: data);
+                                                    }
                                                   }
                                                 }).use())),
                                   ],
@@ -402,8 +564,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
   }
 }
 
-class CustomDialog extends StatelessWidget {
-  const CustomDialog({Key? key}) : super(key: key);
+class CustomMapDialog extends StatelessWidget {
+  const CustomMapDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

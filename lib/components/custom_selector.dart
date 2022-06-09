@@ -7,6 +7,7 @@ class CustomSelector {
   late Color color;
   late Color textColor;
   late Widget? hint;
+  bool? isDense;
   final double borderRadius;
 
   CustomSelector({
@@ -14,6 +15,7 @@ class CustomSelector {
     required this.onChanged,
     required this.chosenValue,
     this.borderRadius = 31,
+    this.isDense,
     this.hint,
     this.color = const Color(0xFF213C53),
     this.textColor = Colors.white,
@@ -28,16 +30,18 @@ class CustomSelector {
                 color: Colors.red),
             dropdownColor: color,
             decoration: InputDecoration(
+              isDense: isDense,
               fillColor: color,
               filled: true,
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  const EdgeInsets.symmetric(vertical: 7, horizontal: 5),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius),
                   borderSide: BorderSide.none),
             ),
             items: dropDownItems
-                .map((e) => DropdownMenuItem(value: e, child: Text("$e")))
+                .map((e) => DropdownMenuItem(
+                    value: e, child: FittedBox(child: Text("$e"))))
                 .toList(),
             validator: (value) => value == null ? 'Field Required' : null,
             hint: hint,
