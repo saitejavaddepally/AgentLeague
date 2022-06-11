@@ -21,7 +21,6 @@ class FirestoreDataProvider {
   get _documents => documents;
 
   Future getPlots() async {
-
     String? userId = await SharedPreferencesHelper().getUserId();
 
     List docs = [];
@@ -38,9 +37,10 @@ class FirestoreDataProvider {
     return docs;
   }
 
-  Future getPlotPagesInformation(int plotNo) async {
+  Future getPlotPagesInformation(int plotNo, String type) async {
     String? userId = await SharedPreferencesHelper().getUserId();
     CollectionReference ref;
+    bool isType = true;
     List detailsOfPages = [];
     for (var i = 1; i <= 3; i++) {
       ref = FirebaseFirestore.instance
@@ -53,10 +53,18 @@ class FirestoreDataProvider {
       await ref.get().then((val) async {
         if (val.docs.isNotEmpty) {
           res = val.docs[0].data() as Map;
+          print("res is $res");
+          if (i == 1 && res['propertyCategory'] != type) {
+            isType = false;
+            return;
+          }
           detailsOfPages.add(res);
         }
       });
+      if(!isType) break;
     }
+
+    print(detailsOfPages);
 
     return detailsOfPages;
   }
@@ -99,13 +107,14 @@ class FirestoreDataProvider {
         }
         final listResult = await storageRef.listAll();
         for (var item in listResult.items) {
+          print("item is ${item.name}");
           await item.getDownloadURL().then((value) async {
             if (type == "IMAGES") {
               images.add(value);
             } else if (type == "VIDEOS") {
               videos.add(value);
             } else {
-              documents.add(value);
+              documents.add({"name": item.name, "value": value});
             }
           });
         }

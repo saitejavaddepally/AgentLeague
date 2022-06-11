@@ -34,6 +34,7 @@ class _AmentiesState extends State<Amenties> {
   late List<File?> _images;
   late List<File?> _docs;
   late List<File?> _videos;
+  late List<String?> _docNames;
   static const String _IMAGE = 'images';
   static const String _VIDEO = 'videos';
   static const String _DOCS = 'docs';
@@ -122,7 +123,7 @@ class _AmentiesState extends State<Amenties> {
           snapshot = await _firebaseStorage
               .ref()
               .child(
-                  'sell_images/$value/standlone/$currentPlot/$type/${type}_$i')
+                  'sell_images/$value/standlone/$currentPlot/$type/${(type != 'docs') ? type : _docNames[i]}')
               .putFile(list[i]!);
         });
       }
@@ -274,38 +275,43 @@ class _AmentiesState extends State<Amenties> {
                         Consumer<PropertyPhotosProvider>(
                           builder: (context, value, child) => Column(
                             children: [
-                              SizedBox(
-                                height: 60,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 5,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          value.pickImage(index);
-                                          _images = value.images;
-                                          print(_images);
-                                        },
-                                        child: Container(
-                                          height: 55,
-                                          width: 55,
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  Colors.white.withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: (value.images[index] != null)
-                                              ? Image.file(value.images[index]!)
-                                              : Image.asset(
-                                                  'assets/picker.png'),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: 60,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: 6,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(right: 20),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              value.pickImage(index);
+                                              _images = value.images;
+                                              print(_images);
+                                            },
+                                            child: Container(
+                                              height: 55,
+                                              width: 55,
+                                              decoration: BoxDecoration(
+                                                  color:
+                                                      Colors.white.withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10)),
+                                              child: (value.images[index] != null)
+                                                  ? Image.file(value.images[index]!)
+                                                  : Image.asset(
+                                                      'assets/picker.png'),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+
+                                ],
                               ),
                               const SizedBox(height: 10),
                               Row(
@@ -351,7 +357,7 @@ class _AmentiesState extends State<Amenties> {
                                         onTap: () {
                                           value.pickDocuments(index);
                                           _docs = value.docs;
-                                          print(_docs);
+                                          _docNames = value.docNames;
                                         },
                                         child: Container(
                                           height: 55,
@@ -468,18 +474,6 @@ class _AmentiesState extends State<Amenties> {
                               CustomButton(
                                       text: 'Submit',
                                       onClick: () async {
-                                        // await uploadToFireStore(
-                                        //     _images, _IMAGE);
-                                        // await uploadToFireStore(
-                                        //     _videos, _VIDEO);
-                                        // await uploadToFireStore(_docs, _DOCS);
-                                        // CollectionReference ref =
-                                        //     FirebaseFirestore.instance
-                                        //         .collection("sell_plots")
-                                        //         .doc(currentUser)
-                                        //         .collection("standlone")
-                                        //         .doc(currentPlot)
-                                        //         .collection("page_3");
                                         await uploadData().then((value) {
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,

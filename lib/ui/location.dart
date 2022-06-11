@@ -37,7 +37,7 @@ class _LocationScreenState extends State<LocationScreen> {
     var number = await SharedPreferencesHelper().getCurrentPage();
     print("number is $number");
     List data = await FirestoreDataProvider()
-        .getPlotPagesInformation(int.parse(number!) + 1);
+        .getPlotPagesInformation(int.parse(number!) + 1, "Farm");
     Map locationData = data[0];
     double _lat = locationData['latitude'];
     double _long = locationData['longitude'];

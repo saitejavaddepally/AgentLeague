@@ -30,6 +30,7 @@ class _DocumentsState extends State<Documents> {
             color: Colors.white,
           );
         }
+        print("documents are $res");
         return Scaffold(
             body: SafeArea(
                 child: Padding(
@@ -60,7 +61,7 @@ class _DocumentsState extends State<Documents> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               SfPdfViewer.network(
-                                                res[index],
+                                                res[index]['value'],
                                                 canShowPaginationDialog: true,
                                                 canShowScrollHead: true,
                                                 canShowPasswordDialog: true,
@@ -87,7 +88,7 @@ class _DocumentsState extends State<Documents> {
                                       color: HexColor('FE7F0E')),
                                 ),
                                 subtitle: Text(
-                                  'Floor plans with setback',
+                                  res[index]['name'],
                                   style: TextStyle(
                                       height: 1.3,
                                       fontWeight: FontWeight.w400,

@@ -48,16 +48,17 @@ class _SellScreenState extends State<SellScreen> {
     super.initState();
   }
 
-  Future getPlotInformation(int index) async {
-    print("Am I here?");
+  Future getPlotInformation(int index, String type) async {
     String? userId = await SharedPreferencesHelper().getUserId();
     List detailsOfPages =
-        await FirestoreDataProvider().getPlotPagesInformation(index);
-    String profilePicture = await FirestoreDataProvider()
-        .getProfileImage("sell_images/$userId/standlone/plot_$index/images/");
-    profileImagesSorted.putIfAbsent(index, () => profilePicture);
-    detailsOfPages.add({"picture": profilePicture});
-    print(detailsOfPages);
+        await FirestoreDataProvider().getPlotPagesInformation(index, type);
+    if (detailsOfPages != []) {
+      String profilePicture = await FirestoreDataProvider()
+          .getProfileImage("sell_images/$userId/standlone/plot_$index/images/");
+      profileImagesSorted.putIfAbsent(index, () => profilePicture);
+      detailsOfPages.add({"picture": profilePicture});
+      print(detailsOfPages);
+    }
     return detailsOfPages;
   }
 
@@ -269,7 +270,7 @@ class _SellScreenState extends State<SellScreen> {
                                 i <= int.parse(numberOfProperties);
                                 i++)
                               FutureBuilder(
-                                  future: getPlotInformation(i),
+                                  future: getPlotInformation(i, "Farm"),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState !=
                                         ConnectionState.done) {
@@ -287,7 +288,8 @@ class _SellScreenState extends State<SellScreen> {
                                     var index = i;
                                     var profileImage = "";
 
-                                    if (snapshot.hasData) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data as List != []) {
                                       List data = snapshot.data as List;
                                       category = data[0]['propertyCategory'];
                                       type = data[0]['propertyType'];
@@ -297,129 +299,128 @@ class _SellScreenState extends State<SellScreen> {
                                       possession = data[0]['possessionStatus'];
                                       profileImage = data[3]['picture'];
                                     }
-                                    return Neumorphic(
-                                      style: NeumorphicStyle(
-                                        shape: NeumorphicShape.flat,
-                                        boxShape: NeumorphicBoxShape.roundRect(
-                                            BorderRadius.circular(17)),
-                                        depth: 4,
-                                      ),
-                                      margin: const EdgeInsets.only(bottom: 10),
-                                      child: Column(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              print(profileImagesSorted);
-                                              final keysAsc = profileImagesSorted.keys.toList()..sort((a, b) => a.compareTo(b));
-                                              print("Keys are : $keysAsc");
-                                              for (final key in keysAsc) {
-                                                profileImages.add(profileImagesSorted[key]);
-                                              }
-                                              print("Profile Images are: ");
-                                              print(profileImages);
-                                              await SharedPreferencesHelper()
-                                                  .saveCurrentPage(
-                                                      (index - 1).toString());
-                                              await SharedPreferencesHelper()
-                                                  .saveListOfCardImages(
-                                                      profileImages);
-                                              print(
-                                                  'Profile images is $profileImages');
-                                              Navigator.pushNamed(
-                                                  context, '/realtor_card');
-                                            },
-                                            child: Row(
+                                    return (snapshot.data as List != [])
+                                        ? Neumorphic(
+                                            style: NeumorphicStyle(
+                                              shape: NeumorphicShape.flat,
+                                              boxShape:
+                                                  NeumorphicBoxShape.roundRect(
+                                                      BorderRadius.circular(
+                                                          17)),
+                                              depth: 4,
+                                            ),
+                                            margin: const EdgeInsets.only(
+                                                bottom: 10),
+                                            child: Column(
                                               children: [
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Container(
-                                                      height: 160,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  17.0),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  17.0),
-                                                          bottomLeft:
-                                                              Radius.zero,
-                                                          bottomRight:
-                                                              Radius.zero,
-                                                        ),
-                                                        color: Colors.white,
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                              flex: 1,
-                                                              child: Container(
-                                                                width: 100,
-                                                                height: 170,
-                                                                // decoration:
-                                                                //     BoxDecoration(border: Border.all()),
-                                                                child: Image
-                                                                    .network(
-                                                                  profileImage,
-                                                                  fit: BoxFit
-                                                                      .fill,
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    print(profileImagesSorted);
+                                                    final keysAsc =
+                                                        profileImagesSorted.keys
+                                                            .toList()
+                                                          ..sort((a, b) =>
+                                                              a.compareTo(b));
+                                                    print(
+                                                        "Keys are : $keysAsc");
+                                                    for (final key in keysAsc) {
+                                                      profileImages.add(
+                                                          profileImagesSorted[
+                                                              key]);
+                                                    }
+                                                    print(
+                                                        "Profile Images are: ");
+                                                    print(profileImages);
+                                                    await SharedPreferencesHelper()
+                                                        .saveCurrentPage(
+                                                            (index - 1)
+                                                                .toString());
+                                                    await SharedPreferencesHelper()
+                                                        .saveListOfCardImages(
+                                                            profileImages);
+                                                    print(
+                                                        'Profile images is $profileImages');
+                                                    Navigator.pushNamed(context,
+                                                        '/realtor_card');
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Container(
+                                                            height: 160,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        17.0),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        17.0),
+                                                                bottomLeft:
+                                                                    Radius.zero,
+                                                                bottomRight:
+                                                                    Radius.zero,
+                                                              ),
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                    flex: 1,
+                                                                    child:
+                                                                        Container(
+                                                                      width:
+                                                                          100,
+                                                                      height:
+                                                                          170,
+                                                                      // decoration:
+                                                                      //     BoxDecoration(border: Border.all()),
+                                                                      child: Image
+                                                                          .network(
+                                                                        profileImage,
+                                                                        fit: BoxFit
+                                                                            .fill,
+                                                                      ),
+                                                                    )),
+                                                                Expanded(
+                                                                  flex: 2,
+                                                                  child: Container(
+                                                                      width: 100,
+                                                                      height: 170,
+                                                                      padding: const EdgeInsets.all(8),
+                                                                      // decoration:
+                                                                      //     BoxDecoration(border: Border.all()),
+                                                                      child: Align(
+                                                                        alignment:
+                                                                            Alignment.centerLeft,
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            CustomContainerText(text1: 'Category', text2: category).use(),
+                                                                            CustomContainerText(text1: 'Type', text2: type).use(),
+                                                                            CustomContainerText(text1: 'Area', text2: area).use(),
+                                                                            CustomContainerText(text1: 'Location', text2: location).use(),
+                                                                            CustomContainerText(text1: 'Price', text2: price).use(),
+                                                                            CustomContainerText(text1: 'Possession', text2: possession).use(),
+                                                                          ],
+                                                                        ),
+                                                                      )),
                                                                 ),
-                                                              )),
-                                                          Expanded(
-                                                            flex: 2,
-                                                            child: Container(
-                                                                width: 100,
-                                                                height: 170,
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(8),
-                                                                // decoration:
-                                                                //     BoxDecoration(border: Border.all()),
-                                                                child: Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      CustomContainerText(
-                                                                              text1: 'Category',
-                                                                              text2: category)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Type',
-                                                                              text2: type)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Area',
-                                                                              text2: area)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Location',
-                                                                              text2: location)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Price',
-                                                                              text2: price)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Possession',
-                                                                              text2: possession)
-                                                                          .use(),
-                                                                    ],
-                                                                  ),
-                                                                )),
-                                                          ),
-                                                        ],
-                                                      )),
+                                                              ],
+                                                            )),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
+                                          )
+                                        : const SizedBox();
                                   }),
                           ],
                         ),
