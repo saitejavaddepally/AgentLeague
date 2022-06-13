@@ -438,14 +438,14 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             // setState(() => isLoading = true);
                                             // await postPropertyPageTwo(_propertyTwo
                                             //     .getMap());
-                                            await SharedPreferencesHelper()
-                                                .savePageTwoInformation(
-                                                    _propertyTwo.getMap());
+                                            // await SharedPreferencesHelper()
+                                            //     .savePageTwoInformation(
+                                            //         _propertyTwo.getMap());
 
                                             Navigator.pushNamed(
                                                 context, RouteName.amenities,
                                                 arguments:
-                                                    _propertyTwo.getMap());
+                                                    _propertyTwo.getMap(widget.pageOneData));
                                           }
                                         }).use(),
                                   )),

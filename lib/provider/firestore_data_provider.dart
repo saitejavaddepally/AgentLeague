@@ -41,21 +41,19 @@ class FirestoreDataProvider {
     String? userId = await SharedPreferencesHelper().getUserId();
     CollectionReference ref;
     List detailsOfPages = [];
-    for (var i = 1; i <= 3; i++) {
-      ref = FirebaseFirestore.instance
-          .collection("sell_plots")
-          .doc(userId)
-          .collection("standlone")
-          .doc('plot_$plotNo')
-          .collection('page_$i');
-      Map res = {};
-      await ref.get().then((val) async {
-        if (val.docs.isNotEmpty) {
-          res = val.docs[0].data() as Map;
-          detailsOfPages.add(res);
-        }
-      });
-    }
+    ref = FirebaseFirestore.instance
+        .collection("sell_plots")
+        .doc(userId)
+        .collection("standlone")
+        .doc('plot_$plotNo')
+        .collection('pages_info');
+    Map res = {};
+    await ref.get().then((val) async {
+      if (val.docs.isNotEmpty) {
+        res = val.docs[0].data() as Map;
+        detailsOfPages.add(res);
+      }
+    });
 
     return detailsOfPages;
   }
@@ -78,59 +76,39 @@ class FirestoreDataProvider {
     String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
     String currPlot = (int.parse(currentPlot!) + 1).toString();
     String? userId = await AuthMethods().getUserId();
-    CollectionReference ref = FirebaseFirestore.instance
-        .collection("sell_plots")
-        .doc(userId)
-        .collection("standlone")
-        .doc('plot_$currPlot')
-        .collection('page_3');
-    await ref.get().then((val) async {
-      if (val.docs.isNotEmpty) {
-        Map res = val.docs[0].data() as Map;
-        String path = res['path_to_storage'];
-        late final Reference storageRef;
+    print("path is sell_plots/$userId/standlone/plot_$currPlot/images/");
+    late final Reference storageRef;
+    if (type == "IMAGES") {
+      storageRef = FirebaseStorage.instance
+          .ref()
+          .child("sell_images/$userId/standlone/plot_$currPlot/images/");
+    } else if (type == "VIDEOS") {
+      storageRef = FirebaseStorage.instance
+          .ref()
+          .child("sell_images/$userId/standlone/plot_$currPlot/videos/");
+    } else {
+      storageRef = FirebaseStorage.instance
+          .ref()
+          .child("sell_images/$userId/standlone/plot_$currPlot/docs/");
+    }
+    final listResult = await storageRef.listAll();
+    for (var item in listResult.items) {
+      await item.getDownloadURL().then((value) async {
+        print(value);
         if (type == "IMAGES") {
-          storageRef = FirebaseStorage.instance.ref().child(path + "images/");
+          images.add(value);
         } else if (type == "VIDEOS") {
-          storageRef = FirebaseStorage.instance.ref().child(path + "videos/");
+          videos.add(value);
         } else {
-          storageRef = FirebaseStorage.instance.ref().child(path + "docs/");
+          documents.add(value);
         }
-        final listResult = await storageRef.listAll();
-        for (var item in listResult.items) {
-          await item.getDownloadURL().then((value) async {
-            if (type == "IMAGES") {
-              images.add(value);
-            } else if (type == "VIDEOS") {
-              videos.add(value);
-            } else {
-              documents.add(value);
-            }
-          });
-        }
-      }
-    });
+      });
+    }
+    print('Images are $images');
     return (type == "IMAGES")
         ? images
         : (type == "VIDEOS")
             ? videos
             : documents;
-  }
-
-  _fetchImagesFromFirebaseStorage(String path, String type) async {
-    late final Reference storageRef;
-    if (type == "IMAGES") {
-      storageRef = FirebaseStorage.instance.ref().child(path + "images/");
-    } else if (type == "VIDEOS") {
-      storageRef = FirebaseStorage.instance.ref().child(path + "videos/");
-    } else {
-      storageRef = FirebaseStorage.instance.ref().child(path + "docs/");
-    }
-    final listResult = await storageRef.listAll();
-    for (var item in listResult.items) {
-      item.getDownloadURL().then((value) {
-        images.add(value);
-      });
-    }
   }
 }

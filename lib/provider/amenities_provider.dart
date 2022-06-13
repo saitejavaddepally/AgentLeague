@@ -100,6 +100,7 @@ class PropertyPhotosProvider extends ChangeNotifier {
 
     final imageTemporary = File(image.path);
     _images[index] = imageTemporary;
+
     notifyListeners();
   }
 
@@ -110,22 +111,26 @@ class PropertyPhotosProvider extends ChangeNotifier {
 }
 
 class PropertyDocumentsProvider extends ChangeNotifier {
-  List<File?> _images = List.generate(4, (index) => null);
+  List<File?> _docs = List.generate(4, (index) => null);
+  late final List<String?> _docNames = List.generate(5, (index) => null);
 
-  UnmodifiableListView<File?> get docs => UnmodifiableListView(_images);
+  UnmodifiableListView<File?> get docs => UnmodifiableListView(_docs);
+  UnmodifiableListView<String?> get docNames => UnmodifiableListView(_docNames);
 
   void pickDocuments(int index) async {
     final path = await FlutterDocumentPicker.openDocument();
 
     if (path == null) return;
+    final docTemp = File(path);
 
-    final imageTemporary = File(path);
-    _images[index] = imageTemporary;
+    List splitPath = docTemp.path.split('/');
+    _docNames[index] = splitPath[splitPath.length - 1];
+    _docs[index] = docTemp;
     notifyListeners();
   }
 
   void reset() {
-    _images = List.generate(4, (index) => null);
+    _docs = List.generate(4, (index) => null);
     notifyListeners();
   }
 }

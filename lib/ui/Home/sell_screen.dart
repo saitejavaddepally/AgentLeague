@@ -289,11 +289,11 @@ class _SellScreenState extends State<SellScreen> {
                                       List data = snapshot.data as List;
                                       category = data[0]['propertyCategory'];
                                       type = data[0]['propertyType'];
-                                      area = data[1]['carpet_area'];
+                                      area = data[0]['carpet_area'];
                                       location = data[0]['location'];
                                       price = data[0]['price'];
                                       possession = data[0]['possessionStatus'];
-                                      profileImage = data[3]['picture'];
+                                      profileImage = data[1]['picture'];
                                     }
                                     return Neumorphic(
                                       style: NeumorphicStyle(
@@ -308,10 +308,15 @@ class _SellScreenState extends State<SellScreen> {
                                           GestureDetector(
                                             onTap: () async {
                                               print(profileImagesSorted);
-                                              final keysAsc = profileImagesSorted.keys.toList()..sort((a, b) => a.compareTo(b));
+                                              final keysAsc =
+                                                  profileImagesSorted.keys
+                                                      .toList()
+                                                    ..sort((a, b) =>
+                                                        a.compareTo(b));
                                               print("Keys are : $keysAsc");
                                               for (final key in keysAsc) {
-                                                profileImages.add(profileImagesSorted[key]);
+                                                profileImages.add(
+                                                    profileImagesSorted[key]);
                                               }
                                               print("Profile Images are: ");
                                               print(profileImages);
