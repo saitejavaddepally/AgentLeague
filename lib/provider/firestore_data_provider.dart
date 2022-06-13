@@ -55,7 +55,7 @@ class FirestoreDataProvider {
       }
     });
 
-    return detailsOfPages;
+      return detailsOfPages;
   }
 
   Future getProfileImage(String path) async {
@@ -74,7 +74,7 @@ class FirestoreDataProvider {
 
   Future getFirestoreFiles(String type) async {
     String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
-    String currPlot = (int.parse(currentPlot!) + 1).toString();
+    String currPlot = (int.parse(currentPlot!)).toString();
     String? userId = await AuthMethods().getUserId();
     print("path is sell_plots/$userId/standlone/plot_$currPlot/images/");
     late final Reference storageRef;
@@ -100,7 +100,7 @@ class FirestoreDataProvider {
         } else if (type == "VIDEOS") {
           videos.add(value);
         } else {
-          documents.add(value);
+          documents.add({"name": item.name, "value": value});
         }
       });
     }

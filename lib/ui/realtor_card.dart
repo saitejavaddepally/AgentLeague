@@ -19,9 +19,13 @@ PageController? controller;
 late List profileImages = [];
 bool isIncremented = false;
 String profileImage = "";
+late List plotPagesInformation = [];
+late String currentPlotFromPreviousPage;
 
 class RealtorCard extends StatefulWidget {
-  const RealtorCard({Key? key}) : super(key: key);
+  List plotPagesInformation;
+
+  RealtorCard({Key? key, required this.plotPagesInformation}) : super(key: key);
 
   @override
   State<RealtorCard> createState() => _RealtorCardState();
@@ -29,15 +33,17 @@ class RealtorCard extends StatefulWidget {
 
 class _RealtorCardState extends State<RealtorCard> {
   late List pages = [];
-
-  var page = RealtorPage();
+  var page = const RealtorPage();
   Color color = CustomColors.dark;
   String numberOfProperties = "0";
 
   @override
   void initState() {
+    setState(() {
+      plotPagesInformation = widget.plotPagesInformation;
+    });
+    print("dude $plotPagesInformation");
 
-    print("I am here waiting for value");
     Future.delayed(const Duration(seconds: 0), () {
       SharedPreferencesHelper().getUserId().then((value) {
         setState(() {
@@ -50,9 +56,12 @@ class _RealtorCardState extends State<RealtorCard> {
 
       setState(() {
         currentPage = int.parse(value!);
-        profileImage =
-        "sell_images/$userId/standlone/plot_${currentPage + 1}/images/";
+        currentPlotFromPreviousPage =
+            plotPagesInformation[currentPage][1]['plotNo'].toString();
       });
+      print("man $currentPlotFromPreviousPage");
+      SharedPreferencesHelper()
+          .saveCurrentPage(currentPlotFromPreviousPage.toString());
       print(profileImage);
       controller = PageController(initialPage: int.parse(value!));
     });
@@ -74,6 +83,8 @@ class _RealtorCardState extends State<RealtorCard> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    print("The arguments are : $arguments");
     return (numberOfProperties != "0")
         ? Scaffold(
             backgroundColor: color,
@@ -84,7 +95,10 @@ class _RealtorCardState extends State<RealtorCard> {
                 controller: controller,
                 onPageChanged: (int page) async {
                   print("I am here second? ");
-                  SharedPreferencesHelper().saveCurrentPage(page.toString());
+                  var currentPlotFromList =
+                      plotPagesInformation[page][1]['plotNo'];
+                  SharedPreferencesHelper()
+                      .saveCurrentPage(currentPlotFromList.toString());
                   setState(() {
                     currentPage = page;
                     path =
@@ -126,21 +140,20 @@ class _RealtorPageState extends State<RealtorPage> {
       setState(() {
         currentPage = current.toInt();
         print("Now the current Page is : $currentPage");
-
       });
     });
 
     setState(() {
       profileImage =
-      "sell_images/$userId/standlone/plot_${currentPage+1}/images/";
+          "sell_images/$userId/standlone/plot_${currentPage + 1}/images/";
     });
 
     print("Am I here? then");
     super.initState();
   }
 
-  Future getProfileImages() async{
-    List<String>? images = await SharedPreferencesHelper().getListOfCardImages();
+  Future getProfileImages() async {
+    var images = await SharedPreferencesHelper().getListOfCards();
     print("Images are: $images");
     return images;
   }
@@ -206,8 +219,7 @@ class _RealtorPageState extends State<RealtorPage> {
                       FutureBuilder(
                           future: getProfileImages(),
                           builder: (context, snapshot) {
-
-                            if(snapshot.hasData){
+                            if (snapshot.hasData) {
                               print(snapshot.data);
                             }
                             if (snapshot.connectionState !=
@@ -222,7 +234,7 @@ class _RealtorPageState extends State<RealtorPage> {
                               );
                             }
 
-                            List<String>? data = snapshot.data as List<String>?;
+                            // List<String>? data = snapshot.data as List<String>?;
 
                             return Container(
                               width: 200,
@@ -230,7 +242,7 @@ class _RealtorPageState extends State<RealtorPage> {
                               // decoration:
                               //     BoxDecoration(border: Border.all()),
                               child: Image.network(
-                                data![currentPage],
+                                plotPagesInformation[currentPage][2]['picture'],
                                 fit: BoxFit.fill,
                               ),
                             );

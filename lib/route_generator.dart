@@ -92,9 +92,9 @@ class RouteGenerator {
       case RouteName.explore:
         return PageTransition(
             child: const Explore(), type: PageTransitionType.leftToRight);
-      case RouteName.realtorCard:
-        return PageTransition(
-            child: const RealtorCard(), type: PageTransitionType.leftToRight);
+      // case RouteName.realtorCard:
+      //   return PageTransition(
+      //       child: const RealtorCard(), type: PageTransitionType.leftToRight);
       case RouteName.amenities:
         {
           if (args is Map<String, dynamic>) {
