@@ -88,24 +88,24 @@ class _SellScreenState extends State<SellScreen> {
     });
   }
 
-  sortPlotsBasedOnTypes(String type){
-
+  sortPlotsBasedOnTypes(String type) {
     //price low to high
-    if(type == "one"){
-      plotPagesInformation.sort((a, b) => int.parse(b[0]['price']).compareTo(int.parse(a[0]['price'])));
+    if (type == "one") {
+      plotPagesInformation.sort((a, b) =>
+          int.parse(b[0]['price']).compareTo(int.parse(a[0]['price'])));
       setState(() {
         plotPagesInformation;
       });
     }
     // price high to low
-    else if(type == "two "){
+    else if (type == "two ") {
       print("Am I here?");
-      plotPagesInformation.sort((a, b) => int.parse(a[0]['price']).compareTo(int.parse(b[0]['price'])));
+      plotPagesInformation.sort((a, b) =>
+          int.parse(a[0]['price']).compareTo(int.parse(b[0]['price'])));
       setState(() {
         // plotPagesInformation = plotPagesInformation.reversed.toList();
       });
     }
-
   }
 
   @override
@@ -198,7 +198,9 @@ class _SellScreenState extends State<SellScreen> {
                             borderRadius: BorderRadius.circular(10.0)),
                         child: Center(
                           child: TextField(
-                            onChanged: (value) {},
+                            readOnly: true,
+                            onTap: () => Navigator.pushNamed(
+                                context, RouteName.searchBy),
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.all(8),
@@ -227,69 +229,18 @@ class _SellScreenState extends State<SellScreen> {
                             Expanded(
                               child: SizedBox(
                                 height: 100,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      child: CircularNeumorphicButton(
-                                              imageName: 'img_2',
-                                              padding: 0,
-                                              color: HexColor('082640'),
-                                              size: 50,
-                                              onTap: () {
-                                                Navigator.pushNamed(
-                                                    context, '/post_page_one');
-                                              },
-                                              isNeu: true,
-                                              isTextUnder: true,
-                                              text: 'Add')
-                                          .use(),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    Container(
-                                      child: CircularNeumorphicButton(
-                                              imageName: 'save',
-                                              size: 50,
-                                              onTap: () {},
-                                              color: HexColor('082640'),
-                                              isNeu: true,
-                                              isTextUnder: true,
-                                              text: 'Saved')
-                                          .use(),
-                                    ),
-                                  ],
-                                )),
-                            Container(
-                              width: double.infinity,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: HexColor('#213c53'),
-                                  borderRadius: BorderRadius.circular(10.0)),
-                              child: Center(
-                                child: TextField(
-                                  readOnly: true,
-                                  onTap: () => Navigator.pushNamed(
-                                      context, RouteName.searchBy),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.all(8),
-                                      hintText:
-                                          'Search by location, Name or ID',
-                                      suffixIcon: Image.asset(
-                                          'assets/search_settings_icon.png')),
-                                ),
                                 child: CircularNeumorphicButton(
-                                        imageName: element['img'].toString(),
-                                        size: 55,
-                                        onTap: () {
-                                          String name =
-                                              element['name'].toString();
-                                          var length = name.length;
-                                          filterPlotsBasedOnTypes(
-                                              name.substring(0, length - 1));
-                                        },
-                                        isTextUnder: true,
-                                        text: element['name'].toString())
+                                    imageName: element['img'].toString(),
+                                    size: 55,
+                                    onTap: () {
+                                      String name =
+                                      element['name'].toString();
+                                      var length = name.length;
+                                      filterPlotsBasedOnTypes(
+                                          name.substring(0, length - 1));
+                                    },
+                                    isTextUnder: true,
+                                    text: element['name'].toString())
                                     .use(),
                               ),
                             ),
@@ -372,7 +323,9 @@ class _SellScreenState extends State<SellScreen> {
                                           color: Colors.white,
                                           size: 30,
                                         ),
-                                        SizedBox(height: 10,),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
                                         Center(
                                             child: Text(
                                                 "Please wait while we load your properties...")),
@@ -393,10 +346,21 @@ class _SellScreenState extends State<SellScreen> {
                                   children: [
                                     GestureDetector(
                                       onTap: () async {
-                                        SharedPreferencesHelper().saveCurrentPage(i.toString());
-                                        SharedPreferencesHelper().saveNumProperties(plotPagesInformation.length.toString());
-                                        SharedPreferencesHelper().saveListOfCards(plotPagesInformation);
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => RealtorCard(plotPagesInformation : plotPagesInformation)));
+                                        SharedPreferencesHelper()
+                                            .saveCurrentPage(i.toString());
+                                        SharedPreferencesHelper()
+                                            .saveNumProperties(
+                                                plotPagesInformation.length
+                                                    .toString());
+                                        SharedPreferencesHelper()
+                                            .saveListOfCards(
+                                                plotPagesInformation);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => RealtorCard(
+                                                    plotPagesInformation:
+                                                        plotPagesInformation)));
                                       },
                                       child: Row(
                                         children: [
