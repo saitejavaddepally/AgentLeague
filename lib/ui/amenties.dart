@@ -36,6 +36,7 @@ class _AmentiesState extends State<Amenties> {
   late List<File?> _docs = [];
   late List<File?> _videos = [];
   late List<String?> _docNames;
+  late List<String?> _videoNames;
   static const String _IMAGE = 'images';
   static const String _VIDEO = 'videos';
   static const String _DOCS = 'docs';
@@ -87,7 +88,7 @@ class _AmentiesState extends State<Amenties> {
           snapshot = await _firebaseStorage
               .ref()
               .child(
-                  'sell_images/$value/standlone/$currentPlot/$type/${(type != 'docs') ? type+"_$i" : _docNames[i]}')
+                  'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type+"_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
               .putFile(list[i]!);
         });
       }
@@ -273,6 +274,7 @@ class _AmentiesState extends State<Amenties> {
                                         value.pickVideo(i);
                                         setState(() {
                                           _videos = value.videos;
+                                          _videoNames = value.videoNames;
                                         });
                                       },
                                     ))

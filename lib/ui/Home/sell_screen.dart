@@ -81,12 +81,30 @@ class _SellScreenState extends State<SellScreen> {
     List filteredList = plotPagesInformationOriginal
         .where((element) => element[0]['propertyType'] == type)
         .toList();
-    print("filteredList is $filteredList");
-    print(filteredList.length);
     setState(() {
       plotPagesInformation = filteredList;
       numberOfProperties = plotPagesInformation.length.toString();
     });
+  }
+
+  sortPlotsBasedOnTypes(String type){
+
+    //price low to high
+    if(type == "one"){
+      plotPagesInformation.sort((a, b) => int.parse(b[0]['price']).compareTo(int.parse(a[0]['price'])));
+      setState(() {
+        plotPagesInformation;
+      });
+    }
+    // price high to low
+    else if(type == "two "){
+      print("Am I here?");
+      plotPagesInformation.sort((a, b) => int.parse(a[0]['price']).compareTo(int.parse(b[0]['price'])));
+      setState(() {
+        // plotPagesInformation = plotPagesInformation.reversed.toList();
+      });
+    }
+
   }
 
   @override
@@ -265,12 +283,13 @@ class _SellScreenState extends State<SellScreen> {
                             child: SizedBox(
                               height: 40,
                               child: CustomSelector(
-                                dropDownItems: ['one', 'two', 'three'],
+                                dropDownItems: ['one', 'two ', 'three', 'four'],
                                 borderRadius: 10,
                                 onChanged: (value) {
                                   setState(() {
                                     _currentValue = value;
                                   });
+                                  sortPlotsBasedOnTypes(value);
                                 },
                                 chosenValue: _currentValue,
                                 color: Colors.white,

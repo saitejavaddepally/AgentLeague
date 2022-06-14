@@ -98,7 +98,7 @@ class FirestoreDataProvider {
         if (type == "IMAGES") {
           images.add(value);
         } else if (type == "VIDEOS") {
-          videos.add(value);
+          videos.add({"name": item.name, "value": value});
         } else {
           documents.add({"name": item.name, "value": value});
         }
