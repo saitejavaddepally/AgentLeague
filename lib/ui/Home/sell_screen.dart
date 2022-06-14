@@ -3,6 +3,7 @@ import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/realtor_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -158,7 +159,9 @@ class _SellScreenState extends State<SellScreen> {
                                   borderRadius: BorderRadius.circular(10.0)),
                               child: Center(
                                 child: TextField(
-                                  onChanged: (value) {},
+                                  readOnly: true,
+                                  onTap: () => Navigator.pushNamed(
+                                      context, RouteName.searchBy),
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
                                       contentPadding: const EdgeInsets.all(8),
@@ -308,10 +311,15 @@ class _SellScreenState extends State<SellScreen> {
                                           GestureDetector(
                                             onTap: () async {
                                               print(profileImagesSorted);
-                                              final keysAsc = profileImagesSorted.keys.toList()..sort((a, b) => a.compareTo(b));
+                                              final keysAsc =
+                                                  profileImagesSorted.keys
+                                                      .toList()
+                                                    ..sort((a, b) =>
+                                                        a.compareTo(b));
                                               print("Keys are : $keysAsc");
                                               for (final key in keysAsc) {
-                                                profileImages.add(profileImagesSorted[key]);
+                                                profileImages.add(
+                                                    profileImagesSorted[key]);
                                               }
                                               print("Profile Images are: ");
                                               print(profileImages);

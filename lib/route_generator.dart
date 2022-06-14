@@ -17,8 +17,10 @@ import 'package:agent_league/ui/profile.dart';
 import 'package:agent_league/ui/project_explorer.dart';
 import 'package:agent_league/ui/property.dart';
 import 'package:agent_league/ui/property_buying_score.dart';
+import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:agent_league/ui/property_info.dart';
 import 'package:agent_league/ui/realtor_card.dart';
+import 'package:agent_league/ui/search_by.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:agent_league/ui/tour.dart';
@@ -52,6 +54,8 @@ class RouteName {
   static const String uploads = '/uploads';
   static const String chatDetail = '/chat_detail';
   static const String propertyBuyingScore = '/property_buying_score';
+  static const String propertyDigitalization = '/property_digitalization';
+  static const String searchBy = '/search_by';
 }
 
 class RouteGenerator {
@@ -154,6 +158,13 @@ class RouteGenerator {
         return PageTransition(
             child: const PropertyBuyingScore(),
             type: PageTransitionType.leftToRight);
+      case RouteName.propertyDigitalization:
+        return PageTransition(
+            child: const PropertyDigitalization(),
+            type: PageTransitionType.leftToRight);
+      case RouteName.searchBy:
+        return PageTransition(
+            child: const SeachBy(), type: PageTransitionType.leftToRight);
       case RouteName.chatDetail:
         {
           if (args is List) {
