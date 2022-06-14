@@ -20,7 +20,7 @@ class FirestoreDataProvider {
 
   get _documents => documents;
 
-  Future getPlots() async {
+  Future<List> getPlots() async {
     String? userId = await SharedPreferencesHelper().getUserId();
 
     List docs = [];
