@@ -112,7 +112,7 @@ class PropertyPhotosProvider extends ChangeNotifier {
 
 class PropertyDocumentsProvider extends ChangeNotifier {
   List<File?> _docs = List.generate(4, (index) => null);
-  late final List<String?> _docNames = List.generate(5, (index) => null);
+  late final List<String?> _docNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<File?> get docs => UnmodifiableListView(_docs);
   UnmodifiableListView<String?> get docNames => UnmodifiableListView(_docNames);
@@ -137,14 +137,18 @@ class PropertyDocumentsProvider extends ChangeNotifier {
 
 class PropertyVideoProvider extends ChangeNotifier {
   List<File?> _videos = List.generate(4, (index) => null);
+  late final List<String?> _videoNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<File?> get videos => UnmodifiableListView(_videos);
+  UnmodifiableListView<String?> get videoNames => UnmodifiableListView(_videoNames);
 
   void pickVideo(int index) async {
     final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (video == null) return;
 
     final videoTemporary = File(video.path);
+    List splitPath = videoTemporary.path.split('/');
+    _videoNames[index] = splitPath[splitPath.length - 1];
     _videos[index] = videoTemporary;
     notifyListeners();
   }
