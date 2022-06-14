@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final String? hint;
   final bool? isDense;
   final int? maxLength;
+  final TextStyle? style;
   const CustomTextField(
       {this.validator,
       this.onChanged,
@@ -25,6 +26,7 @@ class CustomTextField extends StatelessWidget {
       this.hint,
       this.isDense,
       this.maxLength,
+      this.style,
       Key? key})
       : super(key: key);
 
@@ -38,12 +40,13 @@ class CustomTextField extends StatelessWidget {
       onTap: onTap,
       readOnly: readOnly,
       keyboardType: keyboardType,
+      style: style,
       cursorColor: Colors.white.withOpacity(0.1),
       decoration: InputDecoration(
         isDense: isDense,
         suffixIcon: icon,
         counterText: '',
-        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 5),
         hintText: hint,
         hintStyle: TextStyle(
             fontWeight: FontWeight.w500,

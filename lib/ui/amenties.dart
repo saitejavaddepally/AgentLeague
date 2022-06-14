@@ -100,7 +100,6 @@ class _AmentiesState extends State<Amenties> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AmenitiesProvider()),
         ChangeNotifierProvider(create: (context) => PropertyPhotosProvider()),
         ChangeNotifierProvider(
             create: (context) => PropertyDocumentsProvider()),
@@ -343,36 +342,57 @@ class _AmentiesState extends State<Amenties> {
                                 ],
                               ),
                               const SizedBox(height: 30),
-                              CustomButton(
-                                      text: 'Submit',
-                                      onClick: () async {
-                                        // await uploadToFireStore(
-                                        //     _images, _IMAGE);
-                                        // await uploadToFireStore(
-                                        //     _videos, _VIDEO);
-                                        // await uploadToFireStore(_docs, _DOCS);
-                                        // CollectionReference ref =
-                                        //     FirebaseFirestore.instance
-                                        //         .collection("sell_plots")
-                                        //         .doc(currentUser)
-                                        //         .collection("standlone")
-                                        //         .doc(currentPlot)
-                                        //         .collection("page_3");
-                                        await uploadData().then((value) {
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              RouteName.bottomBar,
-                                              (r) => false);
-                                        });
-                                      },
-                                      width: 102,
-                                      height: 40,
-                                      color: HexColor('FD7E0E'))
-                                  .use(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomButton(
+                                          text: 'Back',
+                                          width: 102,
+                                          height: 40,
+                                          onClick: () {
+                                            print('back');
+                                            Navigator.pop(context);
+                                          },
+                                          color: CustomColors.dark)
+                                      .use(),
+                                  const SizedBox(width: 15),
+                                  CustomButton(
+                                          text: 'Next',
+                                          onClick: () async {
+                                            // await uploadToFireStore(
+                                            //     _images, _IMAGE);
+                                            // await uploadToFireStore(
+                                            //     _videos, _VIDEO);
+                                            // await uploadToFireStore(_docs, _DOCS);
+                                            // CollectionReference ref =
+                                            //     FirebaseFirestore.instance
+                                            //         .collection("sell_plots")
+                                            //         .doc(currentUser)
+                                            //         .collection("standlone")
+                                            //         .doc(currentPlot)
+                                            //         .collection("page_3");
+                                            // await uploadData().then((value) {
+                                            //   Navigator.pushNamedAndRemoveUntil(
+                                            //       context,
+                                            //       RouteName.bottomBar,
+                                            //       (r) => false);
+                                            // });
+                                            print('next');
+                                            Navigator.pushNamed(
+                                                context,
+                                                RouteName
+                                                    .propertyDigitalization);
+                                          },
+                                          width: 102,
+                                          height: 40,
+                                          color: HexColor('FD7E0E'))
+                                      .use(),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   )
