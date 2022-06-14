@@ -3,6 +3,7 @@ import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
+import '../components/custom_button.dart';
 import '../components/custom_title.dart';
 import '../theme/colors.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
@@ -84,6 +85,26 @@ class SearchLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 10.0, right: 25),
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          CustomButton(
+            text: 'Reset',
+            onClick: () {},
+            color: HexColor('082640'),
+            width: 89,
+            height: 41,
+          ).use(),
+          const SizedBox(width: 20),
+          CustomButton(
+            text: 'Submit',
+            onClick: () {},
+            color: HexColor('FD7E0E'),
+            width: 102,
+            height: 41,
+          ).use(),
+        ]),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
@@ -142,6 +163,26 @@ class Price extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 10.0, right: 25),
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          CustomButton(
+            text: 'Reset',
+            onClick: () {},
+            color: HexColor('082640'),
+            width: 89,
+            height: 41,
+          ).use(),
+          const SizedBox(width: 20),
+          CustomButton(
+            text: 'Submit',
+            onClick: () {},
+            color: HexColor('FD7E0E'),
+            width: 102,
+            height: 41,
+          ).use(),
+        ]),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Column(
