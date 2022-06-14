@@ -60,9 +60,9 @@ class _TourState extends State<Tour> {
                       itemCount: res.length,
                       itemBuilder: (context, index) {
                         var videoLink =
-                            res[index];
+                            res[index]['value'];
 
-                        return VideoPlayPage(videoLink: videoLink);
+                        return VideoPlayPage(videoLink: videoLink, videoName: res[index]['name']);
                       }))
             ]),
           ),
@@ -74,8 +74,9 @@ class _TourState extends State<Tour> {
 
 class VideoPlayPage extends StatefulWidget {
   final String videoLink;
+  final String videoName;
 
-  const VideoPlayPage({required this.videoLink, Key? key}) : super(key: key);
+  const VideoPlayPage({required this.videoLink, required this.videoName, Key? key}) : super(key: key);
 
   @override
   State<VideoPlayPage> createState() => _VideoPlayPageState();
@@ -142,7 +143,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text('Drawing room overview',
+                            child: Text(widget.videoName,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,

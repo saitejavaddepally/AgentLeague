@@ -1,11 +1,18 @@
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/ui/realtor_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:open_file/open_file.dart';
 import '../Services/auth_methods.dart';
 import '../theme/colors.dart';
+import 'package:app_utils/app_utils.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'dart:math';
+import 'package:path_provider/path_provider.dart';
 
 class GalleryScreen extends StatefulWidget {
   const GalleryScreen({Key? key}) : super(key: key);
@@ -29,6 +36,20 @@ class _GalleryScreenState extends State<GalleryScreen> {
     super.initState();
   }
 
+
+
+  Future urlToFile(String imageUrl) async {
+    var rng = Random();
+    final directory = await getApplicationDocumentsDirectory();
+    String tempPath = directory.path + '/' + (rng.nextInt(100)).toString() + '.png';
+    print("temp path is $tempPath");
+    File file = File(tempPath);
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    await file.writeAsBytes(response.bodyBytes);
+    return tempPath;
+    return tempPath;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,13 +66,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
             Container(
                 margin: const EdgeInsets.only(right: 24),
                 child:
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.share)))
+                IconButton(onPressed: () {}, icon: const Icon(Icons.share)))
           ],
         ),
         body: FutureBuilder(
             future: FirestoreDataProvider().getFirestoreFiles(images),
             builder: (context, snapshot) {
-              if(snapshot.connectionState != ConnectionState.done){
+              if (snapshot.connectionState != ConnectionState.done) {
                 return const SpinKitThreeBounce(
                   size: 30,
                   color: Colors.white,
@@ -66,14 +87,36 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   child: Column(
                     children: [
                       for (var i = 0; i < res.length; i += 1)
-                        Container(
-                          height: 200,
-                          margin: const EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Image.network(res[i], fit: BoxFit.fill,),
-                        ),
+                        FutureBuilder(
+                            future: urlToFile(res[i]),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState !=
+                                  ConnectionState.done) {
+                                return const SpinKitCircle(
+                                  size: 30,
+                                  color: Colors.white,
+                                );
+                              }
+                              return GestureDetector(
+                                onTap: () async {
+                                  String imagePath = snapshot.data as String;
+                                  await OpenFile.open(imagePath);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 250,
+                                  margin: const EdgeInsets.only(bottom: 20),
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(res[i]),
+                                          fit: BoxFit.fitWidth),
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.white),
+
+                                  // child: Image.network(res[i], height: 200, width: MediaQuery.of(context).size.width, fit: BoxFit.fitWidth, ),
+                                ),
+                              );
+                            }),
                     ],
                   ),
                 ),

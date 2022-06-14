@@ -43,23 +43,23 @@ class UploadPropertiesToFirestore {
           .collection("standlone");
 
       ref.doc(value).set({"data": 1});
-      await ref.doc(value).collection("page_1").add(data);
+      await ref.doc(value).collection("pages_info").add(data);
       print("I am Done here");
     });
   }
-
-  Future postPropertyPageTwo(Map<String, dynamic> data) async {
-    String? userId = await SharedPreferencesHelper().getUserId();
-
-    await SharedPreferencesHelper().getCurrentPlot().then((value) async {
-      print("Posting property $value");
-      FirebaseFirestore.instance
-          .collection("sell_plots")
-          .doc(userId)
-          .collection("standlone")
-          .doc(value)
-          .collection("page_2")
-          .add(data);
-    });
-  }
+  //
+  // Future postPropertyPageTwo(Map<String, dynamic> data) async {
+  //   String? userId = await SharedPreferencesHelper().getUserId();
+  //
+  //   await SharedPreferencesHelper().getCurrentPlot().then((value) async {
+  //     print("Posting property $value");
+  //     FirebaseFirestore.instance
+  //         .collection("sell_plots")
+  //         .doc(userId)
+  //         .collection("standlone")
+  //         .doc(value)
+  //         .collection("page_2")
+  //         .add(data);
+  //   });
+  // }
 }

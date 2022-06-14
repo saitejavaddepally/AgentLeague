@@ -524,11 +524,18 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                       .validate()) {
                                                     if (propertyOne
                                                         .isSkipPageTwo) {
+
+                                                      Map<String, dynamic>
+                                                      data =
+                                                      propertyOne.getMap();
+                                                      data.addAll({
+                                                        "latitude": _latitude,
+                                                        "longitude": _longitude
+                                                      });
                                                       Navigator.pushNamed(
                                                           context,
                                                           RouteName.amenities,
-                                                          arguments: <String,
-                                                              dynamic>{});
+                                                          arguments: data);
                                                     } else {
                                                       await SharedPreferencesHelper()
                                                           .savePageOneInformation(

@@ -29,6 +29,7 @@ class SharedPreferencesHelper {
     return preferences.getString(currentCardPage);
   }
 
+
   Future<void> saveUserId(String userId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString(currentUserId, userId);
@@ -49,15 +50,21 @@ class SharedPreferencesHelper {
     return preferences.getString(numberOfProperties);
   }
 
-  Future<void> saveListOfCardImages(List<String> properties) async {
+  Future<void> saveListOfCards(var properties) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setStringList(images, properties);
+    preferences.setString(images, properties.toString());
   }
 
-  Future<List<String>?> getListOfCardImages() async {
+  Future<String?> getListOfCards() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getStringList(images);
+    return preferences.getString(images);
   }
+
+  removeListOfCards() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove(images);
+  }
+
 
   Future<void> savePageOneInformation(Map<String, dynamic> pageInfo) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -78,4 +85,6 @@ class SharedPreferencesHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(pageTwoInformation);
   }
+
+
 }

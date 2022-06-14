@@ -148,8 +148,9 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> getMap() {
+  Map<String, dynamic> getMap(Map data) {
     return {
+      ...data,
       'furnished': _furnishedChosenValue,
       'floors': _floorsChosenValue,
       'bed_room': _bedRoomChosenValue,
