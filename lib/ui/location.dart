@@ -22,7 +22,7 @@ class _LocationScreenState extends State<LocationScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   List<Marker> _markers = [];
   final GooglePlace _searchPlaces =
-      GooglePlace("AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0");
+  GooglePlace("AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0");
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
@@ -33,13 +33,17 @@ class _LocationScreenState extends State<LocationScreen> {
     super.initState();
   }
 
-  Future<Position> getPlotLocation() async {
+  Future<Map<String, dynamic>> getPlotLocation() async {
     var number = await SharedPreferencesHelper().getCurrentPage();
-    print(number);
+    print("number is $number");
     List data = await FirestoreDataProvider()
         .getPlotPagesInformation(int.parse(number!));
-    var location = data[0]['location'];
-    return location;
+    Map locationData = data[0];
+    double _lat = locationData['latitude'];
+    double _long = locationData['longitude'];
+    print("Am I here $_lat and $_long");
+
+    return {"latitude": _lat, "longitude": _long};
   }
 
   Future<void> getNearbyLocations(
@@ -96,147 +100,146 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: CustomColors.dark,
-        leading: IconButton(
-          padding: const EdgeInsets.only(left: 16),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: CustomColors.dark,
+          leading: IconButton(
+            padding: const EdgeInsets.only(left: 16),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          elevation: 0,
+          actions: [
+            Container(
+                margin: const EdgeInsets.only(right: 24),
+                child: IconButton(
+                    onPressed: () {},
+                    icon: Image.asset('assets/location_info.png')))
+          ],
         ),
-        elevation: 0,
-        actions: [
-          Container(
-              margin: const EdgeInsets.only(right: 24),
-              child: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset('assets/location_info.png')))
-        ],
-      ),
-      body: FutureBuilder<Position>(
-          future: getPlotLocation(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final double _lat = snapshot.data!.latitude;
-              final double _long = snapshot.data!.longitude;
-              final LatLng _latlng = LatLng(_lat, _long);
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  children: [
-                    Expanded(
-                        child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 8),
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: GoogleMap(
-                          onMapCreated: _onMapCreated,
-                          markers: Set.from(_markers
-                            ..add(Marker(
-                                markerId: const MarkerId("User Location"),
-                                position: _latlng,
-                                infoWindow:
-                                    const InfoWindow(title: "Your Location")))),
-                          initialCameraPosition: CameraPosition(
-                            target: _latlng,
-                            zoom: 15.0,
-                          ),
+        body: FutureBuilder(
+            future: getPlotLocation(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                print("data is ${snapshot.data}");
+                Map? locationCoordinates = snapshot.data as Map?;
+                final double _lat = locationCoordinates!['latitude'];
+                final double _long = locationCoordinates['longitude'];
+                final LatLng _latlng = LatLng(_lat, _long);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white, width: 8),
+                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.white,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: GoogleMap(
+                                onMapCreated: _onMapCreated,
+                                markers: Set.from(_markers
+                                  ..add(Marker(
+                                      markerId: const MarkerId("User Location"),
+                                      position: _latlng,
+                                      infoWindow:
+                                      const InfoWindow(title: "Your Location")))),
+                                initialCameraPosition: CameraPosition(
+                                  target: _latlng,
+                                  zoom: 15.0,
+                                ),
+                              ),
+                            ),
+                          )),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        height: 70,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CircularNeumorphicButton(
+                                  color: HexColor('#213c53'),
+                                  isNeu: true,
+                                  imageName: 'loc_1',
+                                  width: 24,
+                                  padding: 8,
+                                  onTap: () async {
+                                    await getNearbyLocations(_lat, _long,
+                                        "hospital", BitmapDescriptor.hueAzure);
+                                  }).use(),
+                            ),
+                            Expanded(
+                              child: CircularNeumorphicButton(
+                                  color: HexColor('#213c53'),
+                                  isNeu: true,
+                                  imageName: 'loc_2',
+                                  width: 24,
+                                  padding: 8,
+                                  onTap: () async {
+                                    await getNearbyLocations(
+                                        _lat, _long, "school",
+                                        BitmapDescriptor.hueCyan);
+                                  }).use(),
+                            ),
+                            Expanded(
+                              child: CircularNeumorphicButton(
+                                  color: HexColor('#213c53'),
+                                  isNeu: true,
+                                  imageName: 'loc_3',
+                                  width: 24,
+                                  padding: 8,
+                                  onTap: () async {
+                                    await getNearbyLocations(_lat, _long,
+                                        "supermarket",
+                                        BitmapDescriptor.hueMagenta);
+                                  }).use(),
+                            ),
+                            Expanded(
+                              child: CircularNeumorphicButton(
+                                  color: HexColor('#213c53'),
+                                  isNeu: true,
+                                  imageName: 'loc_4',
+                                  width: 24,
+                                  padding: 8,
+                                  onTap: () async {
+                                    await getNearbyLocations(
+                                        _lat,
+                                        _long,
+                                        "subway_station",
+                                        BitmapDescriptor.hueViolet);
+                                  }).use(),
+                            ),
+                            Expanded(
+                              child: CircularNeumorphicButton(
+                                  color: HexColor('#213c53'),
+                                  isNeu: true,
+                                  imageName: 'loc_5',
+                                  width: 24,
+                                  padding: 8,
+                                  onTap: () async {
+                                    await getNearbyLocations(_lat, _long, "store",
+                                        BitmapDescriptor.hueGreen);
+                                  }).use(),
+                            ),
+                          ],
                         ),
-                      ),
-                    )),
-                    const SizedBox(height: 30),
-                    SizedBox(
-                      height: 70,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CircularNeumorphicButton(
-                                color: HexColor('#213c53'),
-                                isNeu: true,
-                                imageName: 'loc_1',
-                                width: 24,
-                                padding: 8,
-                                onTap: () async {
-                                  await getNearbyLocations(_lat, _long,
-                                      "hospital", BitmapDescriptor.hueAzure);
-                                }).use(),
-                          ),
-                          Expanded(
-                            child: CircularNeumorphicButton(
-                                color: HexColor('#213c53'),
-                                isNeu: true,
-                                imageName: 'loc_2',
-                                width: 24,
-                                padding: 8,
-                                onTap: () async {
-                                  await getNearbyLocations(_lat, _long,
-                                      "school", BitmapDescriptor.hueCyan);
-                                }).use(),
-                          ),
-                          Expanded(
-                            child: CircularNeumorphicButton(
-                                color: HexColor('#213c53'),
-                                isNeu: true,
-                                imageName: 'loc_3',
-                                width: 24,
-                                padding: 8,
-                                onTap: () async {
-                                  await getNearbyLocations(
-                                      _lat,
-                                      _long,
-                                      "supermarket",
-                                      BitmapDescriptor.hueMagenta);
-                                }).use(),
-                          ),
-                          Expanded(
-                            child: CircularNeumorphicButton(
-                                color: HexColor('#213c53'),
-                                isNeu: true,
-                                imageName: 'loc_4',
-                                width: 24,
-                                padding: 8,
-                                onTap: () async {
-                                  await getNearbyLocations(
-                                      _lat,
-                                      _long,
-                                      "subway_station",
-                                      BitmapDescriptor.hueViolet);
-                                }).use(),
-                          ),
-                          Expanded(
-                            child: CircularNeumorphicButton(
-                                color: HexColor('#213c53'),
-                                isNeu: true,
-                                imageName: 'loc_5',
-                                width: 24,
-                                padding: 8,
-                                onTap: () async {
-                                  await getNearbyLocations(_lat, _long, "store",
-                                      BitmapDescriptor.hueGreen);
-                                }).use(),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text(snapshot.error.toString()));
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
+                      )
+                    ],
+                  ),
+                );
+              }
+              else  if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            })
     );
   }
 }
-
-
-
 
 // import 'dart:async';
 // import 'dart:convert';

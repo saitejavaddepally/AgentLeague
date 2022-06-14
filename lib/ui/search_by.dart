@@ -167,6 +167,7 @@ class _SearchLocationState extends State<SearchLocation> {
 
   @override
   Widget build(BuildContext context) {
+    getAllPlots();
     return ChangeNotifierProvider(
         create: (context) => LocationSearchProvider(),
         builder: (context, child) {

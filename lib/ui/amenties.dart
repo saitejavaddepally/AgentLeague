@@ -32,9 +32,10 @@ class Amenties extends StatefulWidget {
 }
 
 class _AmentiesState extends State<Amenties> {
-  late List<File?> _images;
-  late List<File?> _docs;
-  late List<File?> _videos;
+  late List<File?> _images = [];
+  late List<File?> _docs = [];
+  late List<File?> _videos = [];
+  late List<String?> _docNames;
   static const String _IMAGE = 'images';
   static const String _VIDEO = 'videos';
   static const String _DOCS = 'docs';
@@ -45,59 +46,29 @@ class _AmentiesState extends State<Amenties> {
   @override
   void initState() {
     super.initState();
-    configLoading();
-  }
-
-  void configLoading() {
-    EasyLoading.instance
-      ..displayDuration = const Duration(milliseconds: 2000)
-      ..indicatorType = EasyLoadingIndicatorType.spinningCircle
-      ..loadingStyle = EasyLoadingStyle.dark
-      ..indicatorSize = 45.0
-      ..radius = 10.0
-      ..progressColor = Colors.yellow
-      ..backgroundColor = Colors.green
-      ..indicatorColor = Colors.yellow
-      ..textColor = Colors.white
-      ..maskColor = Colors.blue.withOpacity(0.5)
-      ..userInteractions = true
-      ..dismissOnTap = false;
+    print("DATA is ");
+    print(widget.formData);
   }
 
   Future uploadData() async {
     await EasyLoading.show(
-      status: 'Uploading...please do not close app',
+      status: 'Uploading...please wait',
       maskType: EasyLoadingMaskType.black,
     );
 
-    await UploadPropertiesToFirestore()
-        .postPropertyPageOne({"pageOne": "test1"}).then((value) async {
-      await UploadPropertiesToFirestore()
-          .postPropertyPageTwo({"pageTwo": "test2"}).then((value) async {
-        await uploadToFireStore(_images, _IMAGE).then((value) async {
-          print(value);
-          await uploadToFireStore(_videos, _VIDEO).then((value) async {
-            print(value);
-            await uploadToFireStore(_docs, _DOCS).then((value) async {
-              print(value);
-              CollectionReference ref = FirebaseFirestore.instance
-                  .collection("sell_plots")
-                  .doc(currentUser)
-                  .collection("standlone")
-                  .doc(currentPlot)
-                  .collection("page_3");
+    await UploadPropertiesToFirestore().postPropertyPageOne(widget.formData);
+    print("I am done Here? ");
+    print("images are $_images");
+    print("docs are $_docs");
+    print("videos are $_videos");
 
-              await ref.add({
-                "path_to_storage":
-                    "sell_images/$currentUser/standlone/$currentPlot/"
-              });
-            }).then((value) async {
-              await EasyLoading.showSuccess('Success!');
-            });
-          });
-        });
-      });
-    });
+    await uploadToFireStore(_images, _IMAGE);
+
+    await uploadToFireStore(_videos, _VIDEO);
+
+    await uploadToFireStore(_docs, _DOCS);
+
+    await EasyLoading.dismiss();
   }
 
   Future uploadToFireStore(List<File?> list, String type) async {
@@ -116,7 +87,7 @@ class _AmentiesState extends State<Amenties> {
           snapshot = await _firebaseStorage
               .ref()
               .child(
-                  'sell_images/$value/standlone/$currentPlot/$type/${type}_$i')
+                  'sell_images/$value/standlone/$currentPlot/$type/${(type != 'docs') ? type+"_$i" : _docNames[i]}')
               .putFile(list[i]!);
         });
       }
@@ -177,6 +148,10 @@ class _AmentiesState extends State<Amenties> {
                                       imageName: 'Image ${i + 1}',
                                       onTap: () {
                                         value.pickImage(i);
+                                        setState(() {
+                                          _images = value.images;
+                                        });
+                                        print("values are ${value.images}");
                                       },
                                     ))
                                 ],
@@ -193,6 +168,10 @@ class _AmentiesState extends State<Amenties> {
                                       imageName: 'Image ${i + 1}',
                                       onTap: () {
                                         value.pickImage(i);
+                                        setState(() {
+                                          _images = value.images;
+                                        });
+                                        print("values are ${value.images}");
                                       },
                                     ))
                                 ],
@@ -239,6 +218,10 @@ class _AmentiesState extends State<Amenties> {
                                       imageName: 'Doc ${i + 1}',
                                       onTap: () {
                                         value.pickDocuments(i);
+                                        setState(() {
+                                          _docs = value.docs;
+                                          _docNames = value.docNames;
+                                        });
                                       },
                                     ))
                                 ],
@@ -287,6 +270,9 @@ class _AmentiesState extends State<Amenties> {
                                       imageName: 'Video ${i + 1}',
                                       onTap: () {
                                         value.pickVideo(i);
+                                        setState(() {
+                                          _videos = value.videos;
+                                        });
                                       },
                                     ))
                                 ],
