@@ -1,6 +1,8 @@
 import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/custom_text_field.dart';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_button.dart';
@@ -98,7 +100,10 @@ class SearchLocation extends StatelessWidget {
           const SizedBox(width: 20),
           CustomButton(
             text: 'Submit',
-            onClick: () {},
+            onClick: () {
+              print("Am I here? ");
+              Navigator.pop(context);
+            },
             color: HexColor('FD7E0E'),
             width: 102,
             height: 41,
@@ -157,6 +162,9 @@ class SearchLocation extends StatelessWidget {
   }
 }
 
+String? minimumValue;
+String? maximumValue;
+
 class Price extends StatelessWidget {
   const Price({Key? key}) : super(key: key);
 
@@ -168,7 +176,8 @@ class Price extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           CustomButton(
             text: 'Reset',
-            onClick: () {},
+            onClick: () {
+            },
             color: HexColor('082640'),
             width: 89,
             height: 41,
@@ -176,7 +185,9 @@ class Price extends StatelessWidget {
           const SizedBox(width: 20),
           CustomButton(
             text: 'Submit',
-            onClick: () {},
+            onClick: () {
+              Navigator.pop(context);
+            },
             color: HexColor('FD7E0E'),
             width: 102,
             height: 41,
@@ -199,11 +210,11 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [],
+                                dropDownItems: ['100', '200', '300'],
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: '')
+                                chosenValue: minimumValue)
                             .use(),
                       ),
                       Container(
@@ -223,11 +234,11 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [],
+                                dropDownItems: ['100', '200'],
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: '')
+                                chosenValue: maximumValue)
                             .use(),
                       ),
                       Container(
@@ -253,11 +264,11 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [],
+                                dropDownItems: [100, 200, 300],
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: '')
+                                chosenValue: maximumValue)
                             .use(),
                       ),
                       Container(

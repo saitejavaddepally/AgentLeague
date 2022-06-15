@@ -57,7 +57,9 @@ class _AmentiesState extends State<Amenties> {
       maskType: EasyLoadingMaskType.black,
     );
 
-    await UploadPropertiesToFirestore().postPropertyPageOne(widget.formData);
+    Map<String, dynamic> dataToBeUploaded = widget.formData;
+    dataToBeUploaded.addAll({"timestamp" : DateTime.now().toString()});
+    await UploadPropertiesToFirestore().postPropertyPageOne(dataToBeUploaded);
     print("I am done Here? ");
     print("images are $_images");
     print("docs are $_docs");
@@ -377,7 +379,7 @@ class _AmentiesState extends State<Amenties> {
                                             //       RouteName.bottomBar,
                                             //       (r) => false);
                                             // });
-                                            print('next');
+                                            await uploadData();
                                             Navigator.pushNamed(
                                                 context,
                                                 RouteName

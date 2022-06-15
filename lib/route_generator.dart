@@ -66,7 +66,7 @@ class RouteGenerator {
     switch (settings.name) {
       case RouteName.bottomBar:
         return PageTransition(
-            child: const BottomBar(), type: PageTransitionType.leftToRight);
+            child: BottomBar(isIndexGiven: false, index:  0,), type: PageTransitionType.leftToRight);
       case RouteName.onboard:
         return PageTransition(
             child: const Onboarding(), type: PageTransitionType.leftToRight);

@@ -38,7 +38,7 @@ class _SellScreenState extends State<SellScreen> {
   int counter = 0;
   List<String> profileImages = [];
   Map profileImagesSorted = {};
-  String _currentValue = "one";
+  String? _currentValue;
   String numberOfProperties = "Loading .. ";
   bool loading = false;
   List plotPagesInformationOriginal = [];
@@ -90,7 +90,7 @@ class _SellScreenState extends State<SellScreen> {
 
   sortPlotsBasedOnTypes(String type) {
     //price low to high
-    if (type == "one") {
+    if (type == "Price High - Low ") {
       plotPagesInformation.sort((a, b) =>
           int.parse(b[0]['price']).compareTo(int.parse(a[0]['price'])));
       setState(() {
@@ -98,10 +98,24 @@ class _SellScreenState extends State<SellScreen> {
       });
     }
     // price high to low
-    else if (type == "two ") {
+    else if (type == "Price Low - High") {
       print("Am I here?");
       plotPagesInformation.sort((a, b) =>
           int.parse(a[0]['price']).compareTo(int.parse(b[0]['price'])));
+      setState(() {
+        // plotPagesInformation = plotPagesInformation.reversed.toList();
+      });
+    }
+    else if (type == "Date - Recent First"){
+      plotPagesInformation.sort((a, b) =>
+          DateTime.parse(a[0]['timestamp']).compareTo(DateTime.parse(b[0]['timestamp'])));
+      setState(() {
+        // plotPagesInformation = plotPagesInformation.reversed.toList();
+      });
+    }
+    else {
+      plotPagesInformation.sort((a, b) =>
+          DateTime.parse(b[0]['timestamp']).compareTo(DateTime.parse(a[0]['timestamp'])));
       setState(() {
         // plotPagesInformation = plotPagesInformation.reversed.toList();
       });
@@ -230,17 +244,17 @@ class _SellScreenState extends State<SellScreen> {
                               child: SizedBox(
                                 height: 100,
                                 child: CircularNeumorphicButton(
-                                    imageName: element['img'].toString(),
-                                    size: 55,
-                                    onTap: () {
-                                      String name =
-                                      element['name'].toString();
-                                      var length = name.length;
-                                      filterPlotsBasedOnTypes(
-                                          name.substring(0, length - 1));
-                                    },
-                                    isTextUnder: true,
-                                    text: element['name'].toString())
+                                        imageName: element['img'].toString(),
+                                        size: 55,
+                                        onTap: () {
+                                          String name =
+                                              element['name'].toString();
+                                          var length = name.length;
+                                          filterPlotsBasedOnTypes(
+                                              name.substring(0, length - 1));
+                                        },
+                                        isTextUnder: true,
+                                        text: element['name'].toString())
                                     .use(),
                               ),
                             ),
@@ -286,7 +300,12 @@ class _SellScreenState extends State<SellScreen> {
                             child: SizedBox(
                               height: 40,
                               child: CustomSelector(
-                                dropDownItems: ['one', 'two ', 'three', 'four'],
+                                dropDownItems: [
+                                  'Price Low - High',
+                                  'Price High - Low ',
+                                  'Date - Recent First',
+                                  'Date - Recent Last'
+                                ],
                                 borderRadius: 10,
                                 onChanged: (value) {
                                   setState(() {
