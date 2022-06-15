@@ -5,6 +5,7 @@ import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/provider/search_by_provider.dart';
 import 'package:agent_league/ui/post_your_property.dart';
+import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
@@ -100,14 +101,14 @@ class _SearchLocationState extends State<SearchLocation> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
-  Future<String?> getCurrentLocation() async {
+  Future<List?> getCurrentLocation() async {
     try {
       final location = GetUserLocation();
       final Position position = await location.determinePosition();
 
       final address = await location.getAddressFromCoordinates(
           LatLng(position.latitude, position.longitude));
-      return address;
+      return [address, position.latitude, position.longitude];
     } on Exception catch (e) {
       if (e.toString() == 'Location services are disabled.') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -126,8 +127,8 @@ class _SearchLocationState extends State<SearchLocation> {
     }
   }
 
-  Future<String?> getMapLocation() async {
-    final String? result = await Navigator.push(
+  Future<List?> getMapLocation() async {
+    final List? result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => FutureBuilder<Position>(
@@ -137,7 +138,11 @@ class _SearchLocationState extends State<SearchLocation> {
                 return PlacePicker(
                   apiKey: 'AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0',
                   onPlacePicked: (result) {
-                    Navigator.of(context).pop(result.formattedAddress);
+                    Navigator.of(context).pop([
+                      result.formattedAddress,
+                      result.geometry!.location.lat,
+                      result.geometry!.location.lng
+                    ]);
                   },
                   hintText: "Search",
                   enableMapTypeButton: false,
@@ -157,17 +162,8 @@ class _SearchLocationState extends State<SearchLocation> {
     return result;
   }
 
-  getAllPlots() {
-    FirestoreDataProvider().getPlots().then((value) {
-      print(value);
-    }).catchError((error) {
-      print(error);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    getAllPlots();
     return ChangeNotifierProvider(
         create: (context) => LocationSearchProvider(),
         builder: (context, child) {
@@ -194,8 +190,13 @@ class _SearchLocationState extends State<SearchLocation> {
                     const SizedBox(width: 20),
                     CustomButton(
                       text: 'Submit',
-                      onClick: () {
-                        if (_formKey.currentState!.validate()) {}
+                      onClick: () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() => isLoading = true);
+                          await _pr.getAllPlots(
+                              _pr.latitude!, _pr.longitude!, _pr.chosenKm!);
+                          setState(() => isLoading = false);
+                        }
                       },
                       color: HexColor('FD7E0E'),
                       width: 102,
@@ -229,18 +230,22 @@ class _SearchLocationState extends State<SearchLocation> {
 
                                 if (result == 1) {
                                   setState(() => isLoading = true);
-                                  final res = await getCurrentLocation();
+                                  final List? res = await getCurrentLocation();
                                   setState(() => isLoading = false);
                                   if (res != null && res.isNotEmpty) {
                                     print(res);
-                                    _pr.locationController.text = res;
+                                    _pr.locationController.text = res[0];
+                                    _pr.latitude = res[1];
+                                    _pr.longitude = res[2];
                                   }
                                 }
                                 if (result == 2) {
-                                  final res = await getMapLocation();
+                                  final List? res = await getMapLocation();
                                   if (res != null && res.isNotEmpty) {
                                     print(res);
-                                    _pr.locationController.text = res;
+                                    _pr.locationController.text = res[0];
+                                    _pr.latitude = res[1];
+                                    _pr.longitude = res[2];
                                   }
                                 }
                               },
@@ -277,7 +282,66 @@ class _SearchLocationState extends State<SearchLocation> {
                             ),
                           )
                         ],
-                      )
+                      ),
+                      const SizedBox(height: 20),
+                      Consumer<LocationSearchProvider>(
+                        builder: (context, value, child) => Expanded(
+                            child: ListView.builder(
+                          itemCount: value.matchedRecords.length,
+                          itemBuilder: (context, index) {
+                            final item = value.matchedRecords[index];
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 15),
+                              padding: const EdgeInsets.only(
+                                  left: 15, top: 15, right: 5, bottom: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Colors.white),
+                              child: Row(children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    width: MediaQuery.of(context).size.width *
+                                        0.30,
+                                    child: Image.asset(
+                                        'assets/lead_box_image.png',
+                                        fit: BoxFit.fill)),
+                                Expanded(
+                                    child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Column(children: [
+                                    CustomContainerText(
+                                        text1: 'Category',
+                                        text2: '${item['propertyCategory']}'),
+                                    const SizedBox(height: 3),
+                                    CustomContainerText(
+                                        text1: 'Type',
+                                        text2: '${item['propertyType']}'),
+                                    const SizedBox(height: 3),
+                                    CustomContainerText(
+                                        text1: 'Area',
+                                        text2: '${item['size']}'),
+                                    const SizedBox(height: 3),
+                                    CustomContainerText(
+                                        text1: 'Location',
+                                        text2: '${item['location']}'),
+                                    const SizedBox(height: 3),
+                                    CustomContainerText(
+                                        text1: 'Price',
+                                        text2: '${item['price']} INR'),
+                                    const SizedBox(height: 3),
+                                    CustomContainerText(
+                                        text1: 'Possession',
+                                        text2: '${item['possessionStatus']}'),
+                                    const SizedBox(height: 3),
+                                  ]),
+                                ))
+                              ]),
+                            );
+                          },
+                        )),
+                      ),
                     ],
                   ),
                 ),

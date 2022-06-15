@@ -34,7 +34,7 @@ class _SellScreenState extends State<SellScreen> {
   int counter = 0;
   List<String> profileImages = [];
   Map profileImagesSorted = {};
-  String _currentValue = "one";
+  String? _currentValue;
   String numberOfProperties = "Loading .. ";
   bool loading = false;
   List plotPagesInformationOriginal = [];
@@ -226,17 +226,17 @@ class _SellScreenState extends State<SellScreen> {
                               child: SizedBox(
                                 height: 100,
                                 child: CircularNeumorphicButton(
-                                    imageName: element['img'].toString(),
-                                    size: 55,
-                                    onTap: () {
-                                      String name =
-                                      element['name'].toString();
-                                      var length = name.length;
-                                      filterPlotsBasedOnTypes(
-                                          name.substring(0, length - 1));
-                                    },
-                                    isTextUnder: true,
-                                    text: element['name'].toString())
+                                        imageName: element['img'].toString(),
+                                        size: 55,
+                                        onTap: () {
+                                          String name =
+                                              element['name'].toString();
+                                          var length = name.length;
+                                          filterPlotsBasedOnTypes(
+                                              name.substring(0, length - 1));
+                                        },
+                                        isTextUnder: true,
+                                        text: element['name'].toString())
                                     .use(),
                               ),
                             ),
@@ -282,7 +282,12 @@ class _SellScreenState extends State<SellScreen> {
                             child: SizedBox(
                               height: 40,
                               child: CustomSelector(
-                                dropDownItems: ['one', 'two ', 'three', 'four'],
+                                dropDownItems: [
+                                  'Price Low - High',
+                                  'Price High - Low ',
+                                  'Date - Recent First',
+                                  'Date - Recent Last'
+                                ],
                                 borderRadius: 10,
                                 onChanged: (value) {
                                   setState(() {
