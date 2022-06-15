@@ -37,7 +37,9 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                     ])),
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/');
+                  },
                   style: TextButton.styleFrom(
                       backgroundColor: HexColor('FE7F0E'),
                       minimumSize: const Size(149, 44),

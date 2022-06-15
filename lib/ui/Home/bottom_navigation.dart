@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key}) : super(key: key);
+  bool isIndexGiven;
+  int index;
+  BottomBar({Key? key, required this.isIndexGiven, required this.index}) : super(key: key);
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -43,7 +45,7 @@ class _BottomBarState extends State<BottomBar> {
               bottomNavigationBar: SizedBox(
                 height: 72,
                 child: BottomNavigationBar(
-                    currentIndex: _currentIndex,
+                    currentIndex: (widget.isIndexGiven) ? widget.index :  _currentIndex,
                     onTap: (index) {
                       setState(() {
                         _currentIndex = index;

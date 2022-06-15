@@ -290,6 +290,7 @@ class _SearchLocationState extends State<SearchLocation> {
                           itemCount: value.matchedRecords.length,
                           itemBuilder: (context, index) {
                             final item = value.matchedRecords[index];
+
                             return Container(
                               margin: const EdgeInsets.only(bottom: 15),
                               padding: const EdgeInsets.only(
@@ -299,13 +300,14 @@ class _SearchLocationState extends State<SearchLocation> {
                                   color: Colors.white),
                               child: Row(children: [
                                 Container(
+                                    height: 135,
                                     decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(12)),
                                     width: MediaQuery.of(context).size.width *
                                         0.30,
-                                    child: Image.asset(
-                                        'assets/lead_box_image.png',
+                                    child: Image.network(
+                                        value.profilePath[index],
                                         fit: BoxFit.fill)),
                                 Expanded(
                                     child: Container(
@@ -352,6 +354,9 @@ class _SearchLocationState extends State<SearchLocation> {
   }
 }
 
+String? minimumValue;
+String? maximumValue;
+
 class Price extends StatelessWidget {
   const Price({Key? key}) : super(key: key);
 
@@ -371,7 +376,9 @@ class Price extends StatelessWidget {
           const SizedBox(width: 20),
           CustomButton(
             text: 'Submit',
-            onClick: () {},
+            onClick: () {
+              Navigator.pop(context);
+            },
             color: HexColor('FD7E0E'),
             width: 102,
             height: 41,
@@ -394,11 +401,11 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [],
+                                dropDownItems: ['100', '200', '300'],
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: '')
+                                chosenValue: minimumValue)
                             .use(),
                       ),
                       Container(
@@ -418,11 +425,11 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [],
+                                dropDownItems: ['100', '200'],
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: '')
+                                chosenValue: maximumValue)
                             .use(),
                       ),
                       Container(
@@ -448,11 +455,11 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [],
+                                dropDownItems: [100, 200, 300],
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: '')
+                                chosenValue: maximumValue)
                             .use(),
                       ),
                       Container(

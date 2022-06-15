@@ -70,7 +70,7 @@ class _MyAppState extends State {
         future: AuthMethods().getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return const BottomBar();
+            return BottomBar(isIndexGiven: false, index: 0,);
           } else {
             return const Onboarding();
           }

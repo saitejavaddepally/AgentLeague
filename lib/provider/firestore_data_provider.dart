@@ -55,7 +55,7 @@ class FirestoreDataProvider {
       }
     });
 
-      return detailsOfPages;
+    return detailsOfPages;
   }
 
   Future getProfileImage(String path) async {
