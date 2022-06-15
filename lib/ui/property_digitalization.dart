@@ -89,13 +89,13 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                       child: Container(
                     margin: const EdgeInsets.only(left: 10),
                     child: Column(children: [
-                      const CustomContainerText(
+                      const CustomContainerText1(
                           text1: 'Price', text2: '500000 INR'),
                       const SizedBox(height: 3),
-                      const CustomContainerText(
+                      const CustomContainerText1(
                           text1: 'Status', text2: 'Uploaded'),
                       const SizedBox(height: 3),
-                      const CustomContainerText(
+                      const CustomContainerText1(
                           text1: 'Total', text2: '99 INR'),
                       const SizedBox(height: 3),
                       Row(
@@ -297,10 +297,10 @@ class CustomPriceText extends StatelessWidget {
   }
 }
 
-class CustomContainerText extends StatelessWidget {
+class CustomContainerText1 extends StatelessWidget {
   final String text1;
   final String text2;
-  const CustomContainerText(
+  const CustomContainerText1(
       {required this.text1, required this.text2, Key? key})
       : super(key: key);
 

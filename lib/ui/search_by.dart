@@ -1,32 +1,44 @@
 import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/custom_text_field.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
-import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/provider/search_by_provider.dart';
 import 'package:agent_league/ui/post_your_property.dart';
 import 'package:agent_league/ui/property_digitalization.dart';
-import 'package:flutter/material.dart';
+import 'package:agent_league/ui/realtor_card.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_button.dart';
+import '../components/custom_container_text.dart';
 import '../components/custom_title.dart';
+import '../helper/shared_preferences.dart';
 import '../location_service.dart';
 import '../theme/colors.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SeachBy extends StatefulWidget {
-  const SeachBy({Key? key}) : super(key: key);
+  List plotPagesInformation;
+
+  SeachBy({Key? key, required this.plotPagesInformation}) : super(key: key);
 
   @override
   State<SeachBy> createState() => _SeachByState();
 }
 
+List plotPageInformation = [];
+
 class _SeachByState extends State<SeachBy> {
+  @override
+  void initState() {
+    plotPageInformation = widget.plotPagesInformation;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -81,8 +93,11 @@ class _SeachByState extends State<SeachBy> {
                 ],
               ),
             ),
-            const Expanded(
-                child: TabBarView(children: [Price(), SearchLocation()]))
+            Expanded(
+                child: TabBarView(children: [
+              Price(),
+              SearchLocation(plotPageInformation: plotPageInformation)
+            ]))
           ]),
         ),
       ),
@@ -91,7 +106,9 @@ class _SeachByState extends State<SeachBy> {
 }
 
 class SearchLocation extends StatefulWidget {
-  const SearchLocation({Key? key}) : super(key: key);
+  final List plotPageInformation;
+  const SearchLocation({required this.plotPageInformation, Key? key})
+      : super(key: key);
 
   @override
   State<SearchLocation> createState() => _SearchLocationState();
@@ -193,7 +210,7 @@ class _SearchLocationState extends State<SearchLocation> {
                       onClick: () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() => isLoading = true);
-                          await _pr.getAllPlots(
+                          await _pr.getAllPlots(plotPageInformation,
                               _pr.latitude!, _pr.longitude!, _pr.chosenKm!);
                           setState(() => isLoading = false);
                         }
@@ -289,8 +306,10 @@ class _SearchLocationState extends State<SearchLocation> {
                             child: ListView.builder(
                           itemCount: value.matchedRecords.length,
                           itemBuilder: (context, index) {
-                            final item = value.matchedRecords[index];
-
+                            final item = value.matchedRecords[index][0];
+                            final picture =
+                                value.matchedRecords[index][2]['picture'];
+                            print(picture);
                             return Container(
                               margin: const EdgeInsets.only(bottom: 15),
                               padding: const EdgeInsets.only(
@@ -306,34 +325,33 @@ class _SearchLocationState extends State<SearchLocation> {
                                             BorderRadius.circular(12)),
                                     width: MediaQuery.of(context).size.width *
                                         0.30,
-                                    child: Image.network(
-                                        value.profilePath[index],
+                                    child: Image.network(picture,
                                         fit: BoxFit.fill)),
                                 Expanded(
                                     child: Container(
                                   margin: const EdgeInsets.only(left: 10),
                                   child: Column(children: [
-                                    CustomContainerText(
+                                    CustomContainerText1(
                                         text1: 'Category',
                                         text2: '${item['propertyCategory']}'),
                                     const SizedBox(height: 3),
-                                    CustomContainerText(
+                                    CustomContainerText1(
                                         text1: 'Type',
                                         text2: '${item['propertyType']}'),
                                     const SizedBox(height: 3),
-                                    CustomContainerText(
+                                    CustomContainerText1(
                                         text1: 'Area',
                                         text2: '${item['size']}'),
                                     const SizedBox(height: 3),
-                                    CustomContainerText(
+                                    CustomContainerText1(
                                         text1: 'Location',
                                         text2: '${item['location']}'),
                                     const SizedBox(height: 3),
-                                    CustomContainerText(
+                                    CustomContainerText1(
                                         text1: 'Price',
                                         text2: '${item['price']} INR'),
                                     const SizedBox(height: 3),
-                                    CustomContainerText(
+                                    CustomContainerText1(
                                         text1: 'Possession',
                                         text2: '${item['possessionStatus']}'),
                                     const SizedBox(height: 3),
@@ -354,11 +372,43 @@ class _SearchLocationState extends State<SearchLocation> {
   }
 }
 
-String? minimumValue;
-String? maximumValue;
-
-class Price extends StatelessWidget {
+class Price extends StatefulWidget {
   const Price({Key? key}) : super(key: key);
+
+  @override
+  State<Price> createState() => _PriceState();
+}
+
+class _PriceState extends State<Price> {
+  String? minimumValue;
+  String? maximumValue;
+  bool isSearched = false;
+  late List info = [];
+  late List searchResults = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      info = plotPageInformation;
+    });
+    super.initState();
+  }
+
+  filterCards() {
+    print(minimumValue);
+    print(maximumValue);
+    info = plotPageInformation
+        .where((element) =>
+            int.parse(element[0]['price']) > int.parse(minimumValue!) &&
+            int.parse(element[0]['price']) < int.parse(maximumValue!))
+        .toList();
+
+    setState(() {
+      info;
+    });
+    // searchResults.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -368,7 +418,10 @@ class Price extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           CustomButton(
             text: 'Reset',
-            onClick: () {},
+            onClick: () {
+              print(plotPageInformation);
+              setState(() {});
+            },
             color: HexColor('082640'),
             width: 89,
             height: 41,
@@ -377,7 +430,10 @@ class Price extends StatelessWidget {
           CustomButton(
             text: 'Submit',
             onClick: () {
-              Navigator.pop(context);
+              filterCards();
+              setState(() {
+                isSearched = true;
+              });
             },
             color: HexColor('FD7E0E'),
             width: 102,
@@ -401,8 +457,18 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: ['100', '200', '300'],
-                                onChanged: (value) {},
+                                dropDownItems: [
+                              '1',
+                              '100',
+                              '200',
+                              '300',
+                              '5000000'
+                            ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    minimumValue = value;
+                                  });
+                                },
                                 isDense: true,
                                 borderRadius: 4,
                                 chosenValue: minimumValue)
@@ -429,7 +495,7 @@ class Price extends StatelessWidget {
                                 onChanged: (value) {},
                                 isDense: true,
                                 borderRadius: 4,
-                                chosenValue: maximumValue)
+                                chosenValue: '100')
                             .use(),
                       ),
                       Container(
@@ -455,8 +521,18 @@ class Price extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomSelector(
-                                dropDownItems: [100, 200, 300],
-                                onChanged: (value) {},
+                                dropDownItems: [
+                              '100',
+                              '200',
+                              '300',
+                              '5000',
+                              '6000000'
+                            ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    maximumValue = value.toString();
+                                  });
+                                },
                                 isDense: true,
                                 borderRadius: 4,
                                 chosenValue: maximumValue)
@@ -496,9 +572,165 @@ class Price extends StatelessWidget {
                       )
                     ],
                   ),
-                )
+                ),
               ],
-            )
+            ),
+            SizedBox(height: 20),
+            (isSearched)
+                ? Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        // height: 200,
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < (info.length); i++)
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Neumorphic(
+                                  style: NeumorphicStyle(
+                                    shape: NeumorphicShape.flat,
+                                    boxShape: NeumorphicBoxShape.roundRect(
+                                        BorderRadius.circular(17)),
+                                    depth: 4,
+                                  ),
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          SharedPreferencesHelper()
+                                              .saveCurrentPage(i.toString());
+                                          SharedPreferencesHelper()
+                                              .saveNumProperties(
+                                                  info.length.toString());
+                                          SharedPreferencesHelper()
+                                              .saveListOfCards(info);
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RealtorCard(
+                                                          plotPagesInformation:
+                                                              info)));
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                  height: 180,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(17.0),
+                                                      topRight:
+                                                          Radius.circular(17.0),
+                                                      bottomLeft: Radius.zero,
+                                                      bottomRight: Radius.zero,
+                                                    ),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                            flex: 1,
+                                                            child: Container(
+                                                              width: 100,
+                                                              height: 170,
+                                                              // decoration:
+                                                              //     BoxDecoration(border: Border.all()),
+                                                              child:
+                                                                  Image.network(
+                                                                info[i][2]
+                                                                    ['picture'],
+                                                                fit:
+                                                                    BoxFit.fill,
+                                                              ),
+                                                            )),
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Container(
+                                                              width: 100,
+                                                              height: 170,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8),
+                                                              // decoration:
+                                                              //     BoxDecoration(border: Border.all()),
+                                                              child: Align(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: Column(
+                                                                  children: [
+                                                                    CustomContainerText(
+                                                                            text1:
+                                                                                'Category',
+                                                                            text2:
+                                                                                info[i][0]['propertyCategory'])
+                                                                        .use(),
+                                                                    CustomContainerText(
+                                                                            text1:
+                                                                                'Type',
+                                                                            text2:
+                                                                                info[i][0]['propertyType'])
+                                                                        .use(),
+                                                                    CustomContainerText(
+                                                                            text1:
+                                                                                'Area',
+                                                                            text2:
+                                                                                info[i][0]['size'])
+                                                                        .use(),
+                                                                    CustomContainerText(
+                                                                            text1:
+                                                                                'Location',
+                                                                            text2:
+                                                                                info[i][0]['location'])
+                                                                        .use(),
+                                                                    CustomContainerText(
+                                                                            text1:
+                                                                                'Price',
+                                                                            text2:
+                                                                                info[i][0]['price'])
+                                                                        .use(),
+                                                                    CustomContainerText(
+                                                                            text1:
+                                                                                'Possession',
+                                                                            text2:
+                                                                                info[i][0]['possessionStatus'])
+                                                                        .use(),
+                                                                  ],
+                                                                ),
+                                                              )),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : Text("Please enter values"),
           ],
         ),
       ),

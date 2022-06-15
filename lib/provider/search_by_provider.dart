@@ -10,9 +10,7 @@ class LocationSearchProvider extends ChangeNotifier {
   double? latitude;
   double? longitude;
   final List _matchedRecords = [];
-  final List _profilePath = [];
 
-  UnmodifiableListView get profilePath => UnmodifiableListView(_profilePath);
   UnmodifiableListView get matchedRecords =>
       UnmodifiableListView(_matchedRecords);
 
@@ -40,27 +38,20 @@ class LocationSearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getAllPlots(double lat1, double long1, int km) async {
+  getAllPlots(
+      List plotPageInformation, double lat1, double long1, int km) async {
     try {
       _matchedRecords.clear();
-      _profilePath.clear();
-      final firestoreProvider = FirestoreDataProvider();
+      for (int i = 0; i < plotPageInformation.length; i++) {
+        final lat2 = plotPageInformation[i][0]['latitude'];
+        final long2 = plotPageInformation[i][0]['longitude'];
 
-      final listOfPlots = await firestoreProvider.getPlots();
-      for (int i = 1; i <= listOfPlots.length; i++) {
-        final data = await firestoreProvider.getPlotPagesInformation(i);
-        final lat2 = data[0]['latitude'];
-        final long2 = data[0]['longitude'];
         final distanceInMeter =
             Geolocator.distanceBetween(lat1, long1, lat2, long2);
         final distanceInKm = distanceInMeter / 1000;
 
         if (distanceInKm <= km) {
-          final _userId = await SharedPreferencesHelper().getUserId();
-          final image = await firestoreProvider
-              .getProfileImage('sell_images/$_userId/standlone/plot_$i/images');
-          _profilePath.add(image);
-          _matchedRecords.add(data[0]);
+          _matchedRecords.add(plotPageInformation[i]);
         }
       }
       notifyListeners();
