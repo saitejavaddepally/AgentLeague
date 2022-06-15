@@ -162,9 +162,9 @@ class RouteGenerator {
         return PageTransition(
             child: const PropertyDigitalization(),
             type: PageTransitionType.leftToRight);
-      case RouteName.searchBy:
-        return PageTransition(
-            child: const SeachBy(), type: PageTransitionType.leftToRight);
+      // case RouteName.searchBy:
+      //   return PageTransition(
+      //       child: const SeachBy(), type: PageTransitionType.leftToRight);
       case RouteName.chatDetail:
         {
           if (args is List) {

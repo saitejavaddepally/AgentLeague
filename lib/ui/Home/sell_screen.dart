@@ -5,6 +5,7 @@ import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/realtor_card.dart';
+import 'package:agent_league/ui/search_by.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -46,6 +47,7 @@ class _SellScreenState extends State<SellScreen> {
 
   @override
   void initState() {
+    print("Am I here? ");
     super.initState();
     getPlotInformation();
   }
@@ -105,17 +107,15 @@ class _SellScreenState extends State<SellScreen> {
       setState(() {
         // plotPagesInformation = plotPagesInformation.reversed.toList();
       });
-    }
-    else if (type == "Date - Recent First"){
-      plotPagesInformation.sort((a, b) =>
-          DateTime.parse(a[0]['timestamp']).compareTo(DateTime.parse(b[0]['timestamp'])));
+    } else if (type == "Date - Recent First") {
+      plotPagesInformation.sort((a, b) => DateTime.parse(a[0]['timestamp'])
+          .compareTo(DateTime.parse(b[0]['timestamp'])));
       setState(() {
         // plotPagesInformation = plotPagesInformation.reversed.toList();
       });
-    }
-    else {
-      plotPagesInformation.sort((a, b) =>
-          DateTime.parse(b[0]['timestamp']).compareTo(DateTime.parse(a[0]['timestamp'])));
+    } else {
+      plotPagesInformation.sort((a, b) => DateTime.parse(b[0]['timestamp'])
+          .compareTo(DateTime.parse(a[0]['timestamp'])));
       setState(() {
         // plotPagesInformation = plotPagesInformation.reversed.toList();
       });
@@ -213,12 +213,20 @@ class _SellScreenState extends State<SellScreen> {
                         child: Center(
                           child: TextField(
                             readOnly: true,
-                            onTap: () => Navigator.pushNamed(
-                                context, RouteName.searchBy),
+                            onTap: (loading)
+                                ? () {}
+                                : () =>    Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SeachBy(
+                                        plotPagesInformation:
+                                        plotPagesInformation))),
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.all(8),
-                                hintText: 'Search by location, Name or ID',
+                                hintText: (loading)
+                                    ? 'Loading your properties.. Please wait...'
+                                    : 'Search by location, Name or ID',
                                 suffixIcon: Image.asset(
                                     'assets/search_settings_icon.png')),
                           ),

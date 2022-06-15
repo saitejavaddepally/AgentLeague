@@ -21,7 +21,6 @@ bool isIncremented = false;
 String profileImage = "";
 late List plotPagesInformation = [];
 late String currentPlotFromPreviousPage;
-
 class RealtorCard extends StatefulWidget {
   List plotPagesInformation;
 
