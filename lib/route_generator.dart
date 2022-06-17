@@ -1,3 +1,4 @@
+import 'package:agent_league/Services/payment_razorpay.dart';
 import 'package:agent_league/ui/Home/Chat/chat_detail.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/add_project.dart';
@@ -56,6 +57,7 @@ class RouteName {
   static const String propertyBuyingScore = '/property_buying_score';
   static const String propertyDigitalization = '/property_digitalization';
   static const String searchBy = '/search_by';
+  static const String paymentRazorpay = '/r';
 }
 
 class RouteGenerator {
@@ -66,7 +68,11 @@ class RouteGenerator {
     switch (settings.name) {
       case RouteName.bottomBar:
         return PageTransition(
-            child: BottomBar(isIndexGiven: false, index:  0,), type: PageTransitionType.leftToRight);
+            child: BottomBar(
+              isIndexGiven: false,
+              index: 0,
+            ),
+            type: PageTransitionType.leftToRight);
       case RouteName.onboard:
         return PageTransition(
             child: const Onboarding(), type: PageTransitionType.leftToRight);
@@ -162,6 +168,17 @@ class RouteGenerator {
         return PageTransition(
             child: const PropertyDigitalization(),
             type: PageTransitionType.leftToRight);
+
+      case RouteName.paymentRazorpay:
+        {
+          if (args is double) {
+            return PageTransition(
+                child: PaymentRazorpay(amount: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
       // case RouteName.searchBy:
       //   return PageTransition(
       //       child: const SeachBy(), type: PageTransitionType.leftToRight);

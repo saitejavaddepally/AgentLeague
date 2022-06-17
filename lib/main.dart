@@ -1,5 +1,5 @@
 import 'package:agent_league/Services/auth_methods.dart';
-import 'package:agent_league/firebase_options.dart';
+
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
@@ -15,9 +15,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await initialization();
   runApp(const MyApp());
@@ -70,7 +68,10 @@ class _MyAppState extends State {
         future: AuthMethods().getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return BottomBar(isIndexGiven: false, index: 0,);
+            return BottomBar(
+              isIndexGiven: false,
+              index: 0,
+            );
           } else {
             return const Onboarding();
           }

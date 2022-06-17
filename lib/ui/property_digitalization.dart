@@ -1,4 +1,5 @@
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_text_field.dart';
@@ -38,7 +39,8 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
               ),
               TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/');
+                    Navigator.pushNamed(context, RouteName.paymentRazorpay,
+                        arguments: 100);
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: HexColor('FE7F0E'),
