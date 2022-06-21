@@ -24,6 +24,7 @@ import 'package:agent_league/ui/realtor_card.dart';
 import 'package:agent_league/ui/search_by.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
+import 'package:agent_league/ui/success.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:agent_league/ui/uploads_screen.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,7 @@ class RouteName {
   static const String propertyBuyingScore = '/property_buying_score';
   static const String propertyDigitalization = '/property_digitalization';
   static const String searchBy = '/search_by';
+  static const String success = '/success';
   static const String paymentRazorpay = '/r';
 }
 
@@ -165,13 +167,20 @@ class RouteGenerator {
             child: const PropertyBuyingScore(),
             type: PageTransitionType.leftToRight);
       case RouteName.propertyDigitalization:
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+              child: PropertyDigitalization(formData: args),
+              type: PageTransitionType.leftToRight);
+        }
+        return _errorRoute();
+
+      case RouteName.success:
         return PageTransition(
-            child: const PropertyDigitalization(),
-            type: PageTransitionType.leftToRight);
+            child: const Success(), type: PageTransitionType.leftToRight);
 
       case RouteName.paymentRazorpay:
         {
-          if (args is double) {
+          if (args is num) {
             return PageTransition(
                 child: PaymentRazorpay(amount: args),
                 type: PageTransitionType.leftToRight);

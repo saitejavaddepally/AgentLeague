@@ -58,7 +58,7 @@ class _AmentiesState extends State<Amenties> {
     );
 
     Map<String, dynamic> dataToBeUploaded = widget.formData;
-    dataToBeUploaded.addAll({"timestamp" : DateTime.now().toString()});
+    dataToBeUploaded.addAll({"timestamp": DateTime.now().toString()});
     await UploadPropertiesToFirestore().postPropertyPageOne(dataToBeUploaded);
     print("I am done Here? ");
     print("images are $_images");
@@ -90,7 +90,7 @@ class _AmentiesState extends State<Amenties> {
           snapshot = await _firebaseStorage
               .ref()
               .child(
-                  'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type+"_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
+                  'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type + "_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
               .putFile(list[i]!);
         });
       }
@@ -101,310 +101,324 @@ class _AmentiesState extends State<Amenties> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => PropertyPhotosProvider()),
-        ChangeNotifierProvider(
-            create: (context) => PropertyDocumentsProvider()),
-        ChangeNotifierProvider(create: (context) => PropertyVideoProvider()),
-      ],
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: ModalProgressHUD(
-              inAsyncCall: isLoading,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, bottom: 20),
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.keyboard_backspace_sharp)),
-                        const CustomTitle(text: 'Post Your Property')
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Column(
-                      children: [
-                        CustomLineUnderText(
-                                text: 'Upload Property photos',
-                                height: 3,
-                                width: 150,
-                                color: HexColor('FE7F0E'))
-                            .use(),
-                        const SizedBox(height: 20),
-                        Consumer<PropertyPhotosProvider>(
-                          builder: (context, value, child) => Column(
-                            children: [
-                              Row(
+        providers: [
+          ChangeNotifierProvider(create: (context) => PropertyPhotosProvider()),
+          ChangeNotifierProvider(
+              create: (context) => PropertyDocumentsProvider()),
+          ChangeNotifierProvider(create: (context) => PropertyVideoProvider()),
+        ],
+        builder: (context, child) {
+          final _photoProvider =
+              Provider.of<PropertyPhotosProvider>(context, listen: false);
+          return Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: ModalProgressHUD(
+                  inAsyncCall: isLoading,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, bottom: 20),
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon:
+                                    const Icon(Icons.keyboard_backspace_sharp)),
+                            const CustomTitle(text: 'Post Your Property')
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Column(
+                          children: [
+                            CustomLineUnderText(
+                                    text: 'Upload Property photos',
+                                    height: 3,
+                                    width: 150,
+                                    color: HexColor('FE7F0E'))
+                                .use(),
+                            const SizedBox(height: 20),
+                            Consumer<PropertyPhotosProvider>(
+                              builder: (context, value, child) => Column(
                                 children: [
-                                  for (int i = 0; i < 4; i++)
-                                    Flexible(
-                                        child: PickerContainer(
-                                      image: (value.images[i] != null)
-                                          ? Image.file(value.images[i]!)
-                                          : Image.asset('assets/picker.png'),
-                                      imageName: 'Image ${i + 1}',
-                                      onTap: () {
-                                        value.pickImage(i);
-                                        setState(() {
-                                          _images = value.images;
-                                        });
-                                        print("values are ${value.images}");
-                                      },
-                                    ))
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  for (int i = 4; i < 8; i++)
-                                    Flexible(
-                                        child: PickerContainer(
-                                      image: (value.images[i] != null)
-                                          ? Image.file(value.images[i]!)
-                                          : Image.asset('assets/picker.png'),
-                                      imageName: 'Image ${i + 1}',
-                                      onTap: () {
-                                        value.pickImage(i);
-                                        setState(() {
-                                          _images = value.images;
-                                        });
-                                        print("values are ${value.images}");
-                                      },
-                                    ))
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      value.reset();
-                                    },
-                                    child: Text('Reset',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            letterSpacing: 0.2,
-                                            color: HexColor('FE7F0E'))),
+                                  Row(
+                                    children: [
+                                      for (int i = 0; i < 4; i++)
+                                        Flexible(
+                                            child: PickerContainer(
+                                          image: (value.images[i] != null)
+                                              ? Image.file(value.images[i]!)
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                          imageName: 'Image ${i + 1}',
+                                          onTap: () {
+                                            value.pickImage(i);
+                                            setState(() {
+                                              _images = value.images;
+                                            });
+                                            print("values are ${value.images}");
+                                          },
+                                        ))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      for (int i = 4; i < 8; i++)
+                                        Flexible(
+                                            child: PickerContainer(
+                                          image: (value.images[i] != null)
+                                              ? Image.file(value.images[i]!)
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                          imageName: 'Image ${i + 1}',
+                                          onTap: () {
+                                            value.pickImage(i);
+                                            setState(() {
+                                              _images = value.images;
+                                            });
+                                            print("values are ${value.images}");
+                                          },
+                                        ))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          value.reset();
+                                        },
+                                        child: Text('Reset',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: HexColor('FE7F0E'))),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 35),
-                        CustomLineUnderText(
-                                text: 'Upload Property Documents',
-                                height: 3,
-                                width: 175,
-                                color: HexColor('FE7F0E'))
-                            .use(),
-                        const SizedBox(height: 20),
-                        Consumer<PropertyDocumentsProvider>(
-                          builder: (context, value, child) => Column(
-                            children: [
-                              Row(
+                            ),
+                            const SizedBox(height: 35),
+                            CustomLineUnderText(
+                                    text: 'Upload Property Documents',
+                                    height: 3,
+                                    width: 175,
+                                    color: HexColor('FE7F0E'))
+                                .use(),
+                            const SizedBox(height: 20),
+                            Consumer<PropertyDocumentsProvider>(
+                              builder: (context, value, child) => Column(
                                 children: [
-                                  for (int i = 0; i < 4; i++)
-                                    Flexible(
-                                        child: PickerContainer(
-                                      image: (value.docs[i] != null)
-                                          ? Image.file(value.docs[i]!)
-                                          : Image.asset('assets/picker.png'),
-                                      imageName: 'Doc ${i + 1}',
-                                      onTap: () {
-                                        value.pickDocuments(i);
-                                        setState(() {
-                                          _docs = value.docs;
-                                          _docNames = value.docNames;
-                                        });
-                                      },
-                                    ))
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      value.reset();
-                                    },
-                                    child: Text('Reset',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            letterSpacing: 0.2,
-                                            color: HexColor('FE7F0E'))),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 35),
-                        CustomLineUnderText(
-                                text: 'Upload Property video',
-                                height: 3,
-                                width: 140,
-                                color: HexColor('FE7F0E'))
-                            .use(),
-                        const SizedBox(height: 20),
-                        Consumer<PropertyVideoProvider>(
-                          builder: (context, value, child) => Column(
-                            children: [
-                              Row(
-                                children: [
-                                  for (int i = 0; i < 4; i++)
-                                    Flexible(
-                                        child: PickerContainer(
-                                      image: (value.videos[i] != null)
-                                          ? Image.asset(
-                                              'assets/lead_box_image.png',
-                                              fit: BoxFit.fill)
-                                          : Image.asset('assets/picker.png'),
-                                      imageName: 'Video ${i + 1}',
-                                      onTap: () {
-                                        value.pickVideo(i);
-                                        setState(() {
-                                          _videos = value.videos;
-                                          _videoNames = value.videoNames;
-                                        });
-                                      },
-                                    ))
-                                ],
-                              ),
-                              // SizedBox(
-                              //   height: 60,
-                              //   child: ListView.builder(
-                              //     scrollDirection: Axis.horizontal,
-                              //     itemCount: 5,
-                              //     shrinkWrap: true,
-                              //     itemBuilder: (context, index) {
-                              //       return Padding(
-                              //         padding: const EdgeInsets.only(right: 20),
-                              //         child: GestureDetector(
-                              //           onTap: () {
-                              //             value.pickVideo(index);
-                              //             _videos = value.videos;
-                              //             print(_videos);
-                              //           },
-                              //           child: Container(
-                              //             height: 55,
-                              //             width: 55,
-                              //             decoration: BoxDecoration(
-                              //                 color:
-                              //                     Colors.white.withOpacity(0.1),
-                              //                 borderRadius:
-                              //                     BorderRadius.circular(10)),
-                              //             child: (value.videos[index] != null)
-                              //                 ? Stack(children: [
-                              //                     Image.asset(
-                              //                         'assets/lead_box_image.png',
-                              //                         fit: BoxFit.fill),
-                              //                     Center(
-                              //                       child: Icon(
-                              //                           Icons
-                              //                               .play_arrow_rounded,
-                              //                           size: 35,
-                              //                           color: Colors.orange
-                              //                               .withOpacity(0.7)),
-                              //                     )
-                              //                   ])
-                              //                 : Image.asset(
-                              //                     'assets/picker.png'),
-                              //           ),
-                              //         ),
-                              //       );
-                              //     },
-                              //   ),
-                              // ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      value.reset();
-                                    },
-                                    child: Text('Reset',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            letterSpacing: 0.2,
-                                            color: HexColor('FE7F0E'))),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(height: 30),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomButton(
-                                          text: 'Back',
-                                          width: 102,
-                                          height: 40,
-                                          onClick: () {
-                                            print('back');
-                                            Navigator.pop(context);
+                                  Row(
+                                    children: [
+                                      for (int i = 0; i < 4; i++)
+                                        Flexible(
+                                            child: PickerContainer(
+                                          image: (value.docs[i] != null)
+                                              ? Image.file(value.docs[i]!)
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                          imageName: 'Doc ${i + 1}',
+                                          onTap: () {
+                                            value.pickDocuments(i);
+                                            setState(() {
+                                              _docs = value.docs;
+                                              _docNames = value.docNames;
+                                            });
                                           },
-                                          color: CustomColors.dark)
-                                      .use(),
-                                  const SizedBox(width: 15),
-                                  CustomButton(
-                                          text: 'Next',
-                                          onClick: () async {
-                                            // await uploadToFireStore(
-                                            //     _images, _IMAGE);
-                                            // await uploadToFireStore(
-                                            //     _videos, _VIDEO);
-                                            // await uploadToFireStore(_docs, _DOCS);
-                                            // CollectionReference ref =
-                                            //     FirebaseFirestore.instance
-                                            //         .collection("sell_plots")
-                                            //         .doc(currentUser)
-                                            //         .collection("standlone")
-                                            //         .doc(currentPlot)
-                                            //         .collection("page_3");
-                                            // await uploadData().then((value) {
-                                            //   Navigator.pushNamedAndRemoveUntil(
-                                            //       context,
-                                            //       RouteName.bottomBar,
-                                            //       (r) => false);
-                                            // });
-                                            await uploadData();
-                                            Navigator.pushNamed(
-                                                context,
-                                                RouteName
-                                                    .propertyDigitalization);
-                                          },
-                                          width: 102,
-                                          height: 40,
-                                          color: HexColor('FD7E0E'))
-                                      .use(),
+                                        ))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          value.reset();
+                                        },
+                                        child: Text('Reset',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: HexColor('FE7F0E'))),
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 35),
+                            CustomLineUnderText(
+                                    text: 'Upload Property video',
+                                    height: 3,
+                                    width: 140,
+                                    color: HexColor('FE7F0E'))
+                                .use(),
+                            const SizedBox(height: 20),
+                            Consumer<PropertyVideoProvider>(
+                              builder: (context, value, child) => Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      for (int i = 0; i < 4; i++)
+                                        Flexible(
+                                            child: PickerContainer(
+                                          image: (value.videos[i] != null)
+                                              ? Image.asset(
+                                                  'assets/lead_box_image.png',
+                                                  fit: BoxFit.fill)
+                                              : Image.asset(
+                                                  'assets/picker.png'),
+                                          imageName: 'Video ${i + 1}',
+                                          onTap: () {
+                                            value.pickVideo(i);
+                                            setState(() {
+                                              _videos = value.videos;
+                                              _videoNames = value.videoNames;
+                                            });
+                                          },
+                                        ))
+                                    ],
+                                  ),
+                                  // SizedBox(
+                                  //   height: 60,
+                                  //   child: ListView.builder(
+                                  //     scrollDirection: Axis.horizontal,
+                                  //     itemCount: 5,
+                                  //     shrinkWrap: true,
+                                  //     itemBuilder: (context, index) {
+                                  //       return Padding(
+                                  //         padding: const EdgeInsets.only(right: 20),
+                                  //         child: GestureDetector(
+                                  //           onTap: () {
+                                  //             value.pickVideo(index);
+                                  //             _videos = value.videos;
+                                  //             print(_videos);
+                                  //           },
+                                  //           child: Container(
+                                  //             height: 55,
+                                  //             width: 55,
+                                  //             decoration: BoxDecoration(
+                                  //                 color:
+                                  //                     Colors.white.withOpacity(0.1),
+                                  //                 borderRadius:
+                                  //                     BorderRadius.circular(10)),
+                                  //             child: (value.videos[index] != null)
+                                  //                 ? Stack(children: [
+                                  //                     Image.asset(
+                                  //                         'assets/lead_box_image.png',
+                                  //                         fit: BoxFit.fill),
+                                  //                     Center(
+                                  //                       child: Icon(
+                                  //                           Icons
+                                  //                               .play_arrow_rounded,
+                                  //                           size: 35,
+                                  //                           color: Colors.orange
+                                  //                               .withOpacity(0.7)),
+                                  //                     )
+                                  //                   ])
+                                  //                 : Image.asset(
+                                  //                     'assets/picker.png'),
+                                  //           ),
+                                  //         ),
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          value.reset();
+                                        },
+                                        child: Text('Reset',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: HexColor('FE7F0E'))),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(height: 30),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CustomButton(
+                                              text: 'Back',
+                                              width: 102,
+                                              height: 40,
+                                              onClick: () {
+                                                print('back');
+                                                Navigator.pop(context);
+                                              },
+                                              color: CustomColors.dark)
+                                          .use(),
+                                      const SizedBox(width: 15),
+                                      CustomButton(
+                                              text: 'Next',
+                                              onClick: () async {
+                                                // await uploadToFireStore(
+                                                //     _images, _IMAGE);
+                                                // await uploadToFireStore(
+                                                //     _videos, _VIDEO);
+                                                // await uploadToFireStore(_docs, _DOCS);
+                                                // CollectionReference ref =
+                                                //     FirebaseFirestore.instance
+                                                //         .collection("sell_plots")
+                                                //         .doc(currentUser)
+                                                //         .collection("standlone")
+                                                //         .doc(currentPlot)
+                                                //         .collection("page_3");
+                                                // await uploadData().then((value) {
+                                                //   Navigator.pushNamedAndRemoveUntil(
+                                                //       context,
+                                                //       RouteName.bottomBar,
+                                                //       (r) => false);
+                                                // });
+                                                await uploadData();
+                                                Navigator.pushNamed(
+                                                    context,
+                                                    RouteName
+                                                        .propertyDigitalization,
+                                                    arguments: widget.formData
+                                                      ..addAll({
+                                                        'picture':
+                                                            _photoProvider
+                                                                .images[0]
+                                                      }));
+                                              },
+                                              width: 102,
+                                              height: 40,
+                                              color: HexColor('FD7E0E'))
+                                          .use(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
-                  )
-                ],
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 
