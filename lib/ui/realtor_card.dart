@@ -266,7 +266,7 @@ class _RealtorPageState extends State<RealtorPage> {
                             actions: [
                               TextButton(
                                 onPressed: () async {
-                                  await FirestoreDataProvider().deletePlot(2);
+                                  await FirestoreDataProvider().deletePlot(1);
                                   Navigator.pop(context);
                                 },
                                 child: const Text("Yes"),
@@ -306,14 +306,14 @@ class _RealtorPageState extends State<RealtorPage> {
                                           .getUserId();
                                   final dataProvider = FirestoreDataProvider();
                                   final images =
-                                      await dataProvider.getAllImage(userId, 3);
+                                      await dataProvider.getAllImage(userId, 1);
                                   final videos = await dataProvider
-                                      .getAllVideos(userId, 3);
+                                      .getAllVideos(userId, 1);
                                   final docs =
-                                      await dataProvider.getAllDocs(userId, 3);
+                                      await dataProvider.getAllDocs(userId, 1);
 
                                   List data = await FirestoreDataProvider()
-                                      .getPlotPagesInformation(3);
+                                      .getPlotPagesInformation(1);
                                   Map<String, dynamic> data1 = data[0];
 
                                   Navigator.pushNamed(context,

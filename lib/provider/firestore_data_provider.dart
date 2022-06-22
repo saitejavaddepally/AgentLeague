@@ -59,13 +59,50 @@ class FirestoreDataProvider {
   }
 
   Future<void> deletePlot(int plotNo) async {
-    String? userId = await SharedPreferencesHelper().getUserId();
-    await FirebaseFirestore.instance
-        .collection('sell_plots')
-        .doc(userId)
-        .collection('standlone')
-        .doc('plot_$plotNo')
-        .delete();
+    try {
+      String? userId = await SharedPreferencesHelper().getUserId();
+      await FirebaseFirestore.instance
+          .collection('sell_plots')
+          .doc(userId)
+          .collection('standlone')
+          .doc('plot_$plotNo')
+          .delete();
+      await deleteImages(userId!, plotNo);
+      await deleteDocs(userId, plotNo);
+      await deleteVideos(userId, plotNo);
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  Future deleteImages(String userId, int plotNo) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("sell_images/$userId/standlone/plot_$plotNo/images");
+    final listResult = await storageRef.listAll();
+    for (var element in listResult.items) {
+      await element.delete();
+    }
+  }
+
+  Future deleteDocs(String userId, int plotNo) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("sell_images/$userId/standlone/plot_$plotNo/docs");
+    final listResult = await storageRef.listAll();
+    for (var element in listResult.items) {
+      await element.delete();
+    }
+  }
+
+  Future deleteVideos(String userId, int plotNo) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("sell_images/$userId/standlone/plot_$plotNo/videos");
+    final listResult = await storageRef.listAll();
+    for (var element in listResult.items) {
+      await element.delete();
+    }
   }
 
   Future getProfileImage(String path) async {
