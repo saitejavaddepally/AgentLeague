@@ -21,7 +21,8 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostYourPropertyPageOne extends StatefulWidget {
-  const PostYourPropertyPageOne({Key? key}) : super(key: key);
+  final Map<String, dynamic>? dataToEdit;
+  const PostYourPropertyPageOne({this.dataToEdit, Key? key}) : super(key: key);
 
   @override
   _PostYourPropertyPageOneState createState() =>
@@ -99,6 +100,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
 
   @override
   void initState() {
+    _latitude = widget.dataToEdit?['latitude'] ?? 0;
+    _longitude = widget.dataToEdit?['longitude'] ?? 0;
     getPlotStatus();
     super.initState();
   }
@@ -190,6 +193,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
 
   @override
   Widget build(BuildContext context) {
+    print("data to edit");
+    print(widget.dataToEdit);
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -206,7 +211,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
           elevation: 0,
         ),
         body: ChangeNotifierProvider<PostYourPropertyProviderOne>(
-            create: (context) => PostYourPropertyProviderOne(),
+            create: (context) => PostYourPropertyProviderOne(widget.dataToEdit),
             builder: (context, child) {
               final propertyOne = Provider.of<PostYourPropertyProviderOne>(
                   context,
@@ -524,10 +529,9 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                       .validate()) {
                                                     if (propertyOne
                                                         .isSkipPageTwo) {
-
                                                       Map<String, dynamic>
-                                                      data =
-                                                      propertyOne.getMap();
+                                                          data =
+                                                          propertyOne.getMap();
                                                       data.addAll({
                                                         "latitude": _latitude,
                                                         "longitude": _longitude
@@ -535,7 +539,10 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                       Navigator.pushNamed(
                                                           context,
                                                           RouteName.amenities,
-                                                          arguments: data);
+                                                          arguments: [
+                                                            data,
+                                                            widget.dataToEdit
+                                                          ]);
                                                     } else {
                                                       await SharedPreferencesHelper()
                                                           .savePageOneInformation(
@@ -552,7 +559,10 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                           context,
                                                           RouteName
                                                               .postYourPropertyPageTwo,
-                                                          arguments: data);
+                                                          arguments: [
+                                                            data,
+                                                            widget.dataToEdit
+                                                          ]);
                                                     }
                                                   }
                                                 }).use())),

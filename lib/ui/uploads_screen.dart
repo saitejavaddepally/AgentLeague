@@ -1,5 +1,6 @@
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/provider/upload_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -181,7 +182,7 @@ class PickerContainer extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           margin: const EdgeInsets.only(right: 20),
-          height: 50,
+          height: 60,
           width: double.maxFinite,
           decoration: BoxDecoration(
             color: HexColor('203B53'),

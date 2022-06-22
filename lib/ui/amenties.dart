@@ -23,18 +23,18 @@ import '../components/custom_button.dart';
 import '../helper/constants.dart';
 
 class Amenties extends StatefulWidget {
-  final Map<String, dynamic> formData;
+  final List data;
 
-  const Amenties({required this.formData, Key? key}) : super(key: key);
+  const Amenties({required this.data, Key? key}) : super(key: key);
 
   @override
   State<Amenties> createState() => _AmentiesState();
 }
 
 class _AmentiesState extends State<Amenties> {
-  late List<File?> _images = [];
-  late List<File?> _docs = [];
-  late List<File?> _videos = [];
+  late List<dynamic> _images = [];
+  late List<dynamic> _docs = [];
+  late List<dynamic> _videos = [];
   late List<String?> _docNames;
   late List<String?> _videoNames;
   static const String _IMAGE = 'images';
@@ -47,8 +47,6 @@ class _AmentiesState extends State<Amenties> {
   @override
   void initState() {
     super.initState();
-    print("DATA is ");
-    print(widget.formData);
   }
 
   Future uploadData() async {
@@ -57,7 +55,7 @@ class _AmentiesState extends State<Amenties> {
       maskType: EasyLoadingMaskType.black,
     );
 
-    Map<String, dynamic> dataToBeUploaded = widget.formData;
+    Map<String, dynamic> dataToBeUploaded = widget.data[0];
     dataToBeUploaded.addAll({"timestamp": DateTime.now().toString()});
     await UploadPropertiesToFirestore().postPropertyPageOne(dataToBeUploaded);
     print("I am done Here? ");
@@ -74,12 +72,11 @@ class _AmentiesState extends State<Amenties> {
     await EasyLoading.dismiss();
   }
 
-  Future uploadToFireStore(List<File?> list, String type) async {
+  Future uploadToFireStore(List<dynamic> list, String type) async {
     await SharedPreferencesHelper()
         .getCurrentPlot()
         .then((value) => currentPlot = value);
 
-    print(currentPlot);
     final _firebaseStorage = FirebaseStorage.instance;
     dynamic snapshot;
     for (var i = 0; i < list.length; i++) {
@@ -102,10 +99,15 @@ class _AmentiesState extends State<Amenties> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => PropertyPhotosProvider()),
           ChangeNotifierProvider(
-              create: (context) => PropertyDocumentsProvider()),
-          ChangeNotifierProvider(create: (context) => PropertyVideoProvider()),
+              create: (context) =>
+                  PropertyPhotosProvider(widget.data[1]?['images'])),
+          ChangeNotifierProvider(
+              create: (context) =>
+                  PropertyDocumentsProvider(widget.data[1]?['docs'])),
+          ChangeNotifierProvider(
+              create: (context) =>
+                  PropertyVideoProvider(widget.data[1]?['videos'])),
         ],
         builder: (context, child) {
           final _photoProvider =
@@ -149,16 +151,21 @@ class _AmentiesState extends State<Amenties> {
                                       for (int i = 0; i < 4; i++)
                                         Flexible(
                                             child: PickerContainer(
-                                          image: (value.images[i] != null)
+                                          image: (value.images[i] != null &&
+                                                  value.images[i] is File)
                                               ? Image.file(value.images[i]!)
-                                              : Image.asset(
-                                                  'assets/picker.png'),
+                                              : ((value.images[i] != null &&
+                                                      value.images[i]
+                                                          is String))
+                                                  ? Image.network(
+                                                      value.images[i]!)
+                                                  : Image.asset(
+                                                      'assets/picker.png'),
                                           imageName: 'Image ${i + 1}',
                                           onTap: () {
                                             value.pickImage(i);
-                                            setState(() {
-                                              _images = value.images;
-                                            });
+
+                                            _images = value.images;
                                             print("values are ${value.images}");
                                           },
                                         ))
@@ -170,16 +177,22 @@ class _AmentiesState extends State<Amenties> {
                                       for (int i = 4; i < 8; i++)
                                         Flexible(
                                             child: PickerContainer(
-                                          image: (value.images[i] != null)
+                                          image: (value.images[i] != null &&
+                                                  value.images[i] is File)
                                               ? Image.file(value.images[i]!)
-                                              : Image.asset(
-                                                  'assets/picker.png'),
+                                              : ((value.images[i] != null &&
+                                                      value.images[i]
+                                                          is String))
+                                                  ? Image.network(
+                                                      value.images[i]!)
+                                                  : Image.asset(
+                                                      'assets/picker.png'),
                                           imageName: 'Image ${i + 1}',
                                           onTap: () {
                                             value.pickImage(i);
-                                            setState(() {
-                                              _images = value.images;
-                                            });
+
+                                            _images = value.images;
+
                                             print("values are ${value.images}");
                                           },
                                         ))
@@ -222,16 +235,17 @@ class _AmentiesState extends State<Amenties> {
                                         Flexible(
                                             child: PickerContainer(
                                           image: (value.docs[i] != null)
-                                              ? Image.file(value.docs[i]!)
+                                              ? Image.asset(
+                                                  'assets/lead_box_image.png',
+                                                  fit: BoxFit.fill)
                                               : Image.asset(
                                                   'assets/picker.png'),
                                           imageName: 'Doc ${i + 1}',
                                           onTap: () {
                                             value.pickDocuments(i);
-                                            setState(() {
-                                              _docs = value.docs;
-                                              _docNames = value.docNames;
-                                            });
+
+                                            _docs = value.docs;
+                                            _docNames = value.docNames;
                                           },
                                         ))
                                     ],
@@ -392,7 +406,7 @@ class _AmentiesState extends State<Amenties> {
                                                     context,
                                                     RouteName
                                                         .propertyDigitalization,
-                                                    arguments: widget.formData
+                                                    arguments: widget.data[0]
                                                       ..addAll({
                                                         'picture':
                                                             _photoProvider

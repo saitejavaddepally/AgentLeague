@@ -109,9 +109,9 @@ class RouteGenerator {
       //       child: const RealtorCard(), type: PageTransitionType.leftToRight);
       case RouteName.amenities:
         {
-          if (args is Map<String, dynamic>) {
+          if (args is List) {
             return PageTransition(
-                child: Amenties(formData: args),
+                child: Amenties(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
@@ -127,13 +127,14 @@ class RouteGenerator {
             child: const Tour(), type: PageTransitionType.leftToRight);
       case RouteName.postYourPropertyPageOne:
         return PageTransition(
-            child: const PostYourPropertyPageOne(),
+            child: PostYourPropertyPageOne(
+                dataToEdit: args as Map<String, dynamic>?),
             type: PageTransitionType.leftToRight);
       case RouteName.postYourPropertyPageTwo:
         {
-          if (args is Map<String, dynamic>) {
+          if (args is List) {
             return PageTransition(
-                child: PostYourPropertyPageTwo(pageOneData: args),
+                child: PostYourPropertyPageTwo(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();

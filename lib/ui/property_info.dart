@@ -18,9 +18,9 @@ import '../provider/amenities_provider.dart';
 import '../theme/colors.dart';
 
 class PostYourPropertyPageTwo extends StatefulWidget {
-  final Map<String, dynamic> pageOneData;
+  final List data;
 
-  const PostYourPropertyPageTwo({required this.pageOneData, Key? key})
+  const PostYourPropertyPageTwo({required this.data, Key? key})
       : super(key: key);
 
   @override
@@ -52,7 +52,6 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
   @override
   void initState() {
     super.initState();
-    print(widget.pageOneData);
   }
 
   @override
@@ -60,7 +59,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-              create: (context) => PostYourPropertyProviderTwo()),
+              create: (context) => PostYourPropertyProviderTwo(widget.data[1])),
           ChangeNotifierProvider(create: (context) => AmenitiesProvider()),
         ],
         builder: (context, child) {
@@ -444,8 +443,11 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
 
                                             Navigator.pushNamed(
                                                 context, RouteName.amenities,
-                                                arguments:
-                                                    _propertyTwo.getMap(widget.pageOneData));
+                                                arguments: [
+                                                  _propertyTwo
+                                                      .getMap(widget.data[0]),
+                                                  widget.data[1]
+                                                ]);
                                           }
                                         }).use(),
                                   )),

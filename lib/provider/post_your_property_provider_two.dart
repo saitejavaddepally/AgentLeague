@@ -5,6 +5,20 @@ import 'package:flutter/material.dart';
 import '../ui/property_info.dart';
 
 class PostYourPropertyProviderTwo extends ChangeNotifier {
+  PostYourPropertyProviderTwo(data) {
+    if (data != null) {
+      _furnishedChosenValue = data['furnished'];
+      _floorsChosenValue = data['floors'];
+      _bedRoomChosenValue = data['bed_room'];
+      _bathRoomChosenValue = data['bath_room'];
+      _extraRoomChosenValue = data['extra_room'];
+      _carParkChosenValue = data['car_park'];
+      _totalPortion = data['total_portion'];
+      _totalIncome = data['total_income'];
+      _rentalIncome = data['rental_income'];
+    }
+  }
+
   // for furnishedDropDown
   final List<String> _furnishedDropDown = ['Semi', 'Fully', 'None'];
   String? _furnishedChosenValue;
@@ -158,7 +172,8 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
       'car_park': _carParkChosenValue,
       'extra_room': _extraRoomChosenValue,
       'total_portion': _totalPortion,
-      'total_income': _totalIncome
+      'total_income': _totalIncome,
+      'rental_income': _rentalIncome,
     };
   }
 }

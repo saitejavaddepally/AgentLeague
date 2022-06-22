@@ -111,4 +111,52 @@ class FirestoreDataProvider {
             ? videos
             : documents;
   }
+
+  Future<List<dynamic>> getAllImage(userId, int plotNo) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("sell_images/$userId/standlone/plot_$plotNo/images/");
+    final List<dynamic> images = List.generate(8, (index) => null);
+    final listResult = await storageRef.listAll();
+
+    for (int i = 0; i < listResult.items.length; i++) {
+      await listResult.items[i].getDownloadURL().then((value) async {
+        images[i] = value;
+      });
+    }
+
+    return images;
+  }
+
+  Future<List<dynamic>> getAllVideos(userId, int plotNo) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("sell_images/$userId/standlone/plot_$plotNo/videos/");
+    final List<dynamic> videos = List.generate(4, (index) => null);
+    final listResult = await storageRef.listAll();
+
+    for (int i = 0; i < listResult.items.length; i++) {
+      await listResult.items[i].getDownloadURL().then((value) async {
+        videos[i] = value;
+      });
+    }
+
+    return videos;
+  }
+
+  Future<List<dynamic>> getAllDocs(userId, int plotNo) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("sell_images/$userId/standlone/plot_$plotNo/docs/");
+    final List<dynamic> docs = List.generate(4, (index) => null);
+    final listResult = await storageRef.listAll();
+
+    for (int i = 0; i < listResult.items.length; i++) {
+      await listResult.items[i].getDownloadURL().then((value) async {
+        docs[i] = value;
+      });
+    }
+
+    return docs;
+  }
 }

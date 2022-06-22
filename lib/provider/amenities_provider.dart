@@ -89,9 +89,14 @@ class AmenitiesProvider extends ChangeNotifier {
 }
 
 class PropertyPhotosProvider extends ChangeNotifier {
-  List<File?> _images = List.generate(8, (index) => null);
+  PropertyPhotosProvider(List? images) {
+    if (images != null) {
+      _images = images;
+    }
+  }
+  List<dynamic> _images = List.generate(8, (index) => null);
 
-  UnmodifiableListView<File?> get images => UnmodifiableListView(_images);
+  UnmodifiableListView<dynamic> get images => UnmodifiableListView(_images);
 
   void pickImage(int index) async {
     final image = await ImagePicker()
@@ -111,10 +116,15 @@ class PropertyPhotosProvider extends ChangeNotifier {
 }
 
 class PropertyDocumentsProvider extends ChangeNotifier {
-  List<File?> _docs = List.generate(4, (index) => null);
+  PropertyDocumentsProvider(List? data) {
+    if (data != null) {
+      _docs = data;
+    }
+  }
+  List<dynamic> _docs = List.generate(4, (index) => null);
   late final List<String?> _docNames = List.generate(4, (index) => null);
 
-  UnmodifiableListView<File?> get docs => UnmodifiableListView(_docs);
+  UnmodifiableListView<dynamic> get docs => UnmodifiableListView(_docs);
   UnmodifiableListView<String?> get docNames => UnmodifiableListView(_docNames);
 
   void pickDocuments(int index) async {
@@ -136,11 +146,17 @@ class PropertyDocumentsProvider extends ChangeNotifier {
 }
 
 class PropertyVideoProvider extends ChangeNotifier {
-  List<File?> _videos = List.generate(4, (index) => null);
+  PropertyVideoProvider(List? data) {
+    if (data != null) {
+      _videos = data;
+    }
+  }
+  List<dynamic> _videos = List.generate(4, (index) => null);
   late final List<String?> _videoNames = List.generate(4, (index) => null);
 
-  UnmodifiableListView<File?> get videos => UnmodifiableListView(_videos);
-  UnmodifiableListView<String?> get videoNames => UnmodifiableListView(_videoNames);
+  UnmodifiableListView<dynamic> get videos => UnmodifiableListView(_videos);
+  UnmodifiableListView<String?> get videoNames =>
+      UnmodifiableListView(_videoNames);
 
   void pickVideo(int index) async {
     final video = await ImagePicker().pickVideo(source: ImageSource.gallery);

@@ -2,6 +2,54 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 class PostYourPropertyProviderOne extends ChangeNotifier {
+  PostYourPropertyProviderOne(data) {
+    if (data != null) {
+      final propertyCategory = data['propertyCategory'];
+      if (propertyCategory == 'Residential') {
+        _propertyTypeDropDown = _residential;
+      }
+      if (propertyCategory == 'Commercial') {
+        _propertyTypeDropDown = _commercial;
+      }
+      if (propertyCategory == 'Farm') {
+        _propertyTypeDropDown = _farm;
+      }
+      _propertyCategoryChosenValue = data['propertyCategory'];
+      final propertyType = data['propertyType'];
+      _propertyTypeChosenValue = propertyType;
+      if (_skipList.contains(propertyType)) {
+        isSkipPageTwo = false;
+      } else {
+        isSkipPageTwo = true;
+      }
+      final possessionStatus = data['possessionStatus'];
+      _possessionStatusChosenValue = possessionStatus;
+
+      if (possessionStatus == 'Under Construction') {
+        _isVisible = true;
+      } else {
+        _isVisible = false;
+      }
+
+      if (possessionStatus == 'Ready to Move' ||
+          possessionStatus == 'Under Construction') {
+        _ageChosenValue = 'New';
+        _disableAge = true;
+      } else {
+        _disableAge = false;
+      }
+
+      _controller.text = data['price'];
+      _locationController.text = data['location'];
+      _ageChosenValue = data['age'];
+      _facingChosenValue = data['facing'];
+      handOverYearController.text = data['handOverYear'];
+      handOverMonthController.text = data['handOverMonth'];
+      _sizeController.text = data['size'].toString().split(' ')[0];
+      _sizeChosenValue = data['size'].toString().split(' ')[1];
+    }
+  }
+
   // for propertyCategoryDropDown
   final List<String> _propertyCategoryDropDown = [
     'Residential',

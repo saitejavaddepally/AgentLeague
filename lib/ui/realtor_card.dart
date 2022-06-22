@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 var currentPage = 0;
@@ -21,6 +19,7 @@ bool isIncremented = false;
 String profileImage = "";
 late List plotPagesInformation = [];
 late String currentPlotFromPreviousPage;
+
 class RealtorCard extends StatefulWidget {
   List plotPagesInformation;
 
@@ -41,7 +40,6 @@ class _RealtorCardState extends State<RealtorCard> {
     setState(() {
       plotPagesInformation = widget.plotPagesInformation;
     });
-    print("dude $plotPagesInformation");
 
     Future.delayed(const Duration(seconds: 0), () {
       SharedPreferencesHelper().getUserId().then((value) {
@@ -51,20 +49,15 @@ class _RealtorCardState extends State<RealtorCard> {
       });
     });
     SharedPreferencesHelper().getCurrentPage().then((value) {
-      print("value is $value");
-
       setState(() {
         currentPage = int.parse(value!);
         currentPlotFromPreviousPage =
             plotPagesInformation[currentPage][1]['plotNo'].toString();
       });
-      print("man $currentPlotFromPreviousPage");
       SharedPreferencesHelper()
           .saveCurrentPage(currentPlotFromPreviousPage.toString());
-      print(profileImage);
       controller = PageController(initialPage: int.parse(value!));
     });
-    print("User Id is  $userId");
     Future.delayed(const Duration(seconds: 0), () {
       SharedPreferencesHelper().getNumProperties().then((value) {
         numberOfProperties = value.toString();
@@ -82,8 +75,6 @@ class _RealtorCardState extends State<RealtorCard> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments;
-    print("The arguments are : $arguments");
     return (numberOfProperties != "0")
         ? Scaffold(
             backgroundColor: color,
@@ -93,7 +84,6 @@ class _RealtorCardState extends State<RealtorCard> {
                 itemCount: int.parse(numberOfProperties),
                 controller: controller,
                 onPageChanged: (int page) async {
-                  print("I am here second? ");
                   var currentPlotFromList =
                       plotPagesInformation[page][1]['plotNo'];
                   SharedPreferencesHelper()
@@ -119,11 +109,6 @@ class _RealtorCardState extends State<RealtorCard> {
   }
 }
 
-// const SpinKitThreeBounce(
-// size: 30,
-// color: Colors.white,
-// );
-
 class RealtorPage extends StatefulWidget {
   const RealtorPage({Key? key}) : super(key: key);
 
@@ -136,24 +121,16 @@ class _RealtorPageState extends State<RealtorPage> {
   void initState() {
     controller?.addListener(() {
       var current = (controller?.page)!;
-      setState(() {
-        currentPage = current.toInt();
-        print("Now the current Page is : $currentPage");
-      });
-    });
 
-    setState(() {
+      currentPage = current.toInt();
       profileImage =
           "sell_images/$userId/standlone/plot_${currentPage + 1}/images/";
     });
-
-    print("Am I here? then");
     super.initState();
   }
 
   Future getProfileImages() async {
     var images = await SharedPreferencesHelper().getListOfCards();
-    print("Images are: $images");
     return images;
   }
 
@@ -218,9 +195,7 @@ class _RealtorPageState extends State<RealtorPage> {
                       FutureBuilder(
                           future: getProfileImages(),
                           builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              print(snapshot.data);
-                            }
+                            if (snapshot.hasData) {}
                             if (snapshot.connectionState !=
                                 ConnectionState.done) {
                               return Container(
@@ -291,7 +266,53 @@ class _RealtorPageState extends State<RealtorPage> {
             const SizedBox(width: 12),
             CustomButton(
                     text: 'edit',
-                    onClick: () {},
+                    onClick: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text(
+                                "Are you sure to edit this property"),
+                            actions: [
+                              TextButton(
+                                onPressed: () async {
+                                  String? userId =
+                                      await SharedPreferencesHelper()
+                                          .getUserId();
+                                  final dataProvider = FirestoreDataProvider();
+                                  final images =
+                                      await dataProvider.getAllImage(userId, 3);
+                                  final videos = await dataProvider
+                                      .getAllVideos(userId, 3);
+                                  final docs =
+                                      await dataProvider.getAllDocs(userId, 3);
+
+                                  List data = await FirestoreDataProvider()
+                                      .getPlotPagesInformation(3);
+                                  Map<String, dynamic> data1 = data[0];
+
+                                  Navigator.pushNamed(context,
+                                      RouteName.postYourPropertyPageOne,
+                                      arguments: data1
+                                        ..addAll({
+                                          'images': images,
+                                          'videos': videos,
+                                          'docs': docs
+                                        }));
+                                },
+                                child: const Text("Yes"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("No"),
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    },
                     height: 40,
                     width: 40,
                     isIcon: true,
