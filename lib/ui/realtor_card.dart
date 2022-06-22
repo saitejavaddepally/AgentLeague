@@ -256,7 +256,32 @@ class _RealtorPageState extends State<RealtorPage> {
           child: Row(children: [
             CustomButton(
                     text: 'trash',
-                    onClick: () {},
+                    onClick: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text(
+                                "Are you sure you want to delete this property"),
+                            actions: [
+                              TextButton(
+                                onPressed: () async {
+                                  await FirestoreDataProvider().deletePlot(2);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Yes"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("No"),
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    },
                     height: 40,
                     width: 40,
                     isIcon: true,

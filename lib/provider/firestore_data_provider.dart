@@ -58,6 +58,16 @@ class FirestoreDataProvider {
     return detailsOfPages;
   }
 
+  Future<void> deletePlot(int plotNo) async {
+    String? userId = await SharedPreferencesHelper().getUserId();
+    await FirebaseFirestore.instance
+        .collection('sell_plots')
+        .doc(userId)
+        .collection('standlone')
+        .doc('plot_$plotNo')
+        .delete();
+  }
+
   Future getProfileImage(String path) async {
     print("path is $path");
     Reference storageRef = FirebaseStorage.instance.ref().child(path);
