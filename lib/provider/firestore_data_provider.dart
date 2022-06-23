@@ -66,6 +66,15 @@ class FirestoreDataProvider {
           .doc(userId)
           .collection('standlone')
           .doc('plot_$plotNo')
+          .collection('pages_info')
+          .doc()
+          .delete();
+
+      await FirebaseFirestore.instance
+          .collection('sell_plots')
+          .doc(userId)
+          .collection('standlone')
+          .doc('plot_$plotNo')
           .delete();
       await deleteImages(userId!, plotNo);
       await deleteDocs(userId, plotNo);
