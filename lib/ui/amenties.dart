@@ -78,7 +78,8 @@ class _AmentiesState extends State<Amenties> {
 
     Map<String, dynamic> dataToBeUploaded = widget.data[0];
     dataToBeUploaded.addAll({"timestamp": DateTime.now().toString()});
-    await UploadPropertiesToFirestore().postPropertyPageOne(dataToBeUploaded);
+    await UploadPropertiesToFirestore()
+        .postPropertyPageOne(dataToBeUploaded, isEdited);
     print("I am done Here? ");
     print("images are $_images");
     print("docs are $_docs");

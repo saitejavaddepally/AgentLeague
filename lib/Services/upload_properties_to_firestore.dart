@@ -31,7 +31,7 @@ class UploadPropertiesToFirestore {
         .then((value) => print("value is $value"));
   }
 
-  Future postPropertyPageOne(Map<String, dynamic> data) async {
+  Future postPropertyPageOne(Map<String, dynamic> data, bool isEdited) async {
     String? userId = await SharedPreferencesHelper().getUserId();
 
     SharedPreferencesHelper().getCurrentPlot().then((value) async {
@@ -46,23 +46,39 @@ class UploadPropertiesToFirestore {
       data.addAll({
         "uid": userId,
       });
-      await ref.doc(value).collection("pages_info").add(data);
+
+
+      if (isEdited) {
+        CollectionReference collRef = ref.doc(value).collection("pages_info");
+        QuerySnapshot plotDocuments = await collRef.get();
+        final allData = plotDocuments.docs.map((doc) => doc.id).toList();
+
+        print("document id is $allData");
+        await ref
+            .doc(value)
+            .collection('pages_info')
+            .doc(allData[0])
+            .update(data);
+      } else {
+
+        await ref.doc(value).collection("pages_info").add(data);
+      }
       print("I am Done here");
     });
   }
-  //
-  // Future postPropertyPageTwo(Map<String, dynamic> data) async {
-  //   String? userId = await SharedPreferencesHelper().getUserId();
-  //
-  //   await SharedPreferencesHelper().getCurrentPlot().then((value) async {
-  //     print("Posting property $value");
-  //     FirebaseFirestore.instance
-  //         .collection("sell_plots")
-  //         .doc(userId)
-  //         .collection("standlone")
-  //         .doc(value)
-  //         .collection("page_2")
-  //         .add(data);
-  //   });
-  // }
+//
+// Future postPropertyPageTwo(Map<String, dynamic> data) async {
+//   String? userId = await SharedPreferencesHelper().getUserId();
+//
+//   await SharedPreferencesHelper().getCurrentPlot().then((value) async {
+//     print("Posting property $value");
+//     FirebaseFirestore.instance
+//         .collection("sell_plots")
+//         .doc(userId)
+//         .collection("standlone")
+//         .doc(value)
+//         .collection("page_2")
+//         .add(data);
+//   });
+// }
 }
