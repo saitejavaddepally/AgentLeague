@@ -59,17 +59,24 @@ class _SellScreenState extends State<SellScreen> {
     List numberOfProperties = await FirestoreDataProvider().getPlots();
     int number = int.parse(numberOfProperties.length.toString());
 
-    for (var i = 1; i <= number; i++) {
+    for (var i = 0; i < number; i++) {
+      String plot = numberOfProperties[i] as String;
+      var plotNumber = plot.substring(5);
+      print("the plot is $plotNumber");
       List detailsOfPages =
-          await FirestoreDataProvider().getPlotPagesInformation(i);
+          await FirestoreDataProvider().getPlotPagesInformation(int.parse(plotNumber));
+
+      if (detailsOfPages.isEmpty) {
+        continue;
+      }
+
       String profilePicture = await FirestoreDataProvider()
-          .getProfileImage("sell_images/$userId/standlone/plot_$i/images/");
+          .getProfileImage("sell_images/$userId/standlone/plot_$plotNumber/images/");
       profileImagesSorted.putIfAbsent(i, () => profilePicture);
-      detailsOfPages.add({"plotNo": i});
+      detailsOfPages.add({"plotNo": plotNumber});
       detailsOfPages.add({"picture": profilePicture});
       plotPagesInformationOriginal.add(detailsOfPages);
     }
-    print("plot information is: $plotPagesInformationOriginal");
     setState(() {
       plotPagesInformation = plotPagesInformationOriginal;
       this.numberOfProperties = plotPagesInformation.length.toString();
@@ -181,7 +188,7 @@ class _SellScreenState extends State<SellScreen> {
                                         color: HexColor('082640'),
                                         size: 50,
                                         onTap: () {
-                                          Navigator.pushNamed(
+                                          Navigator.pushReplacementNamed(
                                               context, '/post_page_one');
                                         },
                                         isNeu: true,

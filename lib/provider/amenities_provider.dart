@@ -122,10 +122,10 @@ class PropertyDocumentsProvider extends ChangeNotifier {
     }
   }
   List<dynamic> _docs = List.generate(4, (index) => null);
-  late final List<String?> _docNames = List.generate(4, (index) => null);
+  late final List<dynamic> _docNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<dynamic> get docs => UnmodifiableListView(_docs);
-  UnmodifiableListView<String?> get docNames => UnmodifiableListView(_docNames);
+  UnmodifiableListView<dynamic> get docNames => UnmodifiableListView(_docNames);
 
   void pickDocuments(int index) async {
     final path = await FlutterDocumentPicker.openDocument();

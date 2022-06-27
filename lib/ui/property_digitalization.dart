@@ -10,6 +10,7 @@ import '../theme/colors.dart';
 
 class PropertyDigitalization extends StatefulWidget {
   final Map<String, dynamic> formData;
+
   const PropertyDigitalization({required this.formData, Key? key})
       : super(key: key);
 
@@ -101,10 +102,12 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12)),
                             width: _size.width * 0.30,
-                            child: (widget.formData['picture'] != null)
-                                ? Image.file(widget.formData['picture'],
+                            child: (widget.formData['picture'].runtimeType
+                                        .toString() ==
+                                    'String')
+                                ? Image.network(widget.formData['picture'],
                                     fit: BoxFit.fill)
-                                : Image.asset('assets/lead_box_image.png',
+                                : Image.file(widget.formData['picture'],
                                     fit: BoxFit.fill)),
                         Expanded(
                             child: Container(
@@ -335,6 +338,7 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
 class CustomPriceText extends StatelessWidget {
   final String text1;
   final String text2;
+
   const CustomPriceText({required this.text1, required this.text2, Key? key})
       : super(key: key);
 
@@ -362,6 +366,7 @@ class CustomPriceText extends StatelessWidget {
 class CustomContainerText1 extends StatelessWidget {
   final String text1;
   final String text2;
+
   const CustomContainerText1(
       {required this.text1, required this.text2, Key? key})
       : super(key: key);

@@ -43,6 +43,9 @@ class UploadPropertiesToFirestore {
           .collection("standlone");
 
       ref.doc(value).set({"data": 1});
+      data.addAll({
+        "uid": userId,
+      });
       await ref.doc(value).collection("pages_info").add(data);
       print("I am Done here");
     });

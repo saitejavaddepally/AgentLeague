@@ -22,6 +22,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostYourPropertyPageOne extends StatefulWidget {
   final Map<String, dynamic>? dataToEdit;
+
   const PostYourPropertyPageOne({this.dataToEdit, Key? key}) : super(key: key);
 
   @override
@@ -102,7 +103,11 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
   void initState() {
     _latitude = widget.dataToEdit?['latitude'] ?? 0;
     _longitude = widget.dataToEdit?['longitude'] ?? 0;
-    getPlotStatus();
+    // print("Plot to be edited is ? ${widget.dataToEdit!['plotNo']}");
+    (widget.dataToEdit == null)
+        ? getPlotStatus()
+        : SharedPreferencesHelper()
+            .saveCurrentPlot("plot_${widget.dataToEdit!['plotNo']}");
     super.initState();
   }
 
@@ -111,84 +116,6 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
         maskType: EasyLoadingMaskType.black, status: "Please wait !!");
     await UploadPropertiesToFirestore().getPlotStatus();
     await EasyLoading.dismiss();
-  }
-
-  Future postProperty(Map<String, dynamic> data) async {
-    AuthMethods().getUserId().then((value) async {
-      CollectionReference ref = FirebaseFirestore.instance
-          .collection("sell_plots")
-          .doc(value)
-          .collection("standlone");
-
-      ref.get().then((event) {
-        if (event.docs.isEmpty) {
-          setState(() {
-            currentPlot = 'plot_1';
-          });
-        } else {
-          int length = event.docs.length;
-          print(length);
-          final List<DocumentSnapshot> documents = event.docs;
-          var id = documents[length - 1].id.substring(5);
-
-          int autoId = int.parse(id) + 1;
-          setState(() {
-            currentPlot = 'plot_$autoId';
-          });
-        }
-        return currentPlot;
-      }).then((value) async {
-        print("Value is : " + value);
-        SharedPreferencesHelper().saveCurrentPlot(value);
-        AuthMethods().getUserId().then((value) async {
-          CollectionReference ref = FirebaseFirestore.instance
-              .collection("sell_plots")
-              .doc(value)
-              .collection("standlone");
-          ref.doc(currentPlot).set({"data": 1});
-          await ref.doc(currentPlot).collection("page_1").add(data);
-          print("I am Done here");
-        }).then((value) {
-          print("I am here now!!");
-          SharedPreferencesHelper()
-              .getCurrentPlot()
-              .then((value) => print("value is $value"));
-        }).then((value) {
-          if (_formKey.currentState!.validate()) {
-            Navigator.pushNamed(context, RouteName.postYourPropertyPageTwo,
-                arguments: data);
-          }
-        });
-      });
-    });
-  }
-
-  Future<String> fetchPlot() async {
-    AuthMethods().getUserId().then((value) async {
-      CollectionReference ref = FirebaseFirestore.instance
-          .collection("sell_plots")
-          .doc(value)
-          .collection("standlone");
-
-      ref.snapshots().listen((event) {
-        if (event.docs.isEmpty) {
-          setState(() {
-            currentPlot = 'plot_1';
-          });
-        } else {
-          int length = event.docs.length;
-          print(length);
-          final List<DocumentSnapshot> documents = event.docs;
-          var id = documents[length - 1].id.substring(5);
-
-          int autoId = int.parse(id) + 1;
-          setState(() {
-            currentPlot = 'plot_$autoId';
-          });
-        }
-      });
-    });
-    return currentPlot;
   }
 
   @override
@@ -555,7 +482,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         "latitude": _latitude,
                                                         "longitude": _longitude
                                                       });
-                                                      Navigator.pushNamed(
+                                                      Navigator.pushReplacementNamed(
                                                           context,
                                                           RouteName
                                                               .postYourPropertyPageTwo,

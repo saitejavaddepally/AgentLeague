@@ -3,8 +3,10 @@ import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../theme/colors.dart';
 
@@ -40,7 +42,7 @@ class _RealtorCardState extends State<RealtorCard> {
     setState(() {
       plotPagesInformation = widget.plotPagesInformation;
     });
-
+    print("information is $plotPagesInformation");
     Future.delayed(const Duration(seconds: 0), () {
       SharedPreferencesHelper().getUserId().then((value) {
         setState(() {
@@ -266,8 +268,20 @@ class _RealtorPageState extends State<RealtorPage> {
                             actions: [
                               TextButton(
                                 onPressed: () async {
-                                  await FirestoreDataProvider().deletePlot(1);
-                                  Navigator.pop(context);
+                                  var currPlot =
+                                      plotPagesInformation[currentPage][1]
+                                              ['plotNo']
+                                          .toString();
+                                  print("delete plot $currPlot");
+                                  await EasyLoading.show(
+                                    status: 'Deleting.. please wait',
+                                    maskType: EasyLoadingMaskType.black,
+                                  );
+                                  await FirestoreDataProvider()
+                                      .deletePlot(int.parse(currPlot));
+                                  await EasyLoading.showSuccess("Deleted");
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      RouteName.bottomBar, (r) => false);
                                 },
                                 child: const Text("Yes"),
                               ),
@@ -299,31 +313,52 @@ class _RealtorPageState extends State<RealtorPage> {
                             title: const Text(
                                 "Are you sure to edit this property"),
                             actions: [
+
                               TextButton(
                                 onPressed: () async {
+                                  await EasyLoading.show(
+                                    status: 'Loading data....',
+                                    maskType: EasyLoadingMaskType.black,
+                                  );
+                                  var currPlot =
+                                      plotPagesInformation[currentPage][1]
+                                              ['plotNo']
+                                          .toString();
                                   String? userId =
                                       await SharedPreferencesHelper()
                                           .getUserId();
                                   final dataProvider = FirestoreDataProvider();
-                                  final images =
-                                      await dataProvider.getAllImage(userId, 1);
-                                  final videos = await dataProvider
-                                      .getAllVideos(userId, 1);
-                                  final docs =
-                                      await dataProvider.getAllDocs(userId, 1);
-
-                                  List data = await FirestoreDataProvider()
-                                      .getPlotPagesInformation(1);
+                                  final images = await dataProvider.getAllImage(
+                                      userId, int.parse(currPlot));
+                                  final videosInfo =
+                                      await dataProvider.getAllVideos(
+                                          userId, int.parse(currPlot));
+                                  List previousVideoNames = videosInfo[0];
+                                  List videos = videosInfo[1];
+                                  final docsInfo = await dataProvider
+                                      .getAllDocs(userId, int.parse(currPlot));
+                                  List previousDocNames = docsInfo[0];
+                                  List docs = docsInfo[1];
+                                  List data = plotPagesInformation[currentPage];
                                   Map<String, dynamic> data1 = data[0];
 
-                                  Navigator.pushNamed(context,
+                                  await EasyLoading.dismiss();
+                                  Navigator.pop(context);
+
+                                  Navigator.pushReplacementNamed(context,
                                       RouteName.postYourPropertyPageOne,
                                       arguments: data1
                                         ..addAll({
                                           'images': images,
+                                          'previousDocNames': previousDocNames,
+                                          'previousVideoNames':
+                                              previousVideoNames,
                                           'videos': videos,
-                                          'docs': docs
+                                          'docs': docs,
+                                          'plotNo': currPlot,
+                                          'isEdited' : true,
                                         }));
+
                                 },
                                 child: const Text("Yes"),
                               ),

@@ -55,27 +55,20 @@ class FirestoreDataProvider {
       }
     });
 
+    print(detailsOfPages);
+
     return detailsOfPages;
   }
 
   Future<void> deletePlot(int plotNo) async {
     try {
       String? userId = await SharedPreferencesHelper().getUserId();
-      await FirebaseFirestore.instance
+      CollectionReference plotCollection = FirebaseFirestore.instance
           .collection('sell_plots')
           .doc(userId)
-          .collection('standlone')
-          .doc('plot_$plotNo')
-          .collection('pages_info')
-          .doc()
-          .delete();
+          .collection('standlone');
 
-      await FirebaseFirestore.instance
-          .collection('sell_plots')
-          .doc(userId)
-          .collection('standlone')
-          .doc('plot_$plotNo')
-          .delete();
+      await plotCollection.doc('plot_$plotNo').delete();
       await deleteImages(userId!, plotNo);
       await deleteDocs(userId, plotNo);
       await deleteVideos(userId, plotNo);
@@ -124,6 +117,9 @@ class FirestoreDataProvider {
       await item.getDownloadURL().then((value) async {
         images.add(value);
       });
+    }
+    if (images.isEmpty) {
+      return "https://avatarfiles.alphacoders.com/125/thumb-125098.png";
     }
     return images[0];
   }
@@ -189,15 +185,18 @@ class FirestoreDataProvider {
         .ref()
         .child("sell_images/$userId/standlone/plot_$plotNo/videos/");
     final List<dynamic> videos = List.generate(4, (index) => null);
+    final List<dynamic> previousVideoNames = List.generate(4, (index) => null);
+
     final listResult = await storageRef.listAll();
 
     for (int i = 0; i < listResult.items.length; i++) {
+      previousVideoNames[i] = listResult.items[i].name;
       await listResult.items[i].getDownloadURL().then((value) async {
         videos[i] = value;
       });
     }
 
-    return videos;
+    return [previousVideoNames, videos];
   }
 
   Future<List<dynamic>> getAllDocs(userId, int plotNo) async {
@@ -205,14 +204,16 @@ class FirestoreDataProvider {
         .ref()
         .child("sell_images/$userId/standlone/plot_$plotNo/docs/");
     final List<dynamic> docs = List.generate(4, (index) => null);
+    final List<dynamic> previousDocNames = List.generate(4, (index) => null);
     final listResult = await storageRef.listAll();
 
     for (int i = 0; i < listResult.items.length; i++) {
+      previousDocNames[i] = listResult.items[i].name;
       await listResult.items[i].getDownloadURL().then((value) async {
         docs[i] = value;
       });
     }
 
-    return docs;
+    return [previousDocNames, docs];
   }
 }

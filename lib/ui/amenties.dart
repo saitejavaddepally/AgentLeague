@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
@@ -16,6 +17,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -35,18 +37,37 @@ class _AmentiesState extends State<Amenties> {
   late List<dynamic> _images = [];
   late List<dynamic> _docs = [];
   late List<dynamic> _videos = [];
-  late List<String?> _docNames;
-  late List<String?> _videoNames;
+  late List<dynamic> _docNames;
+  late List<dynamic> _videoNames;
   static const String _IMAGE = 'images';
   static const String _VIDEO = 'videos';
   static const String _DOCS = 'docs';
   String? currentPlot = '';
   String? currentUser = '';
   bool isLoading = false;
+  bool isEdited = false;
 
   @override
   void initState() {
+    if (widget.data[1] != null) {
+      _images = widget.data[1]['images'];
+      _videos = widget.data[1]['videos'];
+      _videoNames = widget.data[1]['previousVideoNames'];
+      _docs = widget.data[1]['docs'];
+      _docNames = widget.data[1]['previousDocNames'];
+      isEdited = widget.data[1]['isEdited'];
+    }
     super.initState();
+  }
+
+  Future<File> urlToFile(String imageUrl) async {
+    var rng = Random();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File file = File(tempPath + (rng.nextInt(100)).toString() + '.png');
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
   }
 
   Future uploadData() async {
@@ -83,12 +104,19 @@ class _AmentiesState extends State<Amenties> {
       if (list[i] != null) {
         await AuthMethods().getUserId().then((value) async {
           currentUser = value;
-
+          var temp = list[i];
+          print(list[i].runtimeType.toString());
+          if (list[i].runtimeType.toString() == 'String') {
+            print("converting into file...");
+            temp = await urlToFile(list[i]);
+            print("converted!");
+          }
+          print("Uploading to firestore...");
           snapshot = await _firebaseStorage
               .ref()
               .child(
                   'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type + "_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
-              .putFile(list[i]!);
+              .putFile(temp! as File);
         });
       }
     }
@@ -402,16 +430,17 @@ class _AmentiesState extends State<Amenties> {
                                                 //       (r) => false);
                                                 // });
                                                 await uploadData();
-                                                Navigator.pushNamed(
-                                                    context,
-                                                    RouteName
-                                                        .propertyDigitalization,
-                                                    arguments: widget.data[0]
-                                                      ..addAll({
-                                                        'picture':
-                                                            _photoProvider
-                                                                .images[0]
-                                                      }));
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  (!isEdited)
+                                                      ? RouteName
+                                                          .propertyDigitalization
+                                                      : RouteName.bottomBar,
+                                                  arguments: widget.data[0]
+                                                    ..addAll({
+                                                      'picture': _images[0]
+                                                    }),
+                                                );
                                               },
                                               width: 102,
                                               height: 40,
