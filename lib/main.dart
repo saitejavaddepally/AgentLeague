@@ -1,4 +1,5 @@
 import 'package:agent_league/Services/auth_methods.dart';
+import 'package:agent_league/Services/local_notification_service.dart';
 
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/config.dart';
@@ -8,14 +9,27 @@ import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+// works when the app is in background open or close doesn't matter
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print("OnBackgroundMessage");
+  if (message.notification != null) {
+    print(message.notification!.body);
+    print(message.notification!.title);
+    print(message.data);
+  }
+}
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotificationService.initialize();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await initialization();
   runApp(const MyApp());
