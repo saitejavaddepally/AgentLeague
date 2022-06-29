@@ -48,6 +48,7 @@ class _SellScreenState extends State<SellScreen> {
   void initState() {
     print("Am I here? ");
     super.initState();
+
     getPlotInformation();
   }
 
@@ -63,15 +64,15 @@ class _SellScreenState extends State<SellScreen> {
       String plot = numberOfProperties[i] as String;
       var plotNumber = plot.substring(5);
       print("the plot is $plotNumber");
-      List detailsOfPages =
-          await FirestoreDataProvider().getPlotPagesInformation(int.parse(plotNumber));
+      List detailsOfPages = await FirestoreDataProvider()
+          .getPlotPagesInformation(int.parse(plotNumber));
 
       if (detailsOfPages.isEmpty) {
         continue;
       }
 
-      String profilePicture = await FirestoreDataProvider()
-          .getProfileImage("sell_images/$userId/standlone/plot_$plotNumber/images/");
+      String profilePicture = await FirestoreDataProvider().getProfileImage(
+          "sell_images/$userId/standlone/plot_$plotNumber/images/");
       profileImagesSorted.putIfAbsent(i, () => profilePicture);
       detailsOfPages.add({"plotNo": plotNumber});
       detailsOfPages.add({"picture": profilePicture});
@@ -188,7 +189,7 @@ class _SellScreenState extends State<SellScreen> {
                                         color: HexColor('082640'),
                                         size: 50,
                                         onTap: () {
-                                          Navigator.pushReplacementNamed(
+                                          Navigator.pushNamed(
                                               context, '/post_page_one');
                                         },
                                         isNeu: true,

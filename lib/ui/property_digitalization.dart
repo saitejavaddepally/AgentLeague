@@ -1,8 +1,10 @@
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:agent_league/ui/success.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../Services/payment_razorpay.dart';
 import '../components/custom_text_field.dart';
 import '../components/custom_title.dart';
 import '../provider/property_digitalization_provider.dart';
@@ -52,9 +54,13 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                     ),
                     TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteName.paymentRazorpay,
-                              arguments: _pr.grandTotal);
+                          Map<String, dynamic> data = widget.formData;
+                          data.addAll({'grandTotal': _pr.grandTotal});
+                          print("data is $data");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PaymentRazorpay(data: data)));
                         },
                         style: TextButton.styleFrom(
                             backgroundColor: HexColor('FE7F0E'),
@@ -105,9 +111,9 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                             child: (widget.formData['picture'].runtimeType
                                         .toString() ==
                                     'String')
-                                ? Image.network(widget.formData['picture'],
+                                ? Image.network(widget.formData['media']['picture'],
                                     fit: BoxFit.fill)
-                                : Image.file(widget.formData['picture'],
+                                : Image.file(widget.formData['media']['picture'],
                                     fit: BoxFit.fill)),
                         Expanded(
                             child: Container(

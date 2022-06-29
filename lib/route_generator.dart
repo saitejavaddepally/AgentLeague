@@ -185,15 +185,21 @@ class RouteGenerator {
         }
         return _errorRoute();
 
-      case RouteName.success:
-        return PageTransition(
-            child: const Success(), type: PageTransitionType.leftToRight);
+      // case RouteName.success:
+      //   {
+      //     if (args is Map) {
+      //       return PageTransition(
+      //           child: const Success(data: {}),
+      //           type: PageTransitionType.leftToRight);
+      //     }
+      //     return _errorRoute();
+      //   }
 
       case RouteName.paymentRazorpay:
         {
-          if (args is num) {
+          if (args is Map) {
             return PageTransition(
-                child: PaymentRazorpay(amount: args),
+                child: PaymentRazorpay(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();

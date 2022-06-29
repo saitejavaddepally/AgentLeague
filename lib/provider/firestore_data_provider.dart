@@ -68,7 +68,36 @@ class FirestoreDataProvider {
           .doc(userId)
           .collection('standlone');
 
-      await plotCollection.doc('plot_$plotNo').delete();
+      QuerySnapshot plots = await plotCollection.get();
+      plots.docs.map((element) {
+        if (element.data() == null) {
+          print("${element.id} is deleted ");
+          plotCollection.doc(element.id).delete();
+        }
+      });
+
+      CollectionReference collRef =
+          plotCollection.doc('plot_$plotNo').collection("pages_info");
+      QuerySnapshot plotDocuments = await collRef.get();
+      List<dynamic> allData = plotDocuments.docs.map((doc) => doc.id).toList();
+
+      print("document id is ${allData[0]}");
+      CollectionReference ref =
+          plotCollection.doc('plot_$plotNo').collection('pages_info');
+      for (var id in allData) {
+        ref.doc(id).delete();
+      }
+      await plotCollection
+          .doc('plot_$plotNo')
+          .update({'data': FieldValue.delete()});
+
+      List detailsOfPages = await FirestoreDataProvider()
+          .getPlotPagesInformation(plotNo);
+
+      if (detailsOfPages.isEmpty) {
+        await plotCollection.doc('plot_$plotNo').delete();
+      }
+
       await deleteImages(userId!, plotNo);
       await deleteDocs(userId, plotNo);
       await deleteVideos(userId, plotNo);

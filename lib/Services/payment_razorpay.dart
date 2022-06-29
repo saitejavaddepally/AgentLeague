@@ -11,19 +11,24 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
 
+import '../ui/success.dart';
+
 class PaymentRazorpay extends StatefulWidget {
-  final num amount;
-  const PaymentRazorpay({required this.amount, Key? key}) : super(key: key);
+  final data;
+  const PaymentRazorpay({required this.data, Key? key}) : super(key: key);
 
   @override
   State<PaymentRazorpay> createState() => _PaymentRazorpayState();
 }
 
 class _PaymentRazorpayState extends State<PaymentRazorpay> {
+
   CollectionReference successPayment =
       FirebaseFirestore.instance.collection('successPayment');
   String? orderId;
   late Razorpay _razorpay;
+
+
 
   void openCheckout() async {
     http.Response response = await http.post(
@@ -31,7 +36,8 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
             'https://us-central1-agent-fly-updated.cloudfunctions.net/sendOrder'),
         headers: <String, String>{'username': key_id},
         body: jsonEncode(<String, dynamic>{
-          "amount": widget.amount * 100,
+          // "amount": widget.data['grandTotal'] * 100,
+          "amount": 1*100,
           "currency": "INR"
         }));
 
@@ -41,7 +47,8 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
       print(orderId);
       var options = {
         'key': key_id,
-        'amount': widget.amount * 100,
+        // 'amount': widget.data['grandTotal']* 100,
+        'amount': 0.1,
         'currency': 'INR',
         'name': 'Agent Fly',
         'order_id': orderId,
@@ -60,6 +67,7 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
 
   @override
   void initState() {
+    print(widget.data);
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -90,7 +98,10 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
       await updatePaymentSuccess(response.orderId!);
 
       Navigator.of(context).pop();
-      Navigator.pushNamed(context, RouteName.success);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Success(data: widget.data)));
     } else {
       Fluttertoast.showToast(msg: "Payment Not Verified");
       Navigator.pop(context);
