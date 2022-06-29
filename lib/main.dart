@@ -7,6 +7,7 @@ import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/onboarding.dart';
+import 'package:agent_league/ui/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

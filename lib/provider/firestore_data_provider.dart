@@ -216,4 +216,50 @@ class FirestoreDataProvider {
 
     return [previousDocNames, docs];
   }
+
+  Future<int> getNotificationCounter() async {
+    String? uid = await SharedPreferencesHelper().getUserId();
+    var docSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    int counter = docSnapshot.data()?['counter'];
+    return counter;
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getAllNotifications() async {
+    String? uid = await SharedPreferencesHelper().getUserId();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(uid)
+        .collection('standlone')
+        .orderBy('timestamp', descending: true)
+        .get();
+    return querySnapshot.docs;
+  }
+
+  Future<void> readAll() async {
+    String? uid = await SharedPreferencesHelper().getUserId();
+    QuerySnapshot<Map<String, dynamic>> allDoc = await FirebaseFirestore
+        .instance
+        .collection('notifications')
+        .doc(uid)
+        .collection('standlone')
+        .where('isRead', isEqualTo: false)
+        .get();
+    print("readall");
+    for (int i = 0; i < allDoc.docs.length; i++) {
+      String docId = allDoc.docs[i].id;
+
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(uid)
+          .collection('standlone')
+          .doc(docId)
+          .update({'isRead': true});
+    }
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'counter': 0});
+  }
 }

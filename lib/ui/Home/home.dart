@@ -1,3 +1,5 @@
+import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/custom_button.dart';
@@ -53,8 +55,23 @@ class _HomeState extends State<Home> {
                               Navigator.pushNamed(context, '/explore');
                             }),
                         const SizedBox(width: 15),
-                        const CustomImage(
-                            image: "assets/alerts.png", text: "alerts"),
+                        FutureBuilder<int>(
+                          initialData: 0,
+                          future:
+                              FirestoreDataProvider().getNotificationCounter(),
+                          builder: (context, snapshot) {
+                            print(snapshot.data);
+                            return CustomImage(
+                                image: "assets/alerts.png",
+                                text: "alerts",
+                                isCounter: true,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, RouteName.alerts);
+                                },
+                                counter: snapshot.data);
+                          },
+                        ),
                       ],
                     ),
                   ],
@@ -198,6 +215,8 @@ class CustomImage extends StatelessWidget {
   final String image;
   final String text;
   final bool isDecorated;
+  final int? counter;
+  final bool isCounter;
 
   final void Function()? onTap;
 
@@ -206,6 +225,8 @@ class CustomImage extends StatelessWidget {
       required this.text,
       this.onTap,
       this.isDecorated = false,
+      this.counter,
+      this.isCounter = false,
       Key? key})
       : super(key: key);
 
@@ -217,12 +238,26 @@ class CustomImage extends StatelessWidget {
         decoration: const BoxDecoration(shape: BoxShape.circle),
         child: Column(children: [
           Container(
+              height: 40,
+              width: 40,
               decoration: (isDecorated)
                   ? BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.blue))
                   : const BoxDecoration(boxShadow: shadow1),
-              child: Image.asset(image, height: 40, width: 40)),
+              child: Stack(children: [
+                Image.asset(image, height: 40, width: 40),
+                if (isCounter && counter != 0)
+                  Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                          height: 20,
+                          width: 19,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.red),
+                          child: Center(child: Text(counter.toString()))))
+              ])),
           const SizedBox(height: 3),
           Text(
             text,
