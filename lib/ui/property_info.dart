@@ -441,7 +441,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             //     .savePageTwoInformation(
                                             //         _propertyTwo.getMap());
 
-                                            Navigator.pushReplacementNamed(
+                                            Navigator.pushNamed(
                                                 context, RouteName.amenities,
                                                 arguments: [
                                                   _propertyTwo
