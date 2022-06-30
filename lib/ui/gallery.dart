@@ -46,7 +46,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
     http.Response response = await http.get(Uri.parse(imageUrl));
     await file.writeAsBytes(response.bodyBytes);
     return tempPath;
-    return tempPath;
   }
 
   @override

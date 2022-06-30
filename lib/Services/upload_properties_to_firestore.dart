@@ -85,7 +85,6 @@ class UploadPropertiesToFirestore {
       List<dynamic> _videoNames,
       bool isEdited,
       Map<String, dynamic> data) async {
-
     Map<String, dynamic> dataToBeUploaded = data;
     dataToBeUploaded.addAll({"timestamp": DateTime.now().toString()});
 
@@ -97,7 +96,6 @@ class UploadPropertiesToFirestore {
     await uploadToFireStore(_videos, _VIDEO, _docNames, _videoNames);
 
     await uploadToFireStore(_docs, _DOCS, _docNames, _videoNames);
-
   }
 
   Future<File> urlToFile(String imageUrl) async {
@@ -130,6 +128,9 @@ class UploadPropertiesToFirestore {
             print("converted!");
           }
           print("Uploading to firestore...");
+
+          print(
+              "type is $type and video names are $_videoNames and docs are $_docNames");
           snapshot = await _firebaseStorage
               .ref()
               .child(

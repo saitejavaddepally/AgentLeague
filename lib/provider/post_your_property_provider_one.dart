@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 class PostYourPropertyProviderOne extends ChangeNotifier {
+  String _price = '';
+
   PostYourPropertyProviderOne(data) {
     if (data != null) {
       final propertyCategory = data['propertyCategory'];
@@ -23,6 +25,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
         isSkipPageTwo = true;
       }
       final possessionStatus = data['possessionStatus'];
+
       _possessionStatusChosenValue = possessionStatus;
 
       if (possessionStatus == 'Under Construction') {
@@ -38,7 +41,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       } else {
         _disableAge = false;
       }
-
+      print("prince is ${data['price']}");
       _controller.text = data['price'];
       _locationController.text = data['location'];
       _ageChosenValue = data['age'];
@@ -172,7 +175,6 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
 
   TextEditingController get controller => _controller;
 
-  String _price = '';
   onPriceSubmitted(String price) {
     _price = price;
   }

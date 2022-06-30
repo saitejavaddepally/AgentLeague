@@ -1,9 +1,14 @@
+import 'dart:math';
+
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../helper/constants.dart';
+import '../helper/shared_preferences.dart';
+import '../provider/firestore_data_provider.dart';
 
 class EMI extends StatefulWidget {
   const EMI({Key? key}) : super(key: key);
@@ -13,11 +18,51 @@ class EMI extends StatefulWidget {
 }
 
 class _EMIState extends State<EMI> {
-  final List<num> _roiMenuItems = [0.7, 0.8];
-  num _roiChosenValue = 0.7;
+  final List<num> _roiMenuItems = [6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0];
+  num _roiChosenValue = 6.5;
 
-  final List<String> _tenureMenuItems = ['15 yrs', '16 yrs'];
-  String _tenureChosenValue = '15 yrs';
+  final List<String> _tenureMenuItems = [
+    '5 yrs',
+    '10 yrs',
+    '15 yrs',
+    '20 yrs',
+  ];
+  late String _tenureChosenValue = '5 yrs';
+
+  Future<int?> getCurrentPlotPrice() async {
+    var number = await SharedPreferencesHelper().getCurrentPage();
+    print("number is $number");
+    List data = await FirestoreDataProvider()
+        .getPlotPagesInformation(int.parse(number!));
+    String price = data[0]['price'];
+
+    return int.parse(price);
+  }
+
+  void _handleCalculation() {
+    double A = 0.0;
+    int P = (50000000);
+    double r = 6.5 / 12 / 100;
+    const n = 5;
+    A = (P * r * pow((1 + r), n) / (pow((1 + r), n - 1)));
+
+    print(A);
+  }
+
+  int emi(int price, int years, double roi) {
+    print("price is $price");
+    print("roi is $roi");
+    print("years is $years");
+    _handleCalculation();
+    roi = roi/12/100;
+    final loanEMI =
+        price * roi * pow(1 + roi, years *12) / (pow(1 + roi, years*12) - 1);
+    return loanEMI.floor().toInt();
+  }
+
+  int getPercentagePrice(int price, int percent) {
+    return (price * percent / 100).floor();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +112,11 @@ class _EMIState extends State<EMI> {
                                   .map((e) => DropdownMenuItem<num>(
                                       child: Text(e.toString()), value: e))
                                   .toList(),
-                              onChanged: (number) {}),
+                              onChanged: (number) {
+                                setState(() {
+                                  _roiChosenValue = number!;
+                                });
+                              }),
                         ),
                       ),
                       const SizedBox(width: 30),
@@ -96,62 +145,78 @@ class _EMIState extends State<EMI> {
                                   .map((e) => DropdownMenuItem<String>(
                                       child: Text(e), value: e))
                                   .toList(),
-                              onChanged: (year) {}),
+                              onChanged: (year) {
+                                setState(() {
+                                  _tenureChosenValue = year!;
+                                });
+                              }),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      children: [
-                        Container(
+                  FutureBuilder(
+                      future: getCurrentPlotPrice(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState != ConnectionState.done) {
+                          return const SpinKitThreeBounce(
+                            size: 30,
+                            color: Colors.white,
+                          );
+                        }
+
+                        final price = snapshot.data as int;
+                        return Container(
                           decoration: BoxDecoration(
-                              color: HexColor('FE7F0E'),
-                              borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  topLeft: Radius.circular(10))),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Flexible(
-                                    child:
-                                        TableTitleText(text: '% of property')),
-                                Flexible(
-                                  child: TableTitleText(
-                                    text: 'Amount',
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: HexColor('FE7F0E'),
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        topLeft: Radius.circular(10))),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Flexible(
+                                          child: TableTitleText(
+                                              text: '% of property')),
+                                      Flexible(
+                                        child: TableTitleText(
+                                          text: 'Amount',
+                                        ),
+                                      ),
+                                      Flexible(
+                                          child: TableTitleText(text: 'EMI')),
+                                    ],
                                   ),
                                 ),
-                                Flexible(child: TableTitleText(text: 'EMI')),
-                              ],
-                            ),
+                              ),
+                              for (int i = 50; i <= 90; i += 10)
+                                TableRow(
+                                    text1: '$i% of $price',
+                                    text2:
+                                        getPercentagePrice(price, i).toString(),
+                                    text3: emi(
+                                            getPercentagePrice(price, i).toInt(),
+                                            int.parse(_tenureChosenValue
+                                                .substring(0, 2)),
+                                            double.parse(
+                                                _roiChosenValue.toString()))
+                                        .toString()),
+                            ],
                           ),
-                        ),
-                        const TableRow(
-                            text1: '50% of 7000000',
-                            text2: '3500000',
-                            text3: '22000'),
-                        const TableRow(
-                            text1: '50% of 7000000',
-                            text2: '3500000',
-                            text3: '22000'),
-                        const TableRow(
-                            text1: '50% of 7000000',
-                            text2: '3500000',
-                            text3: '22000'),
-                        const TableRow(
-                            text1: '50% of 7000000',
-                            text2: '3500000',
-                            text3: '22000')
-                      ],
-                    ),
-                  ),
+                        );
+                      }),
                   const SizedBox(height: 40),
                   Row(
                     children: [
@@ -198,6 +263,7 @@ class CustomEMIContainer extends StatelessWidget {
   final void Function() onClick;
   final String buttonText;
   final double width;
+
   const CustomEMIContainer(
       {required this.onClick,
       required this.text,
@@ -238,6 +304,7 @@ class CustomEMIContainer extends StatelessWidget {
 
 class TableTitleText extends StatelessWidget {
   final String text;
+
   const TableTitleText({required this.text, Key? key}) : super(key: key);
 
   @override
@@ -251,6 +318,7 @@ class TableRow extends StatelessWidget {
   final String text1;
   final String text2;
   final String text3;
+
   const TableRow(
       {required this.text1, required this.text2, required this.text3, Key? key})
       : super(key: key);

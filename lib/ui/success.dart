@@ -30,7 +30,7 @@ class _SuccessState extends State<Success> {
     final _docNames = widget.data['media']['docNames'];
 
     uploadDataToFireStore(
-        _images, _videos, _docs, _videoNames, _docNames, widget.data);
+        _images, _videos, _docs, _docNames, _videoNames, widget.data);
     super.initState();
   }
 

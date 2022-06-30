@@ -463,6 +463,9 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         "latitude": _latitude,
                                                         "longitude": _longitude
                                                       });
+
+                                                      print("data is $data");
+                                                      print("widget data is  ${widget.dataToEdit}");
                                                       Navigator.pushNamed(
                                                           context,
                                                           RouteName.amenities,

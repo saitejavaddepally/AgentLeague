@@ -21,6 +21,12 @@ class PropertyDigitalization extends StatefulWidget {
 }
 
 class _PropertyDigitalizationState extends State<PropertyDigitalization> {
+
+  @override
+  void initState() {
+    print("data is passed ${widget.formData['media']}");
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final _size = MediaQuery.of(context).size;
@@ -121,7 +127,7 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                           child: Column(children: [
                             CustomContainerText1(
                                 text1: 'Price',
-                                text2: "${widget.formData['price']} INR"),
+                                text2: "${widget.formData['propData']['price']} INR"),
                             const SizedBox(height: 3),
                             const CustomContainerText1(
                                 text1: 'Status', text2: 'Uploaded'),
