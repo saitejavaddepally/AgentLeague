@@ -7,15 +7,15 @@ import '../ui/property_info.dart';
 class PostYourPropertyProviderTwo extends ChangeNotifier {
   PostYourPropertyProviderTwo(data) {
     if (data != null) {
-      _furnishedChosenValue = data['furnished'];
-      _floorsChosenValue = data['floors'];
-      _bedRoomChosenValue = data['bed_room'];
-      _bathRoomChosenValue = data['bath_room'];
-      _extraRoomChosenValue = data['extra_room'];
-      _carParkChosenValue = data['car_park'];
-      _totalPortion = data['total_portion'];
-      _totalIncome = data['total_income'];
-      _rentalIncome = data['rental_income'];
+      _furnishedChosenValue = data['furnished'] ?? null;
+      _floorsChosenValue = data['floors'] ?? null;
+      _bedRoomChosenValue = data['bed_room'] ?? null;
+      _bathRoomChosenValue = data['bath_room'] ?? null;
+      _extraRoomChosenValue = data['extra_room'] ?? null;
+      _carParkChosenValue = data['car_park'] ?? null;
+      _totalPortion = data['total_portion'] ?? '';
+      _totalIncome = data['total_income'] ?? '';
+      _rentalIncome = data['rental_income'] ?? false;
     }
   }
 

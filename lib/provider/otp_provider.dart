@@ -38,7 +38,8 @@ class OtpProvider extends ChangeNotifier {
           .signInWithCredential(credential)
           .then((UserCredential userCredential) async {
         correct = true;
-        if (userCredential.user != null) {
+        if (userCredential.user != null &&
+            userCredential.additionalUserInfo!.isNewUser) {
           var userId = userCredential.user!.uid;
           await registerUser(userId, name, phoneNumber);
         }
@@ -58,10 +59,9 @@ class OtpProvider extends ChangeNotifier {
   static Future<void> registerUser(
       String userId, String name, String phoneNumber) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .set({'name': name, 'uid': userId, 'phone': phoneNumber});
+      await FirebaseFirestore.instance.collection('users').doc(userId).set(
+        {'name': name, 'uid': userId, 'phone': phoneNumber, 'counter': 0},
+      );
     } on Exception catch (e) {
       print(e);
     }

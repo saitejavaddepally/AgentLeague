@@ -2,6 +2,7 @@ import 'package:agent_league/Services/payment_razorpay.dart';
 import 'package:agent_league/ui/Home/Chat/chat_detail.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/add_project.dart';
+import 'package:agent_league/ui/alerts.dart';
 import 'package:agent_league/ui/amenties.dart';
 import 'package:agent_league/ui/coinsfly_wallet.dart';
 import 'package:agent_league/ui/documents.dart';
@@ -21,6 +22,7 @@ import 'package:agent_league/ui/property_buying_score.dart';
 import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:agent_league/ui/property_info.dart';
 import 'package:agent_league/ui/realtor_card.dart';
+import 'package:agent_league/ui/register.dart';
 import 'package:agent_league/ui/search_by.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
@@ -60,6 +62,8 @@ class RouteName {
   static const String searchBy = '/search_by';
   static const String success = '/success';
   static const String paymentRazorpay = '/r';
+  static const String register = '/register';
+  static const String alerts = '/alerts';
 }
 
 class RouteGenerator {
@@ -78,6 +82,9 @@ class RouteGenerator {
       case RouteName.onboard:
         return PageTransition(
             child: const Onboarding(), type: PageTransitionType.leftToRight);
+      case RouteName.alerts:
+        return PageTransition(
+            child: const Alerts(), type: PageTransitionType.leftToRight);
       case RouteName.signInEdit:
         return PageTransition(
             child: const SignInEdit(), type: PageTransitionType.leftToRight);
@@ -163,6 +170,9 @@ class RouteGenerator {
       case RouteName.uploads:
         return PageTransition(
             child: const UploadsScreen(), type: PageTransitionType.leftToRight);
+      case RouteName.register:
+        return PageTransition(
+            child: const Register(), type: PageTransitionType.leftToRight);
       case RouteName.propertyBuyingScore:
         return PageTransition(
             child: const PropertyBuyingScore(),
