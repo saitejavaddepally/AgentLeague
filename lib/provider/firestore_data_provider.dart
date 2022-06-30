@@ -91,8 +91,8 @@ class FirestoreDataProvider {
           .doc('plot_$plotNo')
           .update({'data': FieldValue.delete()});
 
-      List detailsOfPages = await FirestoreDataProvider()
-          .getPlotPagesInformation(plotNo);
+      List detailsOfPages =
+          await FirestoreDataProvider().getPlotPagesInformation(plotNo);
 
       if (detailsOfPages.isEmpty) {
         await plotCollection.doc('plot_$plotNo').delete();

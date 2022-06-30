@@ -296,11 +296,11 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       'possessionStatus': _possessionStatusChosenValue,
       'location': _locationController.text,
       'age': _ageChosenValue,
-      'price': _price,
+      'price': _controller.text,
       'facing': _facingChosenValue,
-      'handOverYear': _handOverYear,
-      'handOverMonth': _handOverMonth,
-      'size': _size + ' ' + _sizeChosenValue!,
+      'handOverYear': handOverYearController.text,
+      'handOverMonth': handOverMonthController.text,
+      'size': _sizeController.text + ' ' + _sizeChosenValue!,
     };
   }
 
@@ -308,9 +308,14 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
     _propertyCategoryChosenValue = null;
     _propertyTypeChosenValue = null;
     _possessionStatusChosenValue = null;
+    handOverMonthController.clear();
+    handOverYearController.clear();
     _locationController.clear();
     _ageChosenValue = null;
-    _controller.text = '';
+    _controller.clear();
+    _facingChosenValue = null;
+    _sizeController.clear();
+    _sizeChosenValue = null;
     notifyListeners();
   }
 }

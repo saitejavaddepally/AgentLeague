@@ -55,23 +55,12 @@ class _HomeState extends State<Home> {
                               Navigator.pushNamed(context, '/explore');
                             }),
                         const SizedBox(width: 15),
-                        FutureBuilder<int>(
-                          initialData: 0,
-                          future:
-                              FirestoreDataProvider().getNotificationCounter(),
-                          builder: (context, snapshot) {
-                            print(snapshot.data);
-                            return CustomImage(
-                                image: "assets/alerts.png",
-                                text: "alerts",
-                                isCounter: true,
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, RouteName.alerts);
-                                },
-                                counter: snapshot.data);
-                          },
-                        ),
+                        CustomImage(
+                            image: "assets/alerts.png",
+                            text: "alerts",
+                            onTap: () {
+                              //Navigator.pushNamed(context, RouteName.alerts);
+                            }),
                       ],
                     ),
                   ],

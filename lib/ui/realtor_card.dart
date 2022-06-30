@@ -313,7 +313,6 @@ class _RealtorPageState extends State<RealtorPage> {
                             title: const Text(
                                 "Are you sure to edit this property"),
                             actions: [
-
                               TextButton(
                                 onPressed: () async {
                                   await EasyLoading.show(
@@ -344,7 +343,7 @@ class _RealtorPageState extends State<RealtorPage> {
 
                                   await EasyLoading.dismiss();
                                   Navigator.pop(context);
-
+                                  print(currPlot);
                                   Navigator.pushReplacementNamed(context,
                                       RouteName.postYourPropertyPageOne,
                                       arguments: data1
@@ -356,9 +355,8 @@ class _RealtorPageState extends State<RealtorPage> {
                                           'videos': videos,
                                           'docs': docs,
                                           'plotNo': currPlot,
-                                          'isEdited' : true,
+                                          'isEdited': true,
                                         }));
-
                                 },
                                 child: const Text("Yes"),
                               ),
