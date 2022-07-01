@@ -50,13 +50,10 @@ class _EMIState extends State<EMI> {
   }
 
   int emi(int price, int years, double roi) {
-    print("price is $price");
-    print("roi is $roi");
-    print("years is $years");
     _handleCalculation();
-    roi = roi/12/100;
+    roi = roi / 12 / 100;
     final loanEMI =
-        price * roi * pow(1 + roi, years *12) / (pow(1 + roi, years*12) - 1);
+        price * roi * pow(1 + roi, years * 12) / (pow(1 + roi, years * 12) - 1);
     return loanEMI.floor().toInt();
   }
 
@@ -207,7 +204,8 @@ class _EMIState extends State<EMI> {
                                     text2:
                                         getPercentagePrice(price, i).toString(),
                                     text3: emi(
-                                            getPercentagePrice(price, i).toInt(),
+                                            getPercentagePrice(price, i)
+                                                .toInt(),
                                             int.parse(_tenureChosenValue
                                                 .substring(0, 2)),
                                             double.parse(
