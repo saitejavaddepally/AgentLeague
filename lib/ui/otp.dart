@@ -21,6 +21,7 @@ class Otp extends StatefulWidget {
 
 class _OtpState extends State<Otp> {
   late final String phoneNumber;
+  var update = "false";
   late final String name;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
@@ -206,8 +207,8 @@ class _OtpState extends State<Otp> {
                               onTap: () async {
                                 if (_verificationId != null) {
                                   setState(() => loading = true);
-                                  final result = await otpProvider.checkOtp(
-                                      _verificationId!, name, phoneNumber);
+                                  final result = (widget.args[1] != "true")? await otpProvider.checkOtp(
+                                      _verificationId!, name, phoneNumber): await otpProvider.updateOtp(_verificationId!, phoneNumber);
                                   switch (result) {
                                     case 'correct':
                                       {
@@ -227,6 +228,20 @@ class _OtpState extends State<Otp> {
                                                     "Please Enter Correct OTP"),
                                                 duration:
                                                     Duration(seconds: 2)));
+                                        break;
+                                      }
+                                    case "updated":
+                                      {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                "Updated the phoneNumber"),
+                                            duration:
+                                            Duration(seconds: 2)));
                                         break;
                                       }
                                     case 'enterotp':

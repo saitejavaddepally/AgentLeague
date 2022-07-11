@@ -1,5 +1,6 @@
 import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_selector.dart';
+import 'package:agent_league/components/custom_sell_card.dart';
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/provider/search_by_provider.dart';
 import 'package:agent_league/ui/post_your_property.dart';
@@ -107,6 +108,7 @@ class _SeachByState extends State<SeachBy> {
 
 class SearchLocation extends StatefulWidget {
   final List plotPageInformation;
+
   const SearchLocation({required this.plotPageInformation, Key? key})
       : super(key: key);
 
@@ -267,7 +269,7 @@ class _SearchLocationState extends State<SearchLocation> {
                                 }
                               },
                               isDense: true,
-                              borderradius: 4,
+                              borderRadius: 4,
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -580,7 +582,7 @@ class _PriceState extends State<Price> {
                 ? Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height / 2,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: SingleChildScrollView(
@@ -590,140 +592,27 @@ class _PriceState extends State<Price> {
                         child: Column(
                           children: [
                             for (var i = 0; i < (info.length); i++)
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Neumorphic(
-                                  style: NeumorphicStyle(
-                                    shape: NeumorphicShape.flat,
-                                    boxShape: NeumorphicBoxShape.roundRect(
-                                        BorderRadius.circular(17)),
-                                    depth: 4,
-                                  ),
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          SharedPreferencesHelper()
-                                              .saveCurrentPage(i.toString());
-                                          SharedPreferencesHelper()
-                                              .saveNumProperties(
-                                                  info.length.toString());
-                                          SharedPreferencesHelper()
-                                              .saveListOfCards(info);
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      RealtorCard(
-                                                          plotPagesInformation:
-                                                              info)));
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                  height: 180,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(17.0),
-                                                      topRight:
-                                                          Radius.circular(17.0),
-                                                      bottomLeft: Radius.zero,
-                                                      bottomRight: Radius.zero,
-                                                    ),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                            flex: 1,
-                                                            child: Container(
-                                                              width: 100,
-                                                              height: 170,
-                                                              // decoration:
-                                                              //     BoxDecoration(border: Border.all()),
-                                                              child:
-                                                                  Image.network(
-                                                                info[i][2]
-                                                                    ['picture'],
-                                                                fit:
-                                                                    BoxFit.fill,
-                                                              ),
-                                                            )),
-                                                        Expanded(
-                                                          flex: 2,
-                                                          child: Container(
-                                                              width: 100,
-                                                              height: 170,
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                              // decoration:
-                                                              //     BoxDecoration(border: Border.all()),
-                                                              child: Align(
-                                                                alignment: Alignment
-                                                                    .centerLeft,
-                                                                child: Column(
-                                                                  children: [
-                                                                    CustomContainerText(
-                                                                            text1:
-                                                                                'Category',
-                                                                            text2:
-                                                                                info[i][0]['propertyCategory'])
-                                                                        .use(),
-                                                                    CustomContainerText(
-                                                                            text1:
-                                                                                'Type',
-                                                                            text2:
-                                                                                info[i][0]['propertyType'])
-                                                                        .use(),
-                                                                    CustomContainerText(
-                                                                            text1:
-                                                                                'Area',
-                                                                            text2:
-                                                                                info[i][0]['size'])
-                                                                        .use(),
-                                                                    CustomContainerText(
-                                                                            text1:
-                                                                                'Location',
-                                                                            text2:
-                                                                                info[i][0]['location'])
-                                                                        .use(),
-                                                                    CustomContainerText(
-                                                                            text1:
-                                                                                'Price',
-                                                                            text2:
-                                                                                info[i][0]['price'])
-                                                                        .use(),
-                                                                    CustomContainerText(
-                                                                            text1:
-                                                                                'Possession',
-                                                                            text2:
-                                                                                info[i][0]['possessionStatus'])
-                                                                        .use(),
-                                                                  ],
-                                                                ),
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              CustomSellCard(
+                                imageUrl: info[i][2]['picture'],
+                                category: info[i][0]['propertyCategory'],
+                                propertyType: info[i][0]['propertyType'],
+                                size: info[i][0]['size'],
+                                location: info[i][0]['location'],
+                                price: info[i][0]['price'],
+                                possession: info[i][0]['possessionStatus'],
+                                onClick: () {
+                                  SharedPreferencesHelper()
+                                      .saveCurrentPage(i.toString());
+                                  SharedPreferencesHelper().saveNumProperties(
+                                      info.length.toString());
+                                  SharedPreferencesHelper()
+                                      .saveListOfCards(info);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => RealtorCard(
+                                              plotPagesInformation: info)));
+                                },
                               ),
                           ],
                         ),

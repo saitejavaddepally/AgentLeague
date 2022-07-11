@@ -108,6 +108,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
         ? getPlotStatus()
         : SharedPreferencesHelper()
             .saveCurrentPlot("plot_${widget.dataToEdit!['plotNo']}");
+
     super.initState();
   }
 
@@ -302,7 +303,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                 controller:
                                                     value.locationController,
                                                 readOnly: true,
-                                                borderradius: 10,
+                                                borderRadius: 10,
                                                 validator:
                                                     value.validateLocation,
                                                 onTap: () async {
@@ -465,7 +466,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                       });
 
                                                       print("data is $data");
-                                                      print("widget data is  ${widget.dataToEdit}");
+                                                      print(
+                                                          "widget data is  ${widget.dataToEdit}");
                                                       Navigator.pushNamed(
                                                           context,
                                                           RouteName.amenities,
@@ -485,11 +487,12 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         "latitude": _latitude,
                                                         "longitude": _longitude
                                                       });
-                                                      Navigator.pushReplacementNamed(
-                                                          context,
-                                                          RouteName
-                                                              .postYourPropertyPageTwo,
-                                                          arguments: [
+                                                      Navigator
+                                                          .pushReplacementNamed(
+                                                              context,
+                                                              RouteName
+                                                                  .postYourPropertyPageTwo,
+                                                              arguments: [
                                                             data,
                                                             widget.dataToEdit
                                                           ]);

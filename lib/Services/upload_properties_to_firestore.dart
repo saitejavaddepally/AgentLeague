@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,6 +45,69 @@ class UploadPropertiesToFirestore {
         .then((value) => print("value is $value"));
   }
 
+  Future plotCreditChecker() async {
+    String? userId = await SharedPreferencesHelper().getUserId();
+    DocumentReference ref =
+    FirebaseFirestore.instance.collection('users').doc(userId);
+    Map res = {};
+    await ref.get().then((event) {
+      res = event.data() as Map;
+    });
+
+    return res['freeCredit'];
+  }
+
+  Future getProfileInformation() async {
+    DocumentReference ref = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    Map res = {};
+    await ref.get().then((event) {
+      res = event.data() as Map;
+      print(res);
+    });
+
+    return res;
+  }
+
+  Future uploadProfilePicture(File? image) async {
+    dynamic snapshot;
+    final _firebaseStorage = FirebaseStorage.instance;
+
+    await AuthMethods().getUserId().then((value) async {
+      print("Uploading profile picture.....");
+
+      snapshot = await _firebaseStorage
+          .ref()
+          .child('sell_images/$value/profile_pic')
+          .putFile(image!);
+    });
+  }
+
+  Future<String?> getProfilePicture() async {
+    String url = '';
+    await AuthMethods()
+        .getUserId()
+        .then((value) async {
+      final ref = FirebaseStorage.instance.ref().child(
+          'sell_images/$value/profile_pic');
+      url = await ref.getDownloadURL().catchError((error) {
+        print("no profile found!");
+        return '';
+      });
+      print(url);
+    });
+    print("url is $url");
+    return url;
+  }
+
+  Future<void> updateFreeCredit(int freeCredit) async {
+    String? userId = await SharedPreferencesHelper().getUserId();
+    DocumentReference ref =
+    FirebaseFirestore.instance.collection('users').doc(userId);
+    await ref.update({"freeCredit": freeCredit.toString()});
+  }
+
   Future postPropertyPageOne(Map<String, dynamic> data, bool isEdited) async {
     String? userId = await SharedPreferencesHelper().getUserId();
 
@@ -77,8 +142,7 @@ class UploadPropertiesToFirestore {
     });
   }
 
-  Future uploadData(
-      List<dynamic> _images,
+  Future uploadData(List<dynamic> _images,
       List<dynamic> _videos,
       List<dynamic> _docs,
       List<dynamic> _docNames,
@@ -86,7 +150,7 @@ class UploadPropertiesToFirestore {
       bool isEdited,
       Map<String, dynamic> data) async {
     Map<String, dynamic> dataToBeUploaded = data;
-    dataToBeUploaded.addAll({"timestamp": DateTime.now().toString()});
+    dataToBeUploaded.addAll({"timestamp": DateTime.now().toString(), "isPaid": "false"});
 
     await UploadPropertiesToFirestore()
         .postPropertyPageOne(dataToBeUploaded, isEdited);
@@ -134,7 +198,10 @@ class UploadPropertiesToFirestore {
           snapshot = await _firebaseStorage
               .ref()
               .child(
-                  'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type + "_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
+              'sell_images/$value/standlone/$currentPlot/$type/${(type ==
+                  'images') ? type + "_$i" : (type == 'docs')
+                  ? _docNames[i]
+                  : _videoNames[i]}')
               .putFile(temp! as File);
         });
       }

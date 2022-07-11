@@ -39,18 +39,8 @@ class _EMIState extends State<EMI> {
     return int.parse(price);
   }
 
-  void _handleCalculation() {
-    double A = 0.0;
-    int P = (50000000);
-    double r = 6.5 / 12 / 100;
-    const n = 5;
-    A = (P * r * pow((1 + r), n) / (pow((1 + r), n - 1)));
-
-    print(A);
-  }
 
   int emi(int price, int years, double roi) {
-    _handleCalculation();
     roi = roi / 12 / 100;
     final loanEMI =
         price * roi * pow(1 + roi, years * 12) / (pow(1 + roi, years * 12) - 1);

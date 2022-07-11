@@ -24,7 +24,7 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
 
   @override
   void initState() {
-    print("data is passed ${widget.formData['media']}");
+    print("data is passed ${widget.formData}");
     super.initState();
   }
   @override
@@ -303,7 +303,7 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                         const SizedBox(width: 15),
                         const Expanded(
                           child:
-                              CustomTextField(isDense: true, borderradius: 4),
+                              CustomTextField(isDense: true, borderRadius: 4),
                         ),
                         TextButton(
                             child: const Text('Apply',
@@ -321,7 +321,7 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                       builder: (context, value, child) => Column(
                         children: [
                           CustomPriceText(
-                              text1: 'Digitalization charges',
+                              text1: "Digitalization charges",
                               text2: '${value.digitalizationCharges}'),
                           const SizedBox(height: 10),
                           CustomPriceText(

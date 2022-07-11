@@ -55,7 +55,6 @@ class _AmentiesState extends State<Amenties> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -321,7 +320,16 @@ class _AmentiesState extends State<Amenties> {
                                             CustomButton(
                                                     text: 'Next',
                                                     onClick: () async {
-                                                      if (isEdited) {
+                                                      EasyLoading.show();
+                                                      String credits =
+                                                          await UploadPropertiesToFirestore()
+                                                              .plotCreditChecker();
+                                                      EasyLoading.dismiss();
+                                                      int freeCreditCurrent =
+                                                          int.parse(credits);
+                                                      print(freeCreditCurrent);
+                                                      if (freeCreditCurrent !=
+                                                          0) {
                                                         await EasyLoading.show(
                                                             status:
                                                                 'Please wait..');
@@ -334,17 +342,53 @@ class _AmentiesState extends State<Amenties> {
                                                                 _videoNames,
                                                                 isEdited,
                                                                 widget.data[0]);
+                                                        await UploadPropertiesToFirestore()
+                                                            .updateFreeCredit(
+                                                                freeCreditCurrent -
+                                                                    1);
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        '"You have used your free credit.."')));
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                                context,
+                                                                RouteName
+                                                                    .bottomBar,
+                                                                (route) =>
+                                                                    false);
+
                                                         await EasyLoading
                                                             .showSuccess(
-                                                                'Edited successfully');
+                                                                'Thank you');
+                                                        return;
                                                       }
-                                                      Navigator.pushNamed(
+
+                                                      await EasyLoading.show(
+                                                          status:
+                                                              'Please wait..');
+                                                      await UploadPropertiesToFirestore()
+                                                          .uploadData(
+                                                              _images,
+                                                              _videos,
+                                                              _docs,
+                                                              _docNames,
+                                                              _videoNames,
+                                                              isEdited,
+                                                              widget.data[0]);
+                                                      await EasyLoading.showSuccess(
+                                                          'Saved your property!');
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
                                                         context,
                                                         (!isEdited)
                                                             ? RouteName
                                                                 .propertyDigitalization
                                                             : RouteName
                                                                 .bottomBar,
+                                                        (r) => false,
                                                         arguments: {
                                                           "propData":
                                                               widget.data[0],

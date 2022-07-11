@@ -41,7 +41,7 @@ class OtpProvider extends ChangeNotifier {
         if (userCredential.user != null &&
             userCredential.additionalUserInfo!.isNewUser) {
           var userId = userCredential.user!.uid;
-          await registerUser(userId, name, phoneNumber);
+          registerUser(userId, name, phoneNumber);
         }
       }).catchError((error) {
         print(error);
@@ -56,11 +56,59 @@ class OtpProvider extends ChangeNotifier {
     return "enterotp";
   }
 
+  Future<String> updateOtp(String verificationId, String phoneNumber) async {
+    bool correct = false;
+    if (_otp.length == 6) {
+      print("checking otp....");
+      var userCode =
+          int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
+      print(userCode);
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: userCode.toString());
+      await auth.currentUser?.updatePhoneNumber(credential).whenComplete(() {
+        print("done updating");
+        updateUser(FirebaseAuth.instance.currentUser?.uid , phoneNumber);
+        correct = true;
+      }).catchError((error) {
+        print(error);
+      });
+
+      if (correct) {
+        return "updated";
+      } else {
+        return "incorrect";
+      }
+    }
+    return "enterotp";
+  }
+
   static Future<void> registerUser(
       String userId, String name, String phoneNumber) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(userId).set(
-        {'name': name, 'uid': userId, 'phone': phoneNumber, 'counter': 0},
+        {
+          'name': name,
+          'uid': userId,
+          'freeCredit': "1",
+          'phone': phoneNumber,
+          'counter': 0,
+          'location': '',
+          'ref_code': '',
+          'email': '',
+          'agent_exp': '',
+          'profile_pic': '',
+        },
+      );
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+  static Future<void> updateUser(String? userId, String phoneNumber) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(userId).update(
+        {
+          'phone': phoneNumber,
+        },
       );
     } on Exception catch (e) {
       print(e);
