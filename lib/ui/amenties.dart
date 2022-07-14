@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../Services/firestore_crud_operations.dart';
 import '../components/custom_button.dart';
 import '../helper/constants.dart';
 
@@ -324,12 +324,17 @@ class _AmentiesState extends State<Amenties> {
                                                       String credits =
                                                           await UploadPropertiesToFirestore()
                                                               .plotCreditChecker();
+                                                      bool? ifPaid =
+                                                          await SharedPreferencesHelper()
+                                                              .getPaidCreditStatus();
+                                                      print("check if $ifPaid");
                                                       EasyLoading.dismiss();
                                                       int freeCreditCurrent =
                                                           int.parse(credits);
                                                       print(freeCreditCurrent);
                                                       if (freeCreditCurrent !=
-                                                          0) {
+                                                              0 &&
+                                                          !ifPaid!) {
                                                         await EasyLoading.show(
                                                             status:
                                                                 'Please wait..');
@@ -346,12 +351,18 @@ class _AmentiesState extends State<Amenties> {
                                                             .updateFreeCredit(
                                                                 freeCreditCurrent -
                                                                     1);
+                                                        SharedPreferencesHelper().getCurrentPlot().then((value) async{
+                                                          String number = value.toString().substring(5);
+                                                          await FirestoreCrudOperations()
+                                                              .updatePlotInformation(int.parse(number), {"isPaid": "true"});
+                                                        });
                                                         ScaffoldMessenger.of(
                                                                 context)
                                                             .showSnackBar(
                                                                 const SnackBar(
                                                                     content: Text(
                                                                         '"You have used your free credit.."')));
+
                                                         Navigator
                                                             .pushNamedAndRemoveUntil(
                                                                 context,
@@ -386,8 +397,7 @@ class _AmentiesState extends State<Amenties> {
                                                         (!isEdited)
                                                             ? RouteName
                                                                 .propertyDigitalization
-                                                            : RouteName
-                                                                .bottomBar,
+                                                            : RouteName.bottomBar,
                                                         (r) => false,
                                                         arguments: {
                                                           "propData":

@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import '../helper/shared_preferences.dart';
 import 'auth_methods.dart';
+import 'firestore_crud_operations.dart';
 
 class UploadPropertiesToFirestore {
   static const String _IMAGE = 'images';
@@ -33,8 +33,13 @@ class UploadPropertiesToFirestore {
           int length = event.docs.length;
           print("length is $length");
           final List<DocumentSnapshot> documents = event.docs;
-          var id = documents[length - 1].id.substring(5);
-          int autoId = int.parse(id) + 1;
+          int maxId = -1;
+          for (var i = 0; i < documents.length; i++) {
+            var id = documents[i].id.substring(5);
+            int convId = int.parse(id);
+            maxId = max(convId, maxId);
+          }
+          int autoId = maxId + 1;
           SharedPreferencesHelper().saveCurrentPlot('plot_$autoId');
         }
       });
@@ -48,7 +53,7 @@ class UploadPropertiesToFirestore {
   Future plotCreditChecker() async {
     String? userId = await SharedPreferencesHelper().getUserId();
     DocumentReference ref =
-    FirebaseFirestore.instance.collection('users').doc(userId);
+        FirebaseFirestore.instance.collection('users').doc(userId);
     Map res = {};
     await ref.get().then((event) {
       res = event.data() as Map;
@@ -86,11 +91,10 @@ class UploadPropertiesToFirestore {
 
   Future<String?> getProfilePicture() async {
     String url = '';
-    await AuthMethods()
-        .getUserId()
-        .then((value) async {
-      final ref = FirebaseStorage.instance.ref().child(
-          'sell_images/$value/profile_pic');
+    await AuthMethods().getUserId().then((value) async {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('sell_images/$value/profile_pic');
       url = await ref.getDownloadURL().catchError((error) {
         print("no profile found!");
         return '';
@@ -104,7 +108,7 @@ class UploadPropertiesToFirestore {
   Future<void> updateFreeCredit(int freeCredit) async {
     String? userId = await SharedPreferencesHelper().getUserId();
     DocumentReference ref =
-    FirebaseFirestore.instance.collection('users').doc(userId);
+        FirebaseFirestore.instance.collection('users').doc(userId);
     await ref.update({"freeCredit": freeCredit.toString()});
   }
 
@@ -142,7 +146,8 @@ class UploadPropertiesToFirestore {
     });
   }
 
-  Future uploadData(List<dynamic> _images,
+  Future uploadData(
+      List<dynamic> _images,
       List<dynamic> _videos,
       List<dynamic> _docs,
       List<dynamic> _docNames,
@@ -150,8 +155,11 @@ class UploadPropertiesToFirestore {
       bool isEdited,
       Map<String, dynamic> data) async {
     Map<String, dynamic> dataToBeUploaded = data;
-    dataToBeUploaded.addAll({"timestamp": DateTime.now().toString(), "isPaid": "false"});
+    dataToBeUploaded
+        .addAll({"timestamp": DateTime.now().toString(), "isPaid": "false"});
+    String? userId = await SharedPreferencesHelper().getUserId();
 
+    // upload the data into storage.
     await UploadPropertiesToFirestore()
         .postPropertyPageOne(dataToBeUploaded, isEdited);
 
@@ -160,6 +168,30 @@ class UploadPropertiesToFirestore {
     await uploadToFireStore(_videos, _VIDEO, _docNames, _videoNames);
 
     await uploadToFireStore(_docs, _DOCS, _docNames, _videoNames);
+
+    // get the data as links.
+    await SharedPreferencesHelper().getCurrentPlot().then((value) async {
+      int plotNo = int.parse(value.toString().substring(5));
+      List<dynamic> images =
+          await FirestoreDataProvider().getAllImage(userId, plotNo);
+      List<dynamic> videos =
+          await FirestoreDataProvider().getAllVideos(userId, plotNo);
+      List<dynamic> docs =
+          await FirestoreDataProvider().getAllDocs(userId, plotNo);
+      // update the firestore db with the links
+
+      print("plot number is $plotNo");
+      print("file links are $images and ${videos[1]} and ${docs[1]}");
+      await FirestoreCrudOperations().updatePlotInformation(plotNo, {
+        "images": FieldValue.arrayUnion([...images]),
+        "videos": FieldValue.arrayUnion([...videos[1]]),
+        "docs": FieldValue.arrayUnion([...docs[1]])
+      }).then((val) {
+        EasyLoading.showSuccess('Updated the links in firestore! ');
+      }).catchError((err) {
+        EasyLoading.dismiss();
+      });
+    });
   }
 
   Future<File> urlToFile(String imageUrl) async {
@@ -198,10 +230,7 @@ class UploadPropertiesToFirestore {
           snapshot = await _firebaseStorage
               .ref()
               .child(
-              'sell_images/$value/standlone/$currentPlot/$type/${(type ==
-                  'images') ? type + "_$i" : (type == 'docs')
-                  ? _docNames[i]
-                  : _videoNames[i]}')
+                  'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type + "_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
               .putFile(temp! as File);
         });
       }

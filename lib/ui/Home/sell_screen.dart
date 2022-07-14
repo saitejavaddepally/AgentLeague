@@ -192,7 +192,7 @@ class _SellScreenState extends State<SellScreen> {
                                         size: 50,
                                         onTap: () {
                                           Navigator.pushNamed(
-                                              context, '/post_page_one');
+                                              context, RouteName.listing);
                                         },
                                         isNeu: true,
                                         isTextUnder: true,

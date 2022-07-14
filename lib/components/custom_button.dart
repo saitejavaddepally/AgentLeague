@@ -10,7 +10,7 @@ class CustomButton {
   late double width;
   late double height;
   late Function() onClick;
-
+  late bool disabled;
   late bool rounded;
   late bool isIcon;
   late bool isBorderEnabled;
@@ -28,19 +28,22 @@ class CustomButton {
     this.width = 150,
     this.height = 50,
     this.rounded = false,
+    this.disabled = false,
     this.isIcon = false,
     this.isBorderEnabled = false,
     this.isNeu = true,
     this.textAlignRight = false,
   });
-
+  message(String message, BuildContext context){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
   use() {
     return SizedBox(
         width: width,
         height: height,
         child: Neumorphic(
             style: NeumorphicStyle(
-                color: color,
+                color: (disabled)? Colors.grey : color,
                 shape: NeumorphicShape.flat,
                 boxShape: (rounded)
                     ? const NeumorphicBoxShape.circle()
@@ -56,7 +59,7 @@ class CustomButton {
               alignment:
                   (textAlignRight) ? Alignment.centerRight : Alignment.center,
               child: TextButton(
-                onPressed: onClick,
+                onPressed: (disabled) ? null : onClick,
                 child: (isIcon)
                     ? Image.asset(
                         "assets/$text.png",

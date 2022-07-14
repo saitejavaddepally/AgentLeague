@@ -11,6 +11,7 @@ import 'package:agent_league/ui/explore.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/lead_box.dart';
+import 'package:agent_league/ui/listing.dart';
 import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:agent_league/ui/otp.dart';
@@ -64,6 +65,7 @@ class RouteName {
   static const String paymentRazorpay = '/r';
   static const String register = '/register';
   static const String alerts = '/alerts';
+  static const String listing = '/listing';
 }
 
 class RouteGenerator {
@@ -217,10 +219,13 @@ class RouteGenerator {
           }
           return _errorRoute();
         }
+      case RouteName.listing:
+        return PageTransition(child: const Listing(), type: PageTransitionType.leftToRight);
       default:
         return _errorRoute();
     }
   }
+
 
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(builder: (_) {

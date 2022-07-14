@@ -194,7 +194,7 @@ class _HomeState extends State<Home> {
                     text: "Refer and Earn",
                     isSecondText: true,
                     text2:
-                        'Earn one more free difitalization by referring your friends.',
+                        'Earn one more free digitalization by referring your friends.',
                     image: "assets/refer.png",
                     isGradient: true,
                     gradient: LinearGradient(colors: [
