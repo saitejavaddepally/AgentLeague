@@ -160,10 +160,7 @@ class _MyAppState extends State {
         future: AuthMethods().getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return BottomBar(
-              isIndexGiven: false,
-              index: 0,
-            );
+            return BottomBar(index: 0);
           } else {
             return const Onboarding();
           }

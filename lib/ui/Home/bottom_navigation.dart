@@ -11,18 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../../provider/firestore_data_provider.dart';
+
 class BottomBar extends StatefulWidget {
-  bool isIndexGiven;
   int index;
-  BottomBar({Key? key, required this.isIndexGiven, required this.index})
-      : super(key: key);
+  BottomBar({Key? key, required this.index}) : super(key: key);
 
   @override
   State<BottomBar> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int _currentIndex = 0;
   List screens = <Widget>[
     const Home(),
     const SellScreen(),
@@ -100,63 +99,104 @@ class _BottomBarState extends State<BottomBar> {
           }
 
           return Scaffold(
-              bottomNavigationBar: SizedBox(
-                height: 72,
-                child: BottomNavigationBar(
-                    currentIndex:
-                        (widget.isIndexGiven) ? widget.index : _currentIndex,
-                    onTap: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    type: BottomNavigationBarType.fixed,
-                    selectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                      letterSpacing: -0.15,
-                    ),
-                    unselectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                      letterSpacing: -0.15,
-                    ),
-                    selectedItemColor: Colors.white,
-                    unselectedItemColor: Colors.white.withOpacity(0.3),
-                    backgroundColor: const Color(0xFF082640),
-                    items: [
-                      BottomNavigationBarItem(
-                          icon: Image.asset("assets/home.png",
-                              height: 24, width: 24),
-                          activeIcon: Image.asset("assets/home_active.png",
-                              height: 24, width: 24),
-                          label: "HOME"),
-                      BottomNavigationBarItem(
-                        icon: Image.asset("assets/leads.png",
-                            height: 24, width: 24),
-                        activeIcon: Image.asset("assets/leads_active.png",
-                            height: 24, width: 24),
-                        label: "SELL",
+              bottomNavigationBar: FutureBuilder<num>(
+                future: FirestoreDataProvider().getAllChatCounter(),
+                initialData: 0,
+                builder: (context, snap) => SizedBox(
+                  height: 72,
+                  child: BottomNavigationBar(
+                      currentIndex: widget.index,
+                      onTap: (index) {
+                        setState(() {
+                          widget.index = index;
+                        });
+                      },
+                      type: BottomNavigationBarType.fixed,
+                      selectedLabelStyle: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        letterSpacing: -0.15,
                       ),
-                      BottomNavigationBarItem(
-                          icon: Image.asset("assets/social.png",
+                      unselectedLabelStyle: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        letterSpacing: -0.15,
+                      ),
+                      selectedItemColor: Colors.white,
+                      unselectedItemColor: Colors.white.withOpacity(0.3),
+                      backgroundColor: const Color(0xFF082640),
+                      items: [
+                        BottomNavigationBarItem(
+                            icon: Image.asset("assets/home.png",
+                                height: 24, width: 24),
+                            activeIcon: Image.asset("assets/home_active.png",
+                                height: 24, width: 24),
+                            label: "HOME"),
+                        BottomNavigationBarItem(
+                          icon: Image.asset("assets/leads.png",
                               height: 24, width: 24),
-                          activeIcon: Image.asset("assets/social_active.png",
+                          activeIcon: Image.asset("assets/leads_active.png",
                               height: 24, width: 24),
-                          label: "CHATS"),
-                      BottomNavigationBarItem(
-                          icon: Image.asset("assets/teams.png",
-                              height: 24, width: 24),
-                          activeIcon: Image.asset("assets/teams_active.png",
-                              height: 24, width: 24),
-                          label: "PROJECTS"),
-                      BottomNavigationBarItem(
-                          icon: Image.asset("assets/sell.png",
-                              height: 24, width: 24),
-                          activeIcon: Image.asset("assets/sell_active.png",
-                              height: 24, width: 24),
-                          label: "PBTV"),
-                    ]),
+                          label: "SELL",
+                        ),
+                        BottomNavigationBarItem(
+                            icon: Stack(children: [
+                              Image.asset("assets/social.png",
+                                  height: 24, width: 24),
+                              if (snap.data != 0)
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 2),
+                                      child: Text(
+                                        snap.data.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 10),
+                                      )),
+                                ),
+                            ]),
+                            activeIcon: Stack(children: [
+                              Image.asset("assets/social_active.png",
+                                  height: 24, width: 24),
+                              if (snap.data != 0)
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 2),
+                                      child: Text(
+                                        snap.data.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 10),
+                                      )),
+                                ),
+                            ]),
+                            label: "CHATS"),
+                        BottomNavigationBarItem(
+                            icon: Image.asset("assets/teams.png",
+                                height: 24, width: 24),
+                            activeIcon: Image.asset("assets/teams_active.png",
+                                height: 24, width: 24),
+                            label: "PROJECTS"),
+                        BottomNavigationBarItem(
+                            icon: Image.asset("assets/sell.png",
+                                height: 24, width: 24),
+                            activeIcon: Image.asset("assets/sell_active.png",
+                                height: 24, width: 24),
+                            label: "PBTV"),
+                      ]),
+                ),
               ),
               body: PageTransitionSwitcher(
                 transitionBuilder:
@@ -165,7 +205,7 @@ class _BottomBarState extends State<BottomBar> {
                             animation: primaryAnimation,
                             secondaryAnimation: secondaryAnimation,
                             child: child),
-                child: screens[_currentIndex],
+                child: screens[widget.index],
               ));
         });
   }

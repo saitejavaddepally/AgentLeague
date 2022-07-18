@@ -75,12 +75,14 @@ class RouteGenerator {
 
     switch (settings.name) {
       case RouteName.bottomBar:
-        return PageTransition(
-            child: BottomBar(
-              isIndexGiven: false,
-              index: 0,
-            ),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is int) {
+            return PageTransition(
+                child: BottomBar(index: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.onboard:
         return PageTransition(
             child: const Onboarding(), type: PageTransitionType.leftToRight);
@@ -217,7 +219,7 @@ class RouteGenerator {
         {
           if (args is List) {
             return PageTransition(
-                child: ChatDetail(friendName: args[0], friendUid: args[1]),
+                child: ChatDetail(friendUid: args[0], friendName: args[1]),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();

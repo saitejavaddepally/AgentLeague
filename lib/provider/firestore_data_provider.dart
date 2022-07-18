@@ -1,12 +1,12 @@
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_document_picker/flutter_document_picker.dart';
 
 import '../Services/auth_methods.dart';
 
 class FirestoreDataProvider {
+  final _user = FirebaseFirestore.instance.collection('users');
+
   List videos = [];
   List documents = [];
   List images = [];
@@ -19,6 +19,44 @@ class FirestoreDataProvider {
   get _images => images;
 
   get _documents => documents;
+
+  Future<num> getAllChatCounter() async {
+    num _totalCounter = 0;
+    String? uid = await AuthMethods().getUserId();
+
+    final _currentUser = await _user.doc(uid).get();
+    final _currentUserData = _currentUser.data();
+    final _querySnapUser = await _user.get();
+    for (final u in _querySnapUser.docs) {
+      final id = u.id;
+      final count = _currentUserData?[id];
+      if (count == null) {
+      } else {
+        _totalCounter += count;
+      }
+    }
+    return _totalCounter;
+  }
+
+  Future<num> getParticularChatCounter(String uid) async {
+    String? currentUser = await AuthMethods().getUserId();
+    final docSnap = await _user.doc(currentUser).get();
+    final result = docSnap.data()?[uid];
+    if (result == null) {
+      return 0;
+    } else {
+      return result;
+    }
+  }
+
+  Future<void> clearParticularChatCounter(String uid) async {
+    try {
+      String? currentUser = await AuthMethods().getUserId();
+      await _user.doc(currentUser).update({uid: 0});
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<List> getPlots() async {
     String? userId = await SharedPreferencesHelper().getUserId();
