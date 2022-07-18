@@ -1,11 +1,15 @@
 // ignore_for_file: avoid_print
 
 import 'package:agent_league/components/custom_button.dart';
+import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:agent_league/ui/post_your_property.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
+import '../location_service.dart';
 import '../theme/colors.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -18,14 +22,17 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  String phoneNumber = '';
+
   String name = '';
   String referralCode = '';
-  bool loading = false;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _referralCodeController = TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
-      inAsyncCall: loading,
+      inAsyncCall: isLoading,
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(
@@ -55,70 +62,19 @@ class _SignUpFormState extends State<SignUpForm> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    const Text("create new account",
+                    const Text("Register",
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 18)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(
-                          height: 25,
-                        ),
-                        Row(children: [
-                          const SizedBox(width: 5),
-                          Image.asset("assets/flag-india.png"),
-                          const Text(
-                            " (+91)",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14),
-                          ),
-                          const SizedBox(width: 10),
-                          Flexible(
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              onChanged: (number) {
-                                phoneNumber = number;
-                              },
-                              validator: (number) {
-                                if (number == null ||
-                                    number.isEmpty ||
-                                    number.length != 10) {
-                                  return "Enter Correct Mobile Number";
-                                }
-                                return null;
-                              },
-                              cursorColor: Colors.white.withOpacity(0.1),
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(10),
-                                  hintText: "    Your number here",
-                                  hintStyle: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Colors.white.withOpacity(0.3)),
-                                  fillColor: Colors.white.withOpacity(0.1),
-                                  filled: true,
-                                  errorBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.red, width: 0.5),
-                                      borderRadius: BorderRadius.circular(31)),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.red, width: 0.5),
-                                      borderRadius: BorderRadius.circular(31)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(31)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(31))),
-                            ),
-                          ),
-                        ]),
-                        const SizedBox(
                           height: 30,
                         ),
-                        TextFormField(
-                          cursorColor: Colors.white.withOpacity(0.1),
+                        CustomTextField(
+                          controller: _nameController,
+                          borderradius: 30,
+                          hint: "Enter your name",
                           onChanged: (value) {
                             name = value;
                           },
@@ -128,53 +84,55 @@ class _SignUpFormState extends State<SignUpForm> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(10),
-                              hintText: "    Enter your name",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white.withOpacity(0.3)),
-                              fillColor: Colors.white.withOpacity(0.1),
-                              filled: true,
-                              errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.red, width: 0.5),
-                                  borderRadius: BorderRadius.circular(31)),
-                              focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.red, width: 0.5),
-                                  borderRadius: BorderRadius.circular(31)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(31)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(31))),
                         ),
                         const SizedBox(
                           height: 30,
                         ),
-                        TextField(
-                          cursorColor: Colors.white.withOpacity(0.1),
+                        CustomTextField(
+                          controller: _locationController,
+                          readOnly: true,
+                          onTap: () async {
+                            final result = await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) => const CustomMapDialog());
+
+                            if (result == 1) {
+                              setState(() => isLoading = true);
+                              final res =
+                                  await GetUserLocation.getCurrentLocation();
+                              setState(() => isLoading = false);
+                              if (res != null && res.isNotEmpty) {
+                                _locationController.text = res;
+                              }
+                            }
+                            if (result == 2) {
+                              final res =
+                                  await GetUserLocation.getMapLocation(context);
+                              if (res != null && res.isNotEmpty) {
+                                _locationController.text = res;
+                              }
+                            }
+                          },
+                          borderradius: 30,
+                          hint: 'Choose location',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Choose location";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        CustomTextField(
+                          controller: _referralCodeController,
+                          borderradius: 30,
+                          hint: "Referral Code (optional)",
                           onChanged: (value) {
                             referralCode = value;
                           },
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(10),
-                              hintText: "    Enter code",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white.withOpacity(0.3)),
-                              fillColor: Colors.white.withOpacity(0.1),
-                              filled: true,
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(31)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(31))),
                         ),
                         const SizedBox(height: 50),
                         Row(
@@ -182,15 +140,18 @@ class _SignUpFormState extends State<SignUpForm> {
                           children: [
                             Flexible(
                                 child: CustomButton(
-                                        text: "Sign Up",
+                                        text: "Submit",
                                         onClick: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            setState(() => isLoading = true);
+                                            await registerUser(
+                                                _nameController.text,
+                                                _locationController.text);
+                                            setState(() => isLoading = false);
+
                                             Navigator.pushNamed(
-                                              context,
-                                              RouteName.otp,
-                                              arguments: [phoneNumber, name],
-                                            );
+                                                context, RouteName.bottomBar);
                                           }
                                         },
                                         width:
@@ -201,53 +162,6 @@ class _SignUpFormState extends State<SignUpForm> {
                                     .use()),
                           ],
                         ),
-                        const SizedBox(height: 30),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Flexible(
-                                  child: Image.asset("assets/member.png",
-                                      height: 70))
-                            ]),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Center(
-                            child: CustomButton(
-                                    text: "sign in",
-                                    onClick: () {
-                                      // Navigator.pushNamed(context, '/');
-                                    },
-                                    height: 43,
-                                    radius: 30,
-                                    textColor: Colors.yellow,
-                                    color: CustomColors.dark)
-                                .use()),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Center(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.7,
-                            height: 50,
-                            child: Column(
-                              children: const [
-                                Center(
-                                  child: Text(
-                                    'By clicking signup you agree for our ',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                Center(
-                                  child: Text(
-                                    'Terms & Conditions',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
                       ],
                     ),
                   ],
@@ -258,5 +172,27 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
       ),
     );
+  }
+
+  Future<void> registerUser(String name, String location) async {
+    try {
+      User? _user = FirebaseAuth.instance.currentUser;
+      String? userId = _user?.uid;
+      String? phoneNumber = _user?.phoneNumber;
+      print(userId);
+      print(phoneNumber);
+      print(name);
+      print(location);
+      await FirebaseFirestore.instance.collection('users').doc(userId).set(
+        {
+          'name': name,
+          'uid': userId,
+          'location': location,
+          'phone': phoneNumber,
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -133,7 +133,7 @@ class _ProfileState extends State<Profile> {
                   onButtonClick: () async {
                     await AuthMethods().signOut();
                     Navigator.pushNamedAndRemoveUntil(
-                        context, '/sign_up', (route) => false);
+                        context, RouteName.login, (route) => false);
                   }),
             ],
           ),

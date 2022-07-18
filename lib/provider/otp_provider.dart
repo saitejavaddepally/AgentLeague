@@ -26,44 +26,26 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> checkOtp(
-      String verificationId, String name, String phoneNumber) async {
-    bool correct = false;
+  Future<bool> checkOtp(String verificationId) async {
+    final auth = FirebaseAuth.instance;
     if (_otp.length == 6) {
       var userCode =
           int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userCode.toString());
-      await auth
-          .signInWithCredential(credential)
-          .then((UserCredential userCredential) async {
-        correct = true;
-        if (userCredential.user != null &&
-            userCredential.additionalUserInfo!.isNewUser) {
-          var userId = userCredential.user!.uid;
-          await registerUser(userId, name, phoneNumber);
+
+      try {
+        UserCredential _userCredential =
+            await auth.signInWithCredential(credential);
+        if (_userCredential.additionalUserInfo!.isNewUser) {
+          return true;
         }
-      }).catchError((error) {
-        print(error);
-      });
-
-      if (correct) {
-        return "correct";
-      } else {
-        return "incorrect";
+        return false;
+      } catch (e) {
+        return Future.error("Enter Correct Otp");
       }
-    }
-    return "enterotp";
-  }
-
-  static Future<void> registerUser(
-      String userId, String name, String phoneNumber) async {
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set(
-        {'name': name, 'uid': userId, 'phone': phoneNumber, 'counter': 0},
-      );
-    } on Exception catch (e) {
-      print(e);
+    } else {
+      return Future.error("Please Enter Otp");
     }
   }
 }
@@ -86,6 +68,11 @@ class OtpTimer extends ChangeNotifier {
         notifyListeners();
       }
     });
+  }
+
+  void resetTimer() {
+    _seconds = 30;
+    notifyListeners();
   }
 
   @override

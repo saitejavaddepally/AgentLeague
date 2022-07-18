@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final String? hint;
   final bool? isDense;
   final int? maxLength;
+  final EdgeInsets? contentPadding;
   final TextStyle? style;
   const CustomTextField(
       {this.validator,
@@ -27,6 +28,8 @@ class CustomTextField extends StatelessWidget {
       this.isDense,
       this.maxLength,
       this.style,
+      this.contentPadding =
+          const EdgeInsets.only(left: 20, top: 10, bottom: 10),
       Key? key})
       : super(key: key);
 
@@ -46,7 +49,7 @@ class CustomTextField extends StatelessWidget {
         isDense: isDense,
         suffixIcon: icon,
         counterText: '',
-        contentPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 5),
+        contentPadding: contentPadding,
         hintText: hint,
         hintStyle: TextStyle(
             fontWeight: FontWeight.w500,

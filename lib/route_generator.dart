@@ -12,6 +12,7 @@ import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/lead_box.dart';
 import 'package:agent_league/ui/location.dart';
+import 'package:agent_league/ui/login.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/post_your_property.dart';
@@ -64,6 +65,7 @@ class RouteName {
   static const String paymentRazorpay = '/r';
   static const String register = '/register';
   static const String alerts = '/alerts';
+  static const String login = '/login';
 }
 
 class RouteGenerator {
@@ -105,6 +107,9 @@ class RouteGenerator {
       case RouteName.leadsBox:
         return PageTransition(
             child: const LeadBox(), type: PageTransitionType.leftToRight);
+      case RouteName.login:
+        return PageTransition(
+            child: const Login(), type: PageTransitionType.leftToRight);
       case RouteName.profile:
         return PageTransition(
             child: const Profile(), type: PageTransitionType.leftToRight);

@@ -378,7 +378,48 @@ class _RealtorPageState extends State<RealtorPage> {
                     color: Colors.white)
                 .use(),
             const SizedBox(width: 12),
-            Image.asset('assets/property.png'),
+            GestureDetector(
+                onTap: () {
+                  final data =
+                      plotPagesInformation[currentPage][0]['box_enabled'];
+                  (data == 0)
+                      ? showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: const Text(
+                                    "Are you sure you want to upload this property to property box"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () async {
+                                        var currPlot =
+                                            plotPagesInformation[currentPage][1]
+                                                    ['plotNo']
+                                                .toString();
+                                        String? userId =
+                                            await SharedPreferencesHelper()
+                                                .getUserId();
+
+                                        Navigator.pop(context);
+
+                                        EasyLoading.show(
+                                            maskType: EasyLoadingMaskType.black,
+                                            indicator:
+                                                const Text("Please Wait..."));
+                                        await FirestoreDataProvider()
+                                            .uploadPropertyToPropertyBox(
+                                                currPlot, userId!);
+                                        EasyLoading.dismiss();
+                                      },
+                                      child: const Text('Yes')),
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('No'))
+                                ],
+                              ))
+                      : EasyLoading.showToast(
+                          "Property Already Added to Property Box");
+                },
+                child: Image.asset('assets/property.png')),
             const Spacer(),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/leads_box'),

@@ -106,6 +106,22 @@ class FirestoreDataProvider {
     }
   }
 
+  Future<void> uploadPropertyToPropertyBox(String plotNo, String uid) async {
+    try {
+      final collRef = FirebaseFirestore.instance
+          .collection('sell_plots')
+          .doc(uid)
+          .collection('standlone')
+          .doc('plot_$plotNo')
+          .collection('pages_info');
+
+      final querySnap = await collRef.get();
+      await collRef.doc(querySnap.docs[0].id).update({'box_enabled': 1});
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future deleteImages(String userId, int plotNo) async {
     final storageRef = FirebaseStorage.instance
         .ref()
