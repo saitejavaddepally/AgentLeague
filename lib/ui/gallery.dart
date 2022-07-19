@@ -1,21 +1,17 @@
 import 'package:agent_league/helper/shared_preferences.dart';
-import 'package:agent_league/provider/firestore_data_provider.dart';
-import 'package:agent_league/ui/realtor_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import '../Services/auth_methods.dart';
 import '../theme/colors.dart';
-
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:math';
 
 class GalleryScreen extends StatefulWidget {
-  const GalleryScreen({Key? key}) : super(key: key);
+  final List<dynamic> images;
+
+  const GalleryScreen({Key? key, required this.images}) : super(key: key);
 
   @override
   _GalleryScreenState createState() => _GalleryScreenState();
@@ -34,6 +30,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> getImages() async {
+    String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
+    print("current plot is $currentPlot");
+    res = widget.images[int.parse(currentPlot!)-1][0]['images'];
   }
 
   Future urlToFile(String imageUrl) async {
@@ -68,7 +70,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
           ],
         ),
         body: FutureBuilder(
-            future: FirestoreDataProvider().getFirestoreFiles(images),
+            future: getImages(),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return const SpinKitThreeBounce(
@@ -85,36 +87,40 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   child: Column(
                     children: [
                       for (var i = 0; i < res.length; i += 1)
-                        FutureBuilder(
-                            future: urlToFile(res[i]),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState !=
-                                  ConnectionState.done) {
-                                return const SpinKitCircle(
-                                  size: 30,
-                                  color: Colors.white,
-                                );
-                              }
-                              return GestureDetector(
-                                onTap: () async {
-                                  String imagePath = snapshot.data as String;
-                                  await OpenFile.open(imagePath);
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 250,
-                                  margin: const EdgeInsets.only(bottom: 20),
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(res[i]),
-                                          fit: BoxFit.fitWidth),
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: Colors.white),
+                        (res[i] != null)
+                            ? FutureBuilder(
+                                future: urlToFile(res[i]),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState !=
+                                      ConnectionState.done) {
+                                    return const SpinKitCircle(
+                                      size: 30,
+                                      color: Colors.white,
+                                    );
+                                  }
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      String imagePath =
+                                          snapshot.data as String;
+                                      await OpenFile.open(imagePath);
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 250,
+                                      margin: const EdgeInsets.only(bottom: 20),
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(res[i]),
+                                              fit: BoxFit.fitWidth),
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Colors.white),
 
-                                  // child: Image.network(res[i], height: 200, width: MediaQuery.of(context).size.width, fit: BoxFit.fitWidth, ),
-                                ),
-                              );
-                            }),
+                                      // child: Image.network(res[i], height: 200, width: MediaQuery.of(context).size.width, fit: BoxFit.fitWidth, ),
+                                    ),
+                                  );
+                                })
+                            : const SizedBox(),
                     ],
                   ),
                 ),

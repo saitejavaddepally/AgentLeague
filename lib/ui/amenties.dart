@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
@@ -351,10 +353,20 @@ class _AmentiesState extends State<Amenties> {
                                                             .updateFreeCredit(
                                                                 freeCreditCurrent -
                                                                     1);
-                                                        SharedPreferencesHelper().getCurrentPlot().then((value) async{
-                                                          String number = value.toString().substring(5);
+                                                        SharedPreferencesHelper()
+                                                            .getCurrentPlot()
+                                                            .then(
+                                                                (value) async {
+                                                          String number = value
+                                                              .toString()
+                                                              .substring(5);
                                                           await FirestoreCrudOperations()
-                                                              .updatePlotInformation(int.parse(number), {"isPaid": "true"});
+                                                              .updatePlotInformation(
+                                                                  int.parse(
+                                                                      number),
+                                                                  {
+                                                                "isPaid": "true"
+                                                              });
                                                         });
                                                         ScaffoldMessenger.of(
                                                                 context)
@@ -380,6 +392,67 @@ class _AmentiesState extends State<Amenties> {
                                                       await EasyLoading.show(
                                                           status:
                                                               'Please wait..');
+
+                                                      if (isEdited) {
+                                                        print(
+                                                            "I am gonna delete!");
+                                                        String? userId;
+                                                        await SharedPreferencesHelper()
+                                                            .getUserId()
+                                                            .then(
+                                                                (value) async {
+                                                          userId = value;
+                                                         await SharedPreferencesHelper()
+                                                              .getCurrentPlot()
+                                                              .then(
+                                                                  (value) async {
+                                                            int number =
+                                                                int.parse(value
+                                                                    .toString()
+                                                                    .substring(
+                                                                        5));
+                                                            await FirestoreCrudOperations()
+                                                                .updatePlotInformation(
+                                                                    number, {
+                                                              "images":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                              "videos":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                              "docs": FieldValue
+                                                                  .delete(),
+                                                              "docNames":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                              "videoNames":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                            });
+                                                            List data =
+                                                                (await FirestoreDataProvider()
+                                                                    .getPlotPagesInformation(
+                                                                        number));
+                                                            // print("result is " +
+                                                            //     data.toString());
+                                                            // await FirestoreDataProvider()
+                                                            //     .deleteImages(
+                                                            //         userId!,
+                                                            //         number);
+                                                            // await FirestoreDataProvider()
+                                                            //     .deleteVideos(
+                                                            //         userId!,
+                                                            //         number);
+                                                            // await FirestoreDataProvider()
+                                                            //     .deleteDocs(
+                                                            //         userId!,
+                                                            //         number);
+                                                            // print(
+                                                            //     "Its deleted!");
+                                                          });
+                                                        });
+                                                      }
+
                                                       await UploadPropertiesToFirestore()
                                                           .uploadData(
                                                               _images,
@@ -396,8 +469,10 @@ class _AmentiesState extends State<Amenties> {
                                                         context,
                                                         (!isEdited)
                                                             ? RouteName
-                                                                .propertyDigitalization
-                                                            : RouteName.bottomBar,
+                                                                .bottomBar
+                                                            // .propertyDigitalization
+                                                            : RouteName
+                                                                .bottomBar,
                                                         (r) => false,
                                                         arguments: {
                                                           "propData":

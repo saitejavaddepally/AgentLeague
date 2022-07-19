@@ -11,7 +11,8 @@ import '../helper/shared_preferences.dart';
 import '../provider/firestore_data_provider.dart';
 
 class EMI extends StatefulWidget {
-  const EMI({Key? key}) : super(key: key);
+  final List<dynamic> price;
+  const EMI({Key? key, required this.price}) : super(key: key);
 
   @override
   State<EMI> createState() => _EMIState();

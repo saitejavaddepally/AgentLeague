@@ -161,7 +161,9 @@ class _ProfileState extends State<Profile> {
                   buttonText: "Support",
                   buttonTextColor: const Color(0xFF21293A),
                   buttonColor: const Color(0xFFF3F4F6),
-                  onButtonClick: () {}),
+                  onButtonClick: () {
+                    Navigator.pushNamed(context, RouteName.help);
+                  }),
               const SizedBox(height: 20),
               HomeContainer(
                   text:
@@ -171,7 +173,9 @@ class _ProfileState extends State<Profile> {
                   containerColor: const Color(0xFFF66A83),
                   buttonWidth: 100,
                   buttonText: "We Hear",
-                  onButtonClick: () {}),
+                  onButtonClick: () {
+                    Navigator.pushNamed(context, RouteName.weHear);
+                  }),
               const SizedBox(height: 20),
               HomeContainer(
                   text:

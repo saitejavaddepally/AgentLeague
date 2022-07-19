@@ -7,6 +7,7 @@ import 'package:agent_league/ui/amenties.dart';
 import 'package:agent_league/ui/coinsfly_wallet.dart';
 import 'package:agent_league/ui/documents.dart';
 import 'package:agent_league/ui/emi.dart';
+import 'package:agent_league/ui/escrow.dart';
 import 'package:agent_league/ui/explore.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/help.dart';
@@ -30,6 +31,7 @@ import 'package:agent_league/ui/signin_edit.dart';
 import 'package:agent_league/ui/success.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:agent_league/ui/uploads_screen.dart';
+import 'package:agent_league/ui/we_hear.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -66,6 +68,8 @@ class RouteName {
   static const String register = '/register';
   static const String alerts = '/alerts';
   static const String listing = '/listing';
+  static const String weHear = '/we_hear';
+  static const String escrow = '/escrow';
 }
 
 class RouteGenerator {
@@ -81,6 +85,12 @@ class RouteGenerator {
               index: 0,
             ),
             type: PageTransitionType.leftToRight);
+      case RouteName.weHear:
+        return PageTransition(
+            child: const WeHear(), type: PageTransitionType.leftToRight);
+      case RouteName.escrow:
+        return PageTransition(
+            child: const Escrow(), type: PageTransitionType.leftToRight);
       case RouteName.onboard:
         return PageTransition(
             child: const Onboarding(), type: PageTransitionType.leftToRight);
@@ -127,13 +137,22 @@ class RouteGenerator {
         }
       case RouteName.emi:
         return PageTransition(
-            child: const EMI(), type: PageTransitionType.leftToRight);
+            child: const EMI(
+              price: [],
+            ),
+            type: PageTransitionType.leftToRight);
       case RouteName.documents:
         return PageTransition(
-            child: const Documents(), type: PageTransitionType.leftToRight);
+            child: const Documents(
+              documents: [],
+            ),
+            type: PageTransitionType.leftToRight);
       case RouteName.tour:
         return PageTransition(
-            child: const Tour(), type: PageTransitionType.leftToRight);
+            child: const Tour(
+              videos: [],
+            ),
+            type: PageTransitionType.leftToRight);
       case RouteName.postYourPropertyPageOne:
         return PageTransition(
             child: PostYourPropertyPageOne(
@@ -154,7 +173,8 @@ class RouteGenerator {
             type: PageTransitionType.leftToRight);
       case RouteName.gallery:
         return PageTransition(
-            child: const GalleryScreen(), type: PageTransitionType.leftToRight);
+            child: const GalleryScreen(images: []),
+            type: PageTransitionType.leftToRight);
       case RouteName.projectExplorer:
         return PageTransition(
             child: const ProjectExplorer(),
@@ -220,12 +240,12 @@ class RouteGenerator {
           return _errorRoute();
         }
       case RouteName.listing:
-        return PageTransition(child: const Listing(), type: PageTransitionType.leftToRight);
+        return PageTransition(
+            child: const Listing(), type: PageTransitionType.leftToRight);
       default:
         return _errorRoute();
     }
   }
-
 
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(builder: (_) {

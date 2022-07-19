@@ -69,15 +69,16 @@ class _SellScreenState extends State<SellScreen> {
       List detailsOfPages = await FirestoreDataProvider()
           .getPlotPagesInformation(int.parse(plotNumber));
 
+      print("The details of pages are  $detailsOfPages");
       if (detailsOfPages.isEmpty || detailsOfPages[0]['isPaid'] == "false") {
         continue;
       }
 
-      String profilePicture = await FirestoreDataProvider().getProfileImage(
-          "sell_images/$userId/standlone/plot_$plotNumber/images/");
-      profileImagesSorted.putIfAbsent(i, () => profilePicture);
-      detailsOfPages.add({"plotNo": plotNumber});
-      detailsOfPages.add({"picture": profilePicture});
+      // String profilePicture = detailsOfPages[0]['plotProfilePicture'];
+      // profileImagesSorted.putIfAbsent(i, () => profilePicture);
+      // detailsOfPages.add({"plotNo": plotNumber});
+      // detailsOfPages.add({"picture": profilePicture});
+
       plotPagesInformationOriginal.add(detailsOfPages);
     }
     setState(() {
@@ -85,6 +86,8 @@ class _SellScreenState extends State<SellScreen> {
       this.numberOfProperties = plotPagesInformation.length.toString();
       loading = false;
     });
+
+
 
     return plotPagesInformation;
   }
@@ -377,7 +380,7 @@ class _SellScreenState extends State<SellScreen> {
                       for (var i = 0; i < (plotPagesInformation.length); i++)
                         (!loading)
                             ? CustomSellCard(
-                                imageUrl: plotPagesInformation[i][2]['picture'],
+                                imageUrl: plotPagesInformation[i][0]['plotProfilePicture'],
                                 category: plotPagesInformation[i][0]
                                     ['propertyCategory'],
                                 propertyType: plotPagesInformation[i][0]

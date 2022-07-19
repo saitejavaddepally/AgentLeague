@@ -205,6 +205,8 @@ class FirestoreDataProvider {
         images[i] = value;
       });
     }
+    images.removeWhere((element) => element == null);
+    print("images are ... " + images.toString());
 
     return images;
   }
@@ -225,6 +227,9 @@ class FirestoreDataProvider {
       });
     }
 
+    videos.removeWhere((element) => element == null);
+    previousVideoNames.removeWhere((element) => element == null);
+
     return [previousVideoNames, videos];
   }
 
@@ -242,6 +247,9 @@ class FirestoreDataProvider {
         docs[i] = value;
       });
     }
+
+    docs.removeWhere((element) => element == null);
+    previousDocNames.removeWhere((element) => element == null);
 
     return [previousDocNames, docs];
   }

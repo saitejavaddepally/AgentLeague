@@ -155,8 +155,11 @@ class UploadPropertiesToFirestore {
       bool isEdited,
       Map<String, dynamic> data) async {
     Map<String, dynamic> dataToBeUploaded = data;
-    dataToBeUploaded
-        .addAll({"timestamp": DateTime.now().toString(), "isPaid": "false"});
+
+    if (!isEdited) {
+      dataToBeUploaded
+          .addAll({"timestamp": DateTime.now().toString(), "isPaid": "false"});
+    }
     String? userId = await SharedPreferencesHelper().getUserId();
 
     // upload the data into storage.
@@ -176,16 +179,24 @@ class UploadPropertiesToFirestore {
           await FirestoreDataProvider().getAllImage(userId, plotNo);
       List<dynamic> videos =
           await FirestoreDataProvider().getAllVideos(userId, plotNo);
+      print("videos are ... " + videos.toString());
+
       List<dynamic> docs =
           await FirestoreDataProvider().getAllDocs(userId, plotNo);
+      print("docs are ... " + docs.toString());
+
       // update the firestore db with the links
 
       print("plot number is $plotNo");
       print("file links are $images and ${videos[1]} and ${docs[1]}");
       await FirestoreCrudOperations().updatePlotInformation(plotNo, {
+        "plotNumber": plotNo,
         "images": FieldValue.arrayUnion([...images]),
         "videos": FieldValue.arrayUnion([...videos[1]]),
-        "docs": FieldValue.arrayUnion([...docs[1]])
+        "videoNames": FieldValue.arrayUnion([...videos[0]]),
+        "docs": FieldValue.arrayUnion([...docs[1]]),
+        "docNames": FieldValue.arrayUnion([...docs[0]]),
+        "plotProfilePicture": images[0]
       }).then((val) {
         EasyLoading.showSuccess('Updated the links in firestore! ');
       }).catchError((err) {
@@ -237,4 +248,5 @@ class UploadPropertiesToFirestore {
     }
     return "Updated $type successfully";
   }
+
 }

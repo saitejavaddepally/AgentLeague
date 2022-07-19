@@ -179,7 +179,10 @@ class _HomeState extends State<Home> {
                           Image.asset("assets/digital.png"),
                           CustomButton(
                                   text: 'Go Digital',
-                                  onClick: () {},
+                                  onClick: () {
+                                    Navigator.pushNamed(
+                                        context, RouteName.escrow);
+                                  },
                                   color: HexColor('F3F4F6'),
                                   textColor: HexColor('21293A'),
                                   width: 109)
