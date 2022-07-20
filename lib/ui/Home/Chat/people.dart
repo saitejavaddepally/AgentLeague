@@ -99,31 +99,37 @@ class _CustomersState extends State<Customers> {
                   initialData: 0,
                   future: FirestoreDataProvider()
                       .getParticularChatCounter(currentItem?['uid']),
-                  builder: (context, snapshot) => Container(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white.withOpacity(0.7)),
-                    child: ListTile(
-                      onTap: () => callChatScreen(
-                          context, currentItem?['name'], currentItem?['uid']),
-                      leading: CircleAvatar(
-                          child: Image.asset("assets/profile.png")),
-                      trailing: (snapshot.data == 0)
-                          ? const SizedBox()
-                          : Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 3),
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Text(snapshot.data.toString(),
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 16))),
-                      title: Text(
-                          "${currentItem?['name']} (${currentItem?['phone']})"),
+                  builder: (context, snapshot) => FutureBuilder<String>(
+                    future: FirestoreDataProvider()
+                        .getLatestMessage(currentItem?['uid']),
+                    initialData: '',
+                    builder: (context, snapshot1) => Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 15),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white.withOpacity(0.7)),
+                      child: ListTile(
+                        subtitle: Text(snapshot1.data.toString()),
+                        onTap: () => callChatScreen(
+                            context, currentItem?['name'], currentItem?['uid']),
+                        leading: CircleAvatar(
+                            child: Image.asset("assets/profile.png")),
+                        trailing: (snapshot.data == 0)
+                            ? const SizedBox()
+                            : Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 3),
+                                decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Text(snapshot.data.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 16))),
+                        title: Text(
+                            "${currentItem?['name']} (${currentItem?['phone']})"),
+                      ),
                     ),
                   ),
                 );

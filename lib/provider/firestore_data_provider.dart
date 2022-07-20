@@ -6,6 +6,7 @@ import '../Services/auth_methods.dart';
 
 class FirestoreDataProvider {
   final _user = FirebaseFirestore.instance.collection('users');
+  final _chat = FirebaseFirestore.instance.collection('chats');
 
   List videos = [];
   List documents = [];
@@ -47,6 +48,38 @@ class FirestoreDataProvider {
     } else {
       return result;
     }
+  }
+
+  Future<String> getLatestMessage(String friendUid) async {
+    String msg = "";
+    String? currentUid = await AuthMethods().getUserId();
+    final querySnapshot = await _chat
+        .where('users', isEqualTo: {friendUid: null, currentUid: null})
+        .limit(1)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      final chatDocId = querySnapshot.docs.single.id;
+      final querySnap = await _chat
+          .doc(chatDocId)
+          .collection('messages')
+          .orderBy('createdOn', descending: true)
+          .limit(1)
+          .get();
+
+      if (querySnap.docs.isNotEmpty) {
+        final data = querySnap.docs.first.data();
+        if (data['type'] == 'image') {
+          msg = 'Image';
+        } else if (data['type'] == 'pdf') {
+          msg = 'Pdf';
+        } else if (data['type'] == 'loc') {
+          msg = "Location";
+        } else {
+          msg = data['msg'];
+        }
+      }
+    }
+    return msg;
   }
 
   Future<void> clearParticularChatCounter(String uid) async {

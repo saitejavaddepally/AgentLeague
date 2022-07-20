@@ -380,7 +380,7 @@ class _RealtorPageState extends State<RealtorPage> {
             const SizedBox(width: 12),
             GestureDetector(
                 onTap: () {
-                  final data =
+                  var data =
                       plotPagesInformation[currentPage][0]['box_enabled'];
                   (data == 0)
                       ? showDialog(
@@ -409,6 +409,7 @@ class _RealtorPageState extends State<RealtorPage> {
                                             .uploadPropertyToPropertyBox(
                                                 currPlot, userId!);
                                         EasyLoading.dismiss();
+                                        data = 1;
                                       },
                                       child: const Text('Yes')),
                                   TextButton(
