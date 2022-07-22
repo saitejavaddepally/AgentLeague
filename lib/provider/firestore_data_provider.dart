@@ -7,6 +7,7 @@ import '../Services/auth_methods.dart';
 class FirestoreDataProvider {
   final _user = FirebaseFirestore.instance.collection('users');
   final _chat = FirebaseFirestore.instance.collection('chats');
+  final _leadsBox = FirebaseFirestore.instance.collection('leads_box');
 
   List videos = [];
   List documents = [];
@@ -129,6 +130,14 @@ class FirestoreDataProvider {
     print(detailsOfPages);
 
     return detailsOfPages;
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getAllLeads() async {
+    String? uid = await AuthMethods().getUserId();
+    final _querySnap = await _leadsBox.doc(uid).collection('standlone').get();
+
+    return _querySnap.docs;
   }
 
   Future<void> deletePlot(int plotNo) async {
