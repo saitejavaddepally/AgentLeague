@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 import 'package:agent_league/provider/firestore_data_provider.dart';
@@ -65,11 +66,13 @@ class _AmentiesState extends State<Amenties> {
               create: (context) =>
                   PropertyPhotosProvider(widget.data[1]?['images'])),
           ChangeNotifierProvider(
-              create: (context) =>
-                  PropertyDocumentsProvider(widget.data[1]?['docs'])),
+              create: (context) => PropertyDocumentsProvider(
+                  widget.data[1]?['docs'],
+                  widget.data[1]?['previousDocNames'])),
           ChangeNotifierProvider(
-              create: (context) =>
-                  PropertyVideoProvider(widget.data[1]?['videos'])),
+              create: (context) => PropertyVideoProvider(
+                  widget.data[1]?['videos'],
+                  widget.data[1]?['previousVideoNames'])),
         ],
         builder: (context, child) {
           final _photoProvider =
@@ -132,7 +135,6 @@ class _AmentiesState extends State<Amenties> {
                                                 imageName: 'Image ${i + 1}',
                                                 onTap: () {
                                                   value.pickImage(i);
-
                                                   _images = value.images;
                                                   print(
                                                       "values are ${value.images}");
@@ -222,6 +224,10 @@ class _AmentiesState extends State<Amenties> {
 
                                                   _docs = value.docs;
                                                   _docNames = value.docNames;
+
+                                                  print("docs are " +
+                                                      _docs.toString() +
+                                                      _docNames.toString());
                                                 },
                                               ))
                                           ],
@@ -322,6 +328,18 @@ class _AmentiesState extends State<Amenties> {
                                             CustomButton(
                                                     text: 'Next',
                                                     onClick: () async {
+                                                      print("docs are " +
+                                                          _docs.toString());
+                                                      print("doc names are " +
+                                                          _docNames.toString());
+                                                      print("videos are " +
+                                                          _videos.toString());
+                                                      print("videoNames are " +
+                                                          _videoNames
+                                                              .toString());
+                                                      print("images are " +
+                                                          _images.toString());
+
                                                       EasyLoading.show();
                                                       String credits =
                                                           await UploadPropertiesToFirestore()
@@ -402,7 +420,7 @@ class _AmentiesState extends State<Amenties> {
                                                             .then(
                                                                 (value) async {
                                                           userId = value;
-                                                         await SharedPreferencesHelper()
+                                                          await SharedPreferencesHelper()
                                                               .getCurrentPlot()
                                                               .then(
                                                                   (value) async {

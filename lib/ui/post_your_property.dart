@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_button.dart';
@@ -121,8 +123,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
 
   @override
   Widget build(BuildContext context) {
-    print("data to edit");
-    print(widget.dataToEdit);
+    log(widget.dataToEdit.toString());
     return Scaffold(
         appBar: AppBar(
           title: const Text(

@@ -180,8 +180,7 @@ class _HomeState extends State<Home> {
                           CustomButton(
                                   text: 'Go Digital',
                                   onClick: () {
-                                    Navigator.pushNamed(
-                                        context, RouteName.escrow);
+
                                   },
                                   color: HexColor('F3F4F6'),
                                   textColor: HexColor('21293A'),

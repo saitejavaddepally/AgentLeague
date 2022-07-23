@@ -27,7 +27,9 @@ class _EscrowState extends State<Escrow> {
                 child: Row(
                   children: [
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         icon: const Icon(Icons.keyboard_backspace)),
                   ],
                 ),
@@ -37,13 +39,12 @@ class _EscrowState extends State<Escrow> {
                 child: CustomContainer(
                     color: Colors.white,
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 3,
                     margin: const EdgeInsets.all(10),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16.0, 24, 8, 8),
+                        padding: const EdgeInsets.fromLTRB(16.0, 24, 12, 24),
                         child: Center(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

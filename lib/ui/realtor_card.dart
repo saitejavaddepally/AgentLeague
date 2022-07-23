@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
@@ -391,11 +393,15 @@ class _RealtorPageState extends State<RealtorPage> {
                                   List data = plotPagesInformation[currentPage];
                                   Map<String, dynamic> data1 = data[0];
 
+                                  log("dxdiag" + videoNames.toString() +
+                                      docNames.toString());
+
                                   await SharedPreferencesHelper()
                                       .savePaidCreditStatus(
-                                          plotPagesInformation[
-                                              int.parse(currPlot.toString()) -
-                                                  1][0]['isPaid'] == 'true');
+                                          plotPagesInformation[int.parse(
+                                                      currPlot.toString()) -
+                                                  1][0]['isPaid'] ==
+                                              'true');
 
                                   await EasyLoading.dismiss();
                                   Navigator.pop(context);

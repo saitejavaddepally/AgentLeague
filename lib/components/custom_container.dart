@@ -6,20 +6,20 @@ class CustomContainer {
   late double depth;
   late Color color;
   late double width;
-  late double height;
+
+  // late double height;
   late EdgeInsets margin;
   late EdgeInsets padding;
   late Widget child;
   late Alignment alignment;
 
-
   CustomContainer(
       {this.shape = 'flat',
       this.radius = 10,
       this.depth = 4,
-      this.width = 500,
+      required this.width,
       this.color = Colors.yellow,
-      this.height = 50,
+      // this.height = 50,
       this.padding = const EdgeInsets.all(0.0),
       this.margin = const EdgeInsets.all(0.0),
       this.child = const Text(""),
@@ -28,9 +28,8 @@ class CustomContainer {
   use() {
     return Container(
         width: width,
-        height: height,
+        // height: height,
         alignment: alignment,
-
         child: Neumorphic(
             padding: padding,
             margin: margin,
@@ -40,7 +39,6 @@ class CustomContainer {
               boxShape:
                   NeumorphicBoxShape.roundRect(BorderRadius.circular(radius)),
               depth: depth,
-
             ),
             child: child));
   }
