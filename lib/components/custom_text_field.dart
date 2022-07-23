@@ -14,6 +14,7 @@ class CustomTextField extends StatefulWidget {
   final double height;
   final bool? isDense;
   final int? maxLength;
+  final EdgeInsets? contentPadding;
   final TextStyle? style;
   const CustomTextField(
       {this.validator,
@@ -29,6 +30,8 @@ class CustomTextField extends StatefulWidget {
       this.isDense,
       this.maxLength,
       this.style,
+      this.contentPadding =
+          const EdgeInsets.only(left: 20, top: 10, bottom: 10),
       Key? key})
       : super(key: key);
 
@@ -39,34 +42,32 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: widget.height,
-      child: TextFormField(
-        maxLength: widget.maxLength,
-        validator: widget.validator,
-        onChanged: widget.onChanged,
-        controller: widget.controller,
-        onTap: widget.onTap,
-        readOnly: widget.readOnly,
-        keyboardType: widget.keyboardType,
-        style: widget.style,
-        cursorColor: Colors.white.withOpacity(0.1),
-        decoration: InputDecoration(
-          isDense: widget.isDense,
-          suffixIcon: widget.icon,
-          counterText: '',
-          contentPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 5),
-          hintText: widget.hint,
-          hintStyle: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Colors.white.withOpacity(0.3)),
-          fillColor: Colors.white.withOpacity(0.1),
-          filled: true,
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(widget.borderRadius)),
-        ),
+    return TextFormField(
+      maxLength: maxLength,
+      validator: validator,
+      onChanged: onChanged,
+      controller: controller,
+      onTap: onTap,
+      readOnly: readOnly,
+      keyboardType: keyboardType,
+      style: style,
+      cursorColor: Colors.white.withOpacity(0.1),
+      decoration: InputDecoration(
+        isDense: isDense,
+        suffixIcon: icon,
+        counterText: '',
+        contentPadding: contentPadding,
+        hintText: hint,
+        hintStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: Colors.white.withOpacity(0.3)),
+        fillColor: Colors.white.withOpacity(0.1),
+        filled: true,
+        border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(borderradius)),
+
       ),
     );
   }

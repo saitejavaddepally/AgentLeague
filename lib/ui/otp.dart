@@ -6,6 +6,7 @@ import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/provider/otp_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
@@ -20,17 +21,19 @@ class Otp extends StatefulWidget {
 }
 
 class _OtpState extends State<Otp> {
+  String? _phoneNumber;
+  String? _dialCode;
   late final String phoneNumber;
   var update = "false";
   late final String name;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
   int? _resendToken;
-  bool loading = false;
+  bool isLoading = false;
 
   Future<void> verifyUser({int? resendToken}) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: "+91" + phoneNumber,
+      phoneNumber: _dialCode! + _phoneNumber!,
       forceResendingToken: resendToken,
       verificationCompleted: (PhoneAuthCredential credential) async {
         //   print("verification complete");
@@ -42,11 +45,9 @@ class _OtpState extends State<Otp> {
       verificationFailed: (FirebaseAuthException e) {
         print("Verification failed" + e.code);
         if (e.code == 'invalid-phone-number') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Invalid Phone Number')));
+          Fluttertoast.showToast(msg: 'Invalid Phone Number');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Something Went Wrong")));
+          Fluttertoast.showToast(msg: 'Something Went Wrong');
         }
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -64,9 +65,9 @@ class _OtpState extends State<Otp> {
   @override
   void initState() {
     super.initState();
-    phoneNumber = widget.args[0];
-    name = widget.args[1];
-    verifyUser().then((value) {});
+    _phoneNumber = widget.args[0];
+    _dialCode = widget.args[1];
+    verifyUser().then((value) {}).catchError((error) {});
   }
 
   @override
@@ -79,7 +80,7 @@ class _OtpState extends State<Otp> {
         builder: (context, child) {
           final otpProvider = Provider.of<OtpProvider>(context, listen: false);
           return ModalProgressHUD(
-            inAsyncCall: loading,
+            inAsyncCall: isLoading,
             child: Scaffold(
               body: SafeArea(
                 child: SingleChildScrollView(
@@ -101,7 +102,7 @@ class _OtpState extends State<Otp> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: Text(
-                          "enter otp send to your mobile\nnumber ${phoneNumber.replaceRange(2, 8, '******')}",
+                          "enter otp send to your mobile\nnumber ${_phoneNumber!.replaceRange(2, 8, '******')}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontWeight: FontWeight.w500,
@@ -168,8 +169,10 @@ class _OtpState extends State<Otp> {
                                 borderRadius: BorderRadius.circular(30),
                                 onTap: (value.seconds == 0)
                                     ? () {
+                                        value.resetTimer();
                                         verifyUser(resendToken: _resendToken)
-                                            .then((value) {});
+                                            .then((value) {})
+                                            .catchError((error) {});
                                       }
                                     : null,
                                 child: Container(
@@ -206,6 +209,22 @@ class _OtpState extends State<Otp> {
                             child: GestureDetector(
                               onTap: () async {
                                 if (_verificationId != null) {
+                                  try {
+                                    setState(() => isLoading = true);
+                                    bool result = await otpProvider
+                                        .checkOtp(_verificationId!);
+
+                                    if (result == true) {
+                                      Navigator.pushNamed(
+                                          context, RouteName.signUp);
+                                    } else {
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          RouteName.bottomBar, (route) => false,
+                                          arguments: 0);
+                                    }
+                                  } catch (e) {
+                                    Fluttertoast.showToast(msg: e.toString());
+                                    setState(() => isLoading = false);
                                   setState(() => loading = true);
                                   final result = (widget.args[1] != "true")? await otpProvider.checkOtp(
                                       _verificationId!, name, phoneNumber): await otpProvider.updateOtp(_verificationId!, phoneNumber);

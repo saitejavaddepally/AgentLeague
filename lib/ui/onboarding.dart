@@ -121,7 +121,7 @@ class _OnboardingState extends State<Onboarding> {
                 ? CustomButton(
                         text: "Get Started",
                         onClick: () {
-                          Navigator.pushNamed(context, RouteName.signUp);
+                          Navigator.pushNamed(context, RouteName.login);
                         },
                         radius: 30,
                         color: HexColor('FD7E0E').withOpacity(0.7),

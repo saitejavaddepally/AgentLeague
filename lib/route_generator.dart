@@ -14,6 +14,7 @@ import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/lead_box.dart';
 import 'package:agent_league/ui/listing.dart';
 import 'package:agent_league/ui/location.dart';
+import 'package:agent_league/ui/login.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/post_your_property.dart';
@@ -67,6 +68,7 @@ class RouteName {
   static const String paymentRazorpay = '/r';
   static const String register = '/register';
   static const String alerts = '/alerts';
+  static const String login = '/login';
   static const String listing = '/listing';
   static const String weHear = '/we_hear';
   static const String escrow = '/escrow';
@@ -79,6 +81,14 @@ class RouteGenerator {
 
     switch (settings.name) {
       case RouteName.bottomBar:
+        {
+          if (args is int) {
+            return PageTransition(
+                child: BottomBar(index: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
         return PageTransition(
             child: BottomBar(
               isIndexGiven: false,
@@ -117,6 +127,9 @@ class RouteGenerator {
       case RouteName.leadsBox:
         return PageTransition(
             child: const LeadBox(), type: PageTransitionType.leftToRight);
+      case RouteName.login:
+        return PageTransition(
+            child: const Login(), type: PageTransitionType.leftToRight);
       case RouteName.profile:
         return PageTransition(
             child: const Profile(), type: PageTransitionType.leftToRight);
@@ -234,7 +247,7 @@ class RouteGenerator {
         {
           if (args is List) {
             return PageTransition(
-                child: ChatDetail(friendName: args[0], friendUid: args[1]),
+                child: ChatDetail(friendUid: args[0], friendName: args[1]),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();

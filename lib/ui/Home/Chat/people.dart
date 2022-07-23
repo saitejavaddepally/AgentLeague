@@ -1,11 +1,11 @@
-import 'package:agent_league/route_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-
+import '../../../provider/firestore_data_provider.dart';
+import '../../../route_generator.dart';
 import '../../../theme/colors.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class People extends StatefulWidget {
   const People({Key? key}) : super(key: key);
@@ -20,6 +20,7 @@ class _PeopleState extends State<People> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: CustomColors.dark,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: CustomColors.dark,
@@ -75,8 +76,10 @@ class Customers extends StatefulWidget {
 }
 
 class _CustomersState extends State<Customers> {
-  void callChatScreen(BuildContext context, String name, String uid) {
-    Navigator.pushNamed(context, RouteName.chatDetail, arguments: [name, uid]);
+  Future<void> callChatScreen(
+      BuildContext context, String name, String uid) async {
+    await Navigator.pushNamed(context, RouteName.chatDetail,
+        arguments: [uid, name]);
   }
 
   @override
@@ -92,20 +95,42 @@ class _CustomersState extends State<Customers> {
               itemCount: snapshot.data?.docs.length ?? 0,
               itemBuilder: (context, index) {
                 final currentItem = snapshot.data?.docs[index].data();
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.white.withOpacity(0.7)),
-                  child: ListTile(
-                    onTap: () => callChatScreen(
-                        context, currentItem?['name'], currentItem?['uid']),
-                    leading:
-                        CircleAvatar(child: Image.asset("assets/profile.png")),
-                    title: Text(
-                        "${currentItem?['name']} (${currentItem?['phone']})"),
+                return FutureBuilder<num>(
+                  initialData: 0,
+                  future: FirestoreDataProvider()
+                      .getParticularChatCounter(currentItem?['uid']),
+                  builder: (context, snapshot) => FutureBuilder<String>(
+                    future: FirestoreDataProvider()
+                        .getLatestMessage(currentItem?['uid']),
+                    initialData: '',
+                    builder: (context, snapshot1) => Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 15),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white.withOpacity(0.7)),
+                      child: ListTile(
+                        subtitle: Text(snapshot1.data.toString()),
+                        onTap: () => callChatScreen(
+                            context, currentItem?['name'], currentItem?['uid']),
+                        leading: CircleAvatar(
+                            child: Image.asset("assets/profile.png")),
+                        trailing: (snapshot.data == 0)
+                            ? const SizedBox()
+                            : Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 3),
+                                decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Text(snapshot.data.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 16))),
+                        title: Text(
+                            "${currentItem?['name']} (${currentItem?['phone']})"),
+                      ),
+                    ),
                   ),
                 );
               },

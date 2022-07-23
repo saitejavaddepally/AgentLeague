@@ -303,6 +303,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       'handOverYear': handOverYearController.text,
       'handOverMonth': handOverMonthController.text,
       'size': _sizeController.text + ' ' + _sizeChosenValue!,
+      'box_enabled': 0,
     };
   }
 
