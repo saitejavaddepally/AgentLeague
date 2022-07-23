@@ -1,5 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
+import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
@@ -14,8 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../Services/firestore_crud_operations.dart';
 import '../components/custom_button.dart';
 import '../helper/constants.dart';
 
@@ -55,67 +58,6 @@ class _AmentiesState extends State<Amenties> {
     super.initState();
   }
 
-  //
-  // Future<File> urlToFile(String imageUrl) async {
-  //   var rng = Random();
-  //   Directory tempDir = await getTemporaryDirectory();
-  //   String tempPath = tempDir.path;
-  //   File file = File(tempPath + (rng.nextInt(100)).toString() + '.png');
-  //   http.Response response = await http.get(Uri.parse(imageUrl));
-  //   await file.writeAsBytes(response.bodyBytes);
-  //   return file;
-  // }
-  //
-  // Future uploadData() async {
-  //   await EasyLoading.show(
-  //     status: 'Uploading...please wait',
-  //     maskType: EasyLoadingMaskType.black,
-  //   );
-  //
-  //   Map<String, dynamic> dataToBeUploaded = widget.data[0];
-  //   dataToBeUploaded.addAll({"timestamp": DateTime.now().toString()});
-  //   await UploadPropertiesToFirestore()
-  //       .postPropertyPageOne(dataToBeUploaded, isEdited);
-  //
-  //   await uploadToFireStore(_images, _IMAGE);
-  //
-  //   await uploadToFireStore(_videos, _VIDEO);
-  //
-  //   await uploadToFireStore(_docs, _DOCS);
-  //
-  //   await EasyLoading.dismiss();
-  // }
-
-  // Future uploadToFireStore(List<dynamic> list, String type) async {
-  //   await SharedPreferencesHelper()
-  //       .getCurrentPlot()
-  //       .then((value) => currentPlot = value);
-  //
-  //   final _firebaseStorage = FirebaseStorage.instance;
-  //   dynamic snapshot;
-  //   for (var i = 0; i < list.length; i++) {
-  //     if (list[i] != null) {
-  //       await AuthMethods().getUserId().then((value) async {
-  //         currentUser = value;
-  //         var temp = list[i];
-  //         print(list[i].runtimeType.toString());
-  //         if (list[i].runtimeType.toString() == 'String') {
-  //           print("converting into file...");
-  //           temp = await urlToFile(list[i]);
-  //           print("converted!");
-  //         }
-  //         print("Uploading to firestore...");
-  //         snapshot = await _firebaseStorage
-  //             .ref()
-  //             .child(
-  //                 'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type + "_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
-  //             .putFile(temp! as File);
-  //       });
-  //     }
-  //   }
-  //   return "Updated $type successfully";
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -124,11 +66,13 @@ class _AmentiesState extends State<Amenties> {
               create: (context) =>
                   PropertyPhotosProvider(widget.data[1]?['images'])),
           ChangeNotifierProvider(
-              create: (context) =>
-                  PropertyDocumentsProvider(widget.data[1]?['docs'])),
+              create: (context) => PropertyDocumentsProvider(
+                  widget.data[1]?['docs'],
+                  widget.data[1]?['previousDocNames'])),
           ChangeNotifierProvider(
-              create: (context) =>
-                  PropertyVideoProvider(widget.data[1]?['videos'])),
+              create: (context) => PropertyVideoProvider(
+                  widget.data[1]?['videos'],
+                  widget.data[1]?['previousVideoNames'])),
         ],
         builder: (context, child) {
           final _photoProvider =
@@ -191,7 +135,6 @@ class _AmentiesState extends State<Amenties> {
                                                 imageName: 'Image ${i + 1}',
                                                 onTap: () {
                                                   value.pickImage(i);
-
                                                   _images = value.images;
                                                   print(
                                                       "values are ${value.images}");
@@ -281,6 +224,10 @@ class _AmentiesState extends State<Amenties> {
 
                                                   _docs = value.docs;
                                                   _docNames = value.docNames;
+
+                                                  print("docs are " +
+                                                      _docs.toString() +
+                                                      _docNames.toString());
                                                 },
                                               ))
                                           ],
@@ -381,7 +328,33 @@ class _AmentiesState extends State<Amenties> {
                                             CustomButton(
                                                     text: 'Next',
                                                     onClick: () async {
-                                                      if (isEdited) {
+                                                      print("docs are " +
+                                                          _docs.toString());
+                                                      print("doc names are " +
+                                                          _docNames.toString());
+                                                      print("videos are " +
+                                                          _videos.toString());
+                                                      print("videoNames are " +
+                                                          _videoNames
+                                                              .toString());
+                                                      print("images are " +
+                                                          _images.toString());
+
+                                                      EasyLoading.show();
+                                                      String credits =
+                                                          await UploadPropertiesToFirestore()
+                                                              .plotCreditChecker();
+                                                      bool? ifPaid =
+                                                          await SharedPreferencesHelper()
+                                                              .getPaidCreditStatus();
+                                                      print("check if $ifPaid");
+                                                      EasyLoading.dismiss();
+                                                      int freeCreditCurrent =
+                                                          int.parse(credits);
+                                                      print(freeCreditCurrent);
+                                                      if (freeCreditCurrent !=
+                                                              0 &&
+                                                          !ifPaid!) {
                                                         await EasyLoading.show(
                                                             status:
                                                                 'Please wait..');
@@ -394,17 +367,131 @@ class _AmentiesState extends State<Amenties> {
                                                                 _videoNames,
                                                                 isEdited,
                                                                 widget.data[0]);
+                                                        await UploadPropertiesToFirestore()
+                                                            .updateFreeCredit(
+                                                                freeCreditCurrent -
+                                                                    1);
+                                                        SharedPreferencesHelper()
+                                                            .getCurrentPlot()
+                                                            .then(
+                                                                (value) async {
+                                                          String number = value
+                                                              .toString()
+                                                              .substring(5);
+                                                          await FirestoreCrudOperations()
+                                                              .updatePlotInformation(
+                                                                  int.parse(
+                                                                      number),
+                                                                  {
+                                                                "isPaid": "true"
+                                                              });
+                                                        });
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        '"You have used your free credit.."')));
+
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                                context,
+                                                                RouteName
+                                                                    .bottomBar,
+                                                                (route) =>
+                                                                    false);
+
                                                         await EasyLoading
                                                             .showSuccess(
-                                                                'Edited successfully');
+                                                                'Thank you');
+                                                        return;
                                                       }
-                                                      Navigator.pushNamed(
+
+                                                      await EasyLoading.show(
+                                                          status:
+                                                              'Please wait..');
+
+                                                      if (isEdited) {
+                                                        print(
+                                                            "I am gonna delete!");
+                                                        String? userId;
+                                                        await SharedPreferencesHelper()
+                                                            .getUserId()
+                                                            .then(
+                                                                (value) async {
+                                                          userId = value;
+                                                          await SharedPreferencesHelper()
+                                                              .getCurrentPlot()
+                                                              .then(
+                                                                  (value) async {
+                                                            int number =
+                                                                int.parse(value
+                                                                    .toString()
+                                                                    .substring(
+                                                                        5));
+                                                            await FirestoreCrudOperations()
+                                                                .updatePlotInformation(
+                                                                    number, {
+                                                              "images":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                              "videos":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                              "docs": FieldValue
+                                                                  .delete(),
+                                                              "docNames":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                              "videoNames":
+                                                                  FieldValue
+                                                                      .delete(),
+                                                            });
+                                                            List data =
+                                                                (await FirestoreDataProvider()
+                                                                    .getPlotPagesInformation(
+                                                                        number));
+                                                            // print("result is " +
+                                                            //     data.toString());
+                                                            // await FirestoreDataProvider()
+                                                            //     .deleteImages(
+                                                            //         userId!,
+                                                            //         number);
+                                                            // await FirestoreDataProvider()
+                                                            //     .deleteVideos(
+                                                            //         userId!,
+                                                            //         number);
+                                                            // await FirestoreDataProvider()
+                                                            //     .deleteDocs(
+                                                            //         userId!,
+                                                            //         number);
+                                                            // print(
+                                                            //     "Its deleted!");
+                                                          });
+                                                        });
+                                                      }
+
+                                                      await UploadPropertiesToFirestore()
+                                                          .uploadData(
+                                                              _images,
+                                                              _videos,
+                                                              _docs,
+                                                              _docNames,
+                                                              _videoNames,
+                                                              isEdited,
+                                                              widget.data[0]);
+                                                      await EasyLoading.showSuccess(
+                                                          'Saved your property!');
+                                                      Navigator
+                                                          .pushNamedAndRemoveUntil(
                                                         context,
                                                         (!isEdited)
                                                             ? RouteName
-                                                                .propertyDigitalization
+                                                                .bottomBar
+                                                            // .propertyDigitalization
                                                             : RouteName
                                                                 .bottomBar,
+                                                        (r) => false,
                                                         arguments: {
                                                           "propData":
                                                               widget.data[0],

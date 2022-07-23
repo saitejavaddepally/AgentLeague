@@ -41,6 +41,8 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
           "currency": "INR"
         }));
 
+    print(" response is ${response.body}");
+
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       orderId = data['id'];

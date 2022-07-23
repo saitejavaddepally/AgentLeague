@@ -1,14 +1,20 @@
+import 'dart:developer';
+
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/sell_screen.dart';
+import 'package:agent_league/ui/emi.dart';
+import 'package:agent_league/ui/gallery.dart';
+import 'package:agent_league/ui/tour.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../theme/colors.dart';
+import 'documents.dart';
 
 var currentPage = 0;
 String userId = "";
@@ -23,9 +29,10 @@ late List plotPagesInformation = [];
 late String currentPlotFromPreviousPage;
 
 class RealtorCard extends StatefulWidget {
-  List plotPagesInformation;
+  final List plotPagesInformation;
 
-  RealtorCard({Key? key, required this.plotPagesInformation}) : super(key: key);
+  const RealtorCard({Key? key, required this.plotPagesInformation})
+      : super(key: key);
 
   @override
   State<RealtorCard> createState() => _RealtorCardState();
@@ -33,7 +40,8 @@ class RealtorCard extends StatefulWidget {
 
 class _RealtorCardState extends State<RealtorCard> {
   late List pages = [];
-  var page = const RealtorPage();
+
+  // var page = const RealtorPage();
   Color color = CustomColors.dark;
   String numberOfProperties = "0";
 
@@ -54,7 +62,7 @@ class _RealtorCardState extends State<RealtorCard> {
       setState(() {
         currentPage = int.parse(value!);
         currentPlotFromPreviousPage =
-            plotPagesInformation[currentPage][1]['plotNo'].toString();
+            plotPagesInformation[currentPage][0]['plotNumber'].toString();
       });
       SharedPreferencesHelper()
           .saveCurrentPage(currentPlotFromPreviousPage.toString());
@@ -66,8 +74,15 @@ class _RealtorCardState extends State<RealtorCard> {
         return numberOfProperties;
       }).then((value) {
         for (var i = 0; i < int.parse(numberOfProperties); i++) {
+          print(plotPagesInformation[i][0]['plotNumber'].toString());
+          print(plotPagesInformation[i][0]['plotProfilePicture']);
+          print(plotPagesInformation[i][0]['images']);
+          print(plotPagesInformation[i][0]['videos']);
           setState(() {
-            pages.add(const RealtorPage());
+            pages.add(RealtorPage(
+              plotNumber: plotPagesInformation[i][0]['plotNumber'].toString(),
+              profileImage: plotPagesInformation[i][0]['plotProfilePicture'],
+            ));
           });
         }
       });
@@ -87,13 +102,11 @@ class _RealtorCardState extends State<RealtorCard> {
                 controller: controller,
                 onPageChanged: (int page) async {
                   var currentPlotFromList =
-                      plotPagesInformation[page][1]['plotNo'];
+                      plotPagesInformation[page][0]['plotNumber'];
                   SharedPreferencesHelper()
                       .saveCurrentPage(currentPlotFromList.toString());
                   setState(() {
                     currentPage = page;
-                    path =
-                        'sell_images/$userId/standlone/plot_${(currentPage) + 1}/images/';
                   });
                   SharedPreferencesHelper()
                       .getCurrentPage()
@@ -112,7 +125,11 @@ class _RealtorCardState extends State<RealtorCard> {
 }
 
 class RealtorPage extends StatefulWidget {
-  const RealtorPage({Key? key}) : super(key: key);
+  String profileImage;
+  String plotNumber;
+
+  RealtorPage({Key? key, required this.profileImage, required this.plotNumber})
+      : super(key: key);
 
   @override
   State<RealtorPage> createState() => _RealtorPageState();
@@ -121,13 +138,13 @@ class RealtorPage extends StatefulWidget {
 class _RealtorPageState extends State<RealtorPage> {
   @override
   void initState() {
-    controller?.addListener(() {
-      var current = (controller?.page)!;
-
-      currentPage = current.toInt();
-      profileImage =
-          "sell_images/$userId/standlone/plot_${currentPage + 1}/images/";
-    });
+    // controller?.addListener(() {
+    //   var current = (controller?.page)!;
+    //
+    //   currentPage = current.toInt();
+    //   profileImage =
+    //       plotPagesInformation[currentPage + 1][0]['plotProfilePicture'];
+    // });
     super.initState();
   }
 
@@ -156,12 +173,24 @@ class _RealtorPageState extends State<RealtorPage> {
   Widget build(BuildContext context) {
     var iconFunctionalities = [
       () => Navigator.pushNamed(context, '/location', arguments: currentPage),
-      () {
-        Navigator.pushNamed(context, RouteName.gallery);
-      },
-      () => Navigator.pushNamed(context, '/tour', arguments: currentPage),
-      () => Navigator.pushNamed(context, '/documents', arguments: currentPage),
-      () => Navigator.pushNamed(context, '/emi', arguments: currentPage),
+      () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  GalleryScreen(images: plotPagesInformation))),
+      () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Tour(videos: plotPagesInformation))),
+      () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  Documents(documents: plotPagesInformation))),
+      () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EMI(price: plotPagesInformation))),
     ];
     return Stack(children: [
       Column(children: [
@@ -194,35 +223,34 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FutureBuilder(
-                          future: getProfileImages(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {}
-                            if (snapshot.connectionState !=
-                                ConnectionState.done) {
-                              return Container(
-                                width: 200,
-                                height: 200,
-                                child: const SpinKitThreeBounce(
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                              );
-                            }
+                      // FutureBuilder(
+                      //     future: getProfileImages(),
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.hasData) {}
+                      //       if (snapshot.connectionState !=
+                      //           ConnectionState.done) {
+                      //         return Container(
+                      //           width: 200,
+                      //           height: 200,
+                      //           child: const SpinKitThreeBounce(
+                      //             size: 30,
+                      //             color: Colors.white,
+                      //           ),
+                      //         );
+                      //       }
+                      //
+                      //       // List<String>? data = snapshot.data as List<String>?;
 
-                            // List<String>? data = snapshot.data as List<String>?;
-
-                            return Container(
-                              width: 200,
-                              height: 200,
-                              // decoration:
-                              //     BoxDecoration(border: Border.all()),
-                              child: Image.network(
-                                plotPagesInformation[currentPage][2]['picture'],
-                                fit: BoxFit.fill,
-                              ),
-                            );
-                          }),
+                      Container(
+                        width: 200,
+                        height: 200,
+                        // decoration:
+                        //     BoxDecoration(border: Border.all()),
+                        child: Image.network(
+                          widget.profileImage,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       const CustomTitle(text: 'Property Highlights'),
                       const SizedBox(height: 20),
@@ -268,10 +296,7 @@ class _RealtorPageState extends State<RealtorPage> {
                             actions: [
                               TextButton(
                                 onPressed: () async {
-                                  var currPlot =
-                                      plotPagesInformation[currentPage][1]
-                                              ['plotNo']
-                                          .toString();
+                                  var currPlot = widget.plotNumber;
                                   print("delete plot $currPlot");
                                   await EasyLoading.show(
                                     status: 'Deleting.. please wait',
@@ -315,31 +340,68 @@ class _RealtorPageState extends State<RealtorPage> {
                             actions: [
                               TextButton(
                                 onPressed: () async {
+                                  List<dynamic> images =
+                                      List.generate(8, (index) => null);
+                                  List<dynamic> videos =
+                                      List.generate(4, (index) => null);
+                                  List<dynamic> videoNames =
+                                      List.generate(4, (index) => null);
+                                  List<dynamic> docs =
+                                      List.generate(4, (index) => null);
+                                  List<dynamic> docNames =
+                                      List.generate(4, (index) => null);
+
                                   await EasyLoading.show(
                                     status: 'Loading data....',
                                     maskType: EasyLoadingMaskType.black,
                                   );
-                                  var currPlot =
-                                      plotPagesInformation[currentPage][1]
-                                              ['plotNo']
-                                          .toString();
-                                  String? userId =
-                                      await SharedPreferencesHelper()
-                                          .getUserId();
-                                  final dataProvider = FirestoreDataProvider();
-                                  final images = await dataProvider.getAllImage(
-                                      userId, int.parse(currPlot));
-                                  final videosInfo =
-                                      await dataProvider.getAllVideos(
-                                          userId, int.parse(currPlot));
-                                  List previousVideoNames = videosInfo[0];
-                                  List videos = videosInfo[1];
-                                  final docsInfo = await dataProvider
-                                      .getAllDocs(userId, int.parse(currPlot));
-                                  List previousDocNames = docsInfo[0];
-                                  List docs = docsInfo[1];
+                                  var currPlot = widget.plotNumber;
+                                  List plotImages = plotPagesInformation[
+                                          int.parse(currPlot.toString()) - 1][0]
+                                      ['images'];
+                                  for (var i = 0; i < plotImages.length; i++) {
+                                    images[i] = plotImages[i];
+                                  }
+                                  List plotVideos = plotPagesInformation[
+                                          int.parse(currPlot.toString()) - 1][0]
+                                      ['videos'];
+                                  for (var i = 0; i < plotVideos.length; i++) {
+                                    videos[i] = plotVideos[i];
+                                  }
+                                  List plotVideoNames = plotPagesInformation[
+                                          int.parse(currPlot.toString()) - 1][0]
+                                      ['videoNames'];
+                                  for (var i = 0;
+                                      i < plotVideoNames.length;
+                                      i++) {
+                                    videoNames[i] = plotVideoNames[i];
+                                  }
+                                  List plotDocs = plotPagesInformation[
+                                          int.parse(currPlot.toString()) - 1][0]
+                                      ['docs'];
+                                  for (var i = 0; i < plotDocs.length; i++) {
+                                    docs[i] = plotDocs[i];
+                                  }
+                                  List plotDocNames = plotPagesInformation[
+                                          int.parse(currPlot.toString()) - 1][0]
+                                      ['docNames'];
+                                  for (var i = 0;
+                                      i < plotDocNames.length;
+                                      i++) {
+                                    docNames[i] = plotDocNames[i];
+                                  }
                                   List data = plotPagesInformation[currentPage];
                                   Map<String, dynamic> data1 = data[0];
+
+                                  log("dxdiag" + videoNames.toString() +
+                                      docNames.toString());
+
+                                  await SharedPreferencesHelper()
+                                      .savePaidCreditStatus(
+                                          plotPagesInformation[int.parse(
+                                                      currPlot.toString()) -
+                                                  1][0]['isPaid'] ==
+                                              'true');
 
                                   await EasyLoading.dismiss();
                                   Navigator.pop(context);
@@ -349,9 +411,8 @@ class _RealtorPageState extends State<RealtorPage> {
                                       arguments: data1
                                         ..addAll({
                                           'images': images,
-                                          'previousDocNames': previousDocNames,
-                                          'previousVideoNames':
-                                              previousVideoNames,
+                                          'previousDocNames': docNames,
+                                          'previousVideoNames': videoNames,
                                           'videos': videos,
                                           'docs': docs,
                                           'plotNo': currPlot,

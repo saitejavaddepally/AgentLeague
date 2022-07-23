@@ -2,7 +2,9 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AmenitiesProvider extends ChangeNotifier {
@@ -88,12 +90,21 @@ class AmenitiesProvider extends ChangeNotifier {
   }
 }
 
+getFileSize(File file) {
+  final bytes = file.readAsBytesSync().lengthInBytes;
+  final kb = bytes / 1024;
+  final mb = kb / 1024;
+
+  return mb;
+}
+
 class PropertyPhotosProvider extends ChangeNotifier {
   PropertyPhotosProvider(List? images) {
     if (images != null) {
       _images = images;
     }
   }
+
   List<dynamic> _images = List.generate(8, (index) => null);
 
   UnmodifiableListView<dynamic> get images => UnmodifiableListView(_images);
@@ -104,7 +115,14 @@ class PropertyPhotosProvider extends ChangeNotifier {
     if (image == null) return;
 
     final imageTemporary = File(image.path);
-    _images[index] = imageTemporary;
+
+    print("size is " + getFileSize(imageTemporary).toString());
+    if (getFileSize(imageTemporary) < .5) {
+      _images[index] = imageTemporary;
+    } else {
+      EasyLoading.showInfo("Image size is greater than 500 kb",
+          duration: const Duration(seconds: 2));
+    }
 
     notifyListeners();
   }
@@ -116,15 +134,18 @@ class PropertyPhotosProvider extends ChangeNotifier {
 }
 
 class PropertyDocumentsProvider extends ChangeNotifier {
-  PropertyDocumentsProvider(List? data) {
-    if (data != null) {
+  PropertyDocumentsProvider(List? data, List? dataNames) {
+    if (data != null && dataNames != null) {
       _docs = data;
+      _docNames = dataNames;
     }
   }
+
   List<dynamic> _docs = List.generate(4, (index) => null);
-  late final List<dynamic> _docNames = List.generate(4, (index) => null);
+  List<dynamic> _docNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<dynamic> get docs => UnmodifiableListView(_docs);
+
   UnmodifiableListView<dynamic> get docNames => UnmodifiableListView(_docNames);
 
   void pickDocuments(int index) async {
@@ -132,10 +153,15 @@ class PropertyDocumentsProvider extends ChangeNotifier {
 
     if (path == null) return;
     final docTemp = File(path);
+    if (getFileSize(docTemp) < 1) {
+      List splitPath = docTemp.path.split('/');
+      _docNames[index] = splitPath[splitPath.length - 1];
+      _docs[index] = docTemp;
+    } else {
+      EasyLoading.showInfo("Doc size is greater than 1 mb",
+          duration: const Duration(seconds: 2));
+    }
 
-    List splitPath = docTemp.path.split('/');
-    _docNames[index] = splitPath[splitPath.length - 1];
-    _docs[index] = docTemp;
     notifyListeners();
   }
 
@@ -146,16 +172,19 @@ class PropertyDocumentsProvider extends ChangeNotifier {
 }
 
 class PropertyVideoProvider extends ChangeNotifier {
-  PropertyVideoProvider(List? data) {
-    if (data != null) {
+  PropertyVideoProvider(List? data, List? dataNames) {
+    if (data != null && dataNames != null) {
       _videos = data;
+      _videoNames = dataNames;
     }
   }
+
   List<dynamic> _videos = List.generate(4, (index) => null);
-  late final List<String?> _videoNames = List.generate(4, (index) => null);
+  List<dynamic> _videoNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<dynamic> get videos => UnmodifiableListView(_videos);
-  UnmodifiableListView<String?> get videoNames =>
+
+  UnmodifiableListView<dynamic> get videoNames =>
       UnmodifiableListView(_videoNames);
 
   void pickVideo(int index) async {
@@ -163,9 +192,16 @@ class PropertyVideoProvider extends ChangeNotifier {
     if (video == null) return;
 
     final videoTemporary = File(video.path);
-    List splitPath = videoTemporary.path.split('/');
-    _videoNames[index] = splitPath[splitPath.length - 1];
-    _videos[index] = videoTemporary;
+
+    if (getFileSize(videoTemporary) < 2) {
+      List splitPath = videoTemporary.path.split('/');
+      _videoNames[index] = splitPath[splitPath.length - 1];
+      _videos[index] = videoTemporary;
+    } else {
+      EasyLoading.showInfo("Video size is greater than 2 mb",
+          duration: const Duration(seconds: 2));
+    }
+
     notifyListeners();
   }
 

@@ -12,7 +12,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import '../../components/custom_sell_card.dart';
 import '../../theme/colors.dart';
+import '../saved.dart';
 
 class SellScreen extends StatefulWidget {
   const SellScreen({Key? key}) : super(key: key);
@@ -67,15 +69,16 @@ class _SellScreenState extends State<SellScreen> {
       List detailsOfPages = await FirestoreDataProvider()
           .getPlotPagesInformation(int.parse(plotNumber));
 
-      if (detailsOfPages.isEmpty) {
+      print("The details of pages are  $detailsOfPages");
+      if (detailsOfPages.isEmpty || detailsOfPages[0]['isPaid'] == "false") {
         continue;
       }
 
-      String profilePicture = await FirestoreDataProvider().getProfileImage(
-          "sell_images/$userId/standlone/plot_$plotNumber/images/");
-      profileImagesSorted.putIfAbsent(i, () => profilePicture);
-      detailsOfPages.add({"plotNo": plotNumber});
-      detailsOfPages.add({"picture": profilePicture});
+      // String profilePicture = detailsOfPages[0]['plotProfilePicture'];
+      // profileImagesSorted.putIfAbsent(i, () => profilePicture);
+      // detailsOfPages.add({"plotNo": plotNumber});
+      // detailsOfPages.add({"picture": profilePicture});
+
       plotPagesInformationOriginal.add(detailsOfPages);
     }
     setState(() {
@@ -83,6 +86,8 @@ class _SellScreenState extends State<SellScreen> {
       this.numberOfProperties = plotPagesInformation.length.toString();
       loading = false;
     });
+
+
 
     return plotPagesInformation;
   }
@@ -190,7 +195,7 @@ class _SellScreenState extends State<SellScreen> {
                                         size: 50,
                                         onTap: () {
                                           Navigator.pushNamed(
-                                              context, '/post_page_one');
+                                              context, RouteName.listing);
                                         },
                                         isNeu: true,
                                         isTextUnder: true,
@@ -202,7 +207,13 @@ class _SellScreenState extends State<SellScreen> {
                                 child: CircularNeumorphicButton(
                                         imageName: 'save',
                                         size: 50,
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Saved()));
+                                        },
                                         color: HexColor('082640'),
                                         isNeu: true,
                                         isTextUnder: true,
@@ -368,137 +379,32 @@ class _SellScreenState extends State<SellScreen> {
                       ),
                       for (var i = 0; i < (plotPagesInformation.length); i++)
                         (!loading)
-                            ? Neumorphic(
-                                style: NeumorphicStyle(
-                                  shape: NeumorphicShape.flat,
-                                  boxShape: NeumorphicBoxShape.roundRect(
-                                      BorderRadius.circular(17)),
-                                  depth: 4,
-                                ),
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        SharedPreferencesHelper()
-                                            .saveCurrentPage(i.toString());
-                                        SharedPreferencesHelper()
-                                            .saveNumProperties(
-                                                plotPagesInformation.length
-                                                    .toString());
-                                        SharedPreferencesHelper()
-                                            .saveListOfCards(
-                                                plotPagesInformation);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => RealtorCard(
-                                                    plotPagesInformation:
-                                                        plotPagesInformation)));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                                height: 160,
-                                                decoration: const BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(17.0),
-                                                    topRight:
-                                                        Radius.circular(17.0),
-                                                    bottomLeft: Radius.zero,
-                                                    bottomRight: Radius.zero,
-                                                  ),
-                                                  color: Colors.white,
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                        flex: 1,
-                                                        child: Container(
-                                                          width: 100,
-                                                          height: 170,
-                                                          // decoration:
-                                                          //     BoxDecoration(border: Border.all()),
-                                                          child: Image.network(
-                                                            plotPagesInformation[
-                                                                    i][2]
-                                                                ['picture'],
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                        )),
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Container(
-                                                          width: 100,
-                                                          height: 170,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8),
-                                                          // decoration:
-                                                          //     BoxDecoration(border: Border.all()),
-                                                          child: Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Column(
-                                                              children: [
-                                                                CustomContainerText(
-                                                                        text1:
-                                                                            'Category',
-                                                                        text2: plotPagesInformation[i][0]
-                                                                            [
-                                                                            'propertyCategory'])
-                                                                    .use(),
-                                                                CustomContainerText(
-                                                                        text1:
-                                                                            'Type',
-                                                                        text2: plotPagesInformation[i][0]
-                                                                            [
-                                                                            'propertyType'])
-                                                                    .use(),
-                                                                CustomContainerText(
-                                                                        text1:
-                                                                            'Area',
-                                                                        text2: plotPagesInformation[i][0]
-                                                                            [
-                                                                            'size'])
-                                                                    .use(),
-                                                                CustomContainerText(
-                                                                        text1:
-                                                                            'Location',
-                                                                        text2: plotPagesInformation[i][0]
-                                                                            [
-                                                                            'location'])
-                                                                    .use(),
-                                                                CustomContainerText(
-                                                                        text1:
-                                                                            'Price',
-                                                                        text2: plotPagesInformation[i][0]
-                                                                            [
-                                                                            'price'])
-                                                                    .use(),
-                                                                CustomContainerText(
-                                                                        text1:
-                                                                            'Possession',
-                                                                        text2: plotPagesInformation[i][0]
-                                                                            [
-                                                                            'possessionStatus'])
-                                                                    .use(),
-                                                              ],
-                                                            ),
-                                                          )),
-                                                    ),
-                                                  ],
-                                                )),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            ? CustomSellCard(
+                                imageUrl: plotPagesInformation[i][0]['plotProfilePicture'],
+                                category: plotPagesInformation[i][0]
+                                    ['propertyCategory'],
+                                propertyType: plotPagesInformation[i][0]
+                                    ['propertyType'],
+                                size: plotPagesInformation[i][0]['size'],
+                                location: plotPagesInformation[i][0]
+                                    ['location'],
+                                price: plotPagesInformation[i][0]['price'],
+                                possession: plotPagesInformation[i][0]
+                                    ['possessionStatus'],
+                                onClick: () {
+                                  SharedPreferencesHelper()
+                                      .saveCurrentPage(i.toString());
+                                  SharedPreferencesHelper().saveNumProperties(
+                                      plotPagesInformation.length.toString());
+                                  SharedPreferencesHelper()
+                                      .saveListOfCards(plotPagesInformation);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => RealtorCard(
+                                              plotPagesInformation:
+                                                  plotPagesInformation)));
+                                },
                               )
                             : SizedBox(
                                 width: MediaQuery.of(context).size.width,

@@ -1,6 +1,8 @@
+import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../components/custom_button.dart';
 import '../../components/custom_title.dart';
@@ -16,6 +18,38 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool loading = false;
+  var name = '';
+  var phone = '';
+  String profileUrl = '';
+
+  Future asyncTriggerFunction() async {
+    List data = await getProfileInformation();
+    setState(() {
+      name = data[0];
+      profileUrl = data[1];
+    });
+  }
+
+  Future getProfileInformation() async {
+    Map data = await UploadPropertiesToFirestore().getProfileInformation();
+    String? profileUrl =
+        await UploadPropertiesToFirestore().getProfilePicture();
+    return [data['name'], profileUrl];
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      loading = true;
+    });
+    asyncTriggerFunction();
+    setState(() {
+      loading = false;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +67,7 @@ class _HomeState extends State<Home> {
                       CustomImage(
                         image: "assets/leadsBox.png",
                         text: "LeadsBox",
+                        type: 'static',
                         isDecorated: true,
                         onTap: () {
                           Navigator.pushNamed(context, '/leads_box');
@@ -41,15 +76,26 @@ class _HomeState extends State<Home> {
                     ]),
                     Row(
                       children: [
-                        CustomImage(
-                            image: "assets/profile.png",
-                            text: "profile",
-                            onTap: () {
-                              Navigator.pushNamed(context, '/profile');
-                            }),
+                        (!loading)
+                            ? CustomImage(
+                                image: (profileUrl != '')
+                                    ? profileUrl
+                                    : 'assets/profile.png',
+                                text: "profile",
+                                type: (profileUrl != '') ? 'url' : 'static',
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/profile');
+                                })
+                            : const SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: SpinKitCircle(
+                                    size: 30, color: Colors.white),
+                              ),
                         const SizedBox(width: 15),
                         CustomImage(
                             image: "assets/explorer.png",
+                            type: 'static',
                             text: "explore",
                             onTap: () {
                               Navigator.pushNamed(context, '/explore');
@@ -58,6 +104,7 @@ class _HomeState extends State<Home> {
                         CustomImage(
                             image: "assets/alerts.png",
                             text: "alerts",
+                            type: 'static',
                             onTap: () {
                               //Navigator.pushNamed(context, RouteName.alerts);
                             }),
@@ -66,16 +113,20 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                RichText(
-                    text: const TextSpan(
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 18),
-                        children: [
-                      TextSpan(text: "Hello, "),
-                      TextSpan(
-                          text: "Name",
-                          style: TextStyle(fontWeight: FontWeight.w600))
-                    ])),
+                (!loading)
+                    ? RichText(
+                        text: TextSpan(
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w400, fontSize: 18),
+                            children: [
+                            const TextSpan(text: "Hello,  "),
+                            TextSpan(
+                                text: name.toUpperCase(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500))
+                          ]))
+                    : const SizedBox(
+                        height: 20, child: Center(child: Text('Loading..'))),
                 const SizedBox(height: 5),
                 const Text('Todays recommended actions for you',
                     style:
@@ -128,7 +179,9 @@ class _HomeState extends State<Home> {
                           Image.asset("assets/digital.png"),
                           CustomButton(
                                   text: 'Go Digital',
-                                  onClick: () {},
+                                  onClick: () {
+
+                                  },
                                   color: HexColor('F3F4F6'),
                                   textColor: HexColor('21293A'),
                                   width: 109)
@@ -143,7 +196,7 @@ class _HomeState extends State<Home> {
                     text: "Refer and Earn",
                     isSecondText: true,
                     text2:
-                        'Earn one more free difitalization by referring your friends.',
+                        'Earn one more free digitalization by referring your friends.',
                     image: "assets/refer.png",
                     isGradient: true,
                     gradient: LinearGradient(colors: [
@@ -206,12 +259,14 @@ class CustomImage extends StatelessWidget {
   final bool isDecorated;
   final int? counter;
   final bool isCounter;
+  final String type;
 
   final void Function()? onTap;
 
   const CustomImage(
       {required this.image,
       required this.text,
+      required this.type,
       this.onTap,
       this.isDecorated = false,
       this.counter,
@@ -235,7 +290,22 @@ class CustomImage extends StatelessWidget {
                       border: Border.all(color: Colors.blue))
                   : const BoxDecoration(boxShadow: shadow1),
               child: Stack(children: [
-                Image.asset(image, height: 40, width: 40),
+                (type == 'url')
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Image.network(
+                          image,
+                          height: 40.0,
+                          width: 40.0,
+                          fit: BoxFit.fill,
+                        ),
+                      )
+                    : Image.asset(
+                        image,
+                        height: 40,
+                        width: 40,
+                        fit: BoxFit.fill,
+                      ),
                 if (isCounter && counter != 0)
                   Positioned(
                       top: 0,

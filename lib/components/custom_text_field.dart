@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final Widget? icon;
   final void Function(String)? onChanged;
@@ -9,8 +9,9 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final bool readOnly;
-  final double borderradius;
+  final double borderRadius;
   final String? hint;
+  final double height;
   final bool? isDense;
   final int? maxLength;
   final EdgeInsets? contentPadding;
@@ -22,8 +23,9 @@ class CustomTextField extends StatelessWidget {
       this.onTap,
       this.keyboardType = TextInputType.text,
       this.readOnly = false,
-      this.borderradius = 10,
+      this.borderRadius = 10,
       this.icon,
+        this.height = 40,
       this.hint,
       this.isDense,
       this.maxLength,
@@ -33,6 +35,11 @@ class CustomTextField extends StatelessWidget {
       Key? key})
       : super(key: key);
 
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -60,6 +67,7 @@ class CustomTextField extends StatelessWidget {
         border: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(borderradius)),
+
       ),
     );
   }

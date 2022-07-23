@@ -23,6 +23,10 @@ class Otp extends StatefulWidget {
 class _OtpState extends State<Otp> {
   String? _phoneNumber;
   String? _dialCode;
+  late final String phoneNumber;
+  var update = "false";
+  late final String name;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
   int? _resendToken;
   bool isLoading = false;
@@ -221,6 +225,55 @@ class _OtpState extends State<Otp> {
                                   } catch (e) {
                                     Fluttertoast.showToast(msg: e.toString());
                                     setState(() => isLoading = false);
+                                  setState(() => loading = true);
+                                  final result = (widget.args[1] != "true")? await otpProvider.checkOtp(
+                                      _verificationId!, name, phoneNumber): await otpProvider.updateOtp(_verificationId!, phoneNumber);
+                                  switch (result) {
+                                    case 'correct':
+                                      {
+                                        setState(() => loading = false);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            RouteName.bottomBar,
+                                            (route) => false);
+                                        break;
+                                      }
+                                    case 'incorrect':
+                                      {
+                                        setState(() => loading = false);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "Please Enter Correct OTP"),
+                                                duration:
+                                                    Duration(seconds: 2)));
+                                        break;
+                                      }
+                                    case "updated":
+                                      {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                "Updated the phoneNumber"),
+                                            duration:
+                                            Duration(seconds: 2)));
+                                        break;
+                                      }
+                                    case 'enterotp':
+                                      {
+                                        setState(() => loading = false);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content:
+                                                    Text("Please Enter OTP"),
+                                                duration:
+                                                    Duration(seconds: 2)));
+                                        break;
+                                      }
                                   }
                                 }
                               },

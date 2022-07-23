@@ -29,7 +29,6 @@ class SharedPreferencesHelper {
     return preferences.getString(currentCardPage);
   }
 
-
   Future<void> saveUserId(String userId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString(currentUserId, userId);
@@ -60,11 +59,10 @@ class SharedPreferencesHelper {
     return preferences.getString(images);
   }
 
-  removeListOfCards() async{
+  removeListOfCards() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove(images);
   }
-
 
   Future<void> savePageOneInformation(Map<String, dynamic> pageInfo) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -86,9 +84,13 @@ class SharedPreferencesHelper {
     return preferences.getString(pageTwoInformation);
   }
 
+  Future<void> savePaidCreditStatus(bool value) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool('CREDIT', value);
+  }
 
-
-
-
-
+  Future<bool?> getPaidCreditStatus() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getBool('CREDIT');
+  }
 }

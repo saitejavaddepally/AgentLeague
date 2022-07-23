@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_button.dart';
@@ -108,6 +110,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
         ? getPlotStatus()
         : SharedPreferencesHelper()
             .saveCurrentPlot("plot_${widget.dataToEdit!['plotNo']}");
+
     super.initState();
   }
 
@@ -120,8 +123,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
 
   @override
   Widget build(BuildContext context) {
-    print("data to edit");
-    print(widget.dataToEdit);
+    log(widget.dataToEdit.toString());
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -302,7 +304,7 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                 controller:
                                                     value.locationController,
                                                 readOnly: true,
-                                                borderradius: 10,
+                                                borderRadius: 10,
                                                 validator:
                                                     value.validateLocation,
                                                 onTap: () async {
@@ -463,6 +465,10 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         "latitude": _latitude,
                                                         "longitude": _longitude
                                                       });
+
+                                                      print("data is $data");
+                                                      print(
+                                                          "widget data is  ${widget.dataToEdit}");
                                                       Navigator.pushNamed(
                                                           context,
                                                           RouteName.amenities,
@@ -482,11 +488,12 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         "latitude": _latitude,
                                                         "longitude": _longitude
                                                       });
-                                                      Navigator.pushReplacementNamed(
-                                                          context,
-                                                          RouteName
-                                                              .postYourPropertyPageTwo,
-                                                          arguments: [
+                                                      Navigator
+                                                          .pushReplacementNamed(
+                                                              context,
+                                                              RouteName
+                                                                  .postYourPropertyPageTwo,
+                                                              arguments: [
                                                             data,
                                                             widget.dataToEdit
                                                           ]);

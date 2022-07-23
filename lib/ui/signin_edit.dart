@@ -34,7 +34,8 @@ class _SignInEditState extends State<SignInEdit> {
       CustomContainer(
         margin: const EdgeInsets.all(14),
         padding: const EdgeInsets.all(12.0),
-        height: 400,
+        width: 33,
+        // height: 400,
         color: CustomColors.dark,
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(

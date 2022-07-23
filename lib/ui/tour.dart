@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
+import '../helper/shared_preferences.dart';
 import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 class Tour extends StatefulWidget {
-  const Tour({Key? key}) : super(key: key);
+  final List<dynamic> videos;
+
+  const Tour({Key? key, required this.videos}) : super(key: key);
 
   @override
   State<Tour> createState() => _TourState();
@@ -15,10 +18,23 @@ class Tour extends StatefulWidget {
 
 class _TourState extends State<Tour> {
   late List res;
+
+  Future<List> getVideos() async {
+    String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
+    List videos = widget.videos[int.parse(currentPlot!) - 1][0]['videos'];
+    List videoNames =
+        widget.videos[int.parse(currentPlot) - 1][0]['videoNames'];
+
+    return [
+      {"videos": videos},
+      {"videoNames": videoNames}
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: FirestoreDataProvider().getFirestoreFiles("VIDEOS"),
+      future: getVideos(),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const SpinKitThreeBounce(
@@ -32,9 +48,10 @@ class _TourState extends State<Tour> {
 
         return Scaffold(
             body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(children: [
+                child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -55,18 +72,22 @@ class _TourState extends State<Tour> {
                       letterSpacing: -0.15,
                       color: Colors.white.withOpacity(0.87))),
               const SizedBox(height: 20),
+              const SizedBox(height: 20),
               Flexible(
                   child: ListView.builder(
-                      itemCount: res.length,
+                      itemCount: res[0]['videos'].length,
                       itemBuilder: (context, index) {
-                        var videoLink =
-                            res[index]['value'];
+                        var videoLink = res[0]['videos'][index];
 
-                        return VideoPlayPage(videoLink: videoLink, videoName: res[index]['name']);
+                        return (videoLink != null || videoLink != "null")
+                            ? VideoPlayPage(
+                                videoLink: videoLink,
+                                videoName: res[1]['videoNames'][index])
+                            : const SizedBox();
                       }))
-            ]),
+            ],
           ),
-        ));
+        )));
       },
     );
   }
@@ -76,7 +97,9 @@ class VideoPlayPage extends StatefulWidget {
   final String videoLink;
   final String videoName;
 
-  const VideoPlayPage({required this.videoLink, required this.videoName, Key? key}) : super(key: key);
+  const VideoPlayPage(
+      {required this.videoLink, required this.videoName, Key? key})
+      : super(key: key);
 
   @override
   State<VideoPlayPage> createState() => _VideoPlayPageState();

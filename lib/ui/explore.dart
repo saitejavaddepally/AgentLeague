@@ -96,7 +96,7 @@ class ForYou extends StatelessWidget {
             const CustomTitle(text: "Escrow Account :"),
             const SizedBox(height: 10),
             HomeContainer(
-                text: "Don’t worry about your real estate commision any more.",
+                text: "Don’t worry about your real estate commission any more.",
                 isSecondText: true,
                 text2:
                     'we help you to legalize your sale with an escrow account to guarantee your commission',
@@ -104,7 +104,10 @@ class ForYou extends StatelessWidget {
                 containerColor: HexColor('D5FFFA'),
                 buttonText: "What is Escrow",
                 buttonWidth: 140,
-                onButtonClick: () {}),
+                onButtonClick: () {
+                  Navigator.pushNamed(
+                      context, RouteName.escrow);
+                }),
             const SizedBox(height: 25),
             const CustomTitle(text: "Personal loan :"),
             const SizedBox(height: 10),

@@ -4,7 +4,11 @@ import 'package:agent_league/components/home_container.dart';
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
+import 'package:agent_league/ui/edit_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import '../Services/upload_properties_to_firestore.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -14,6 +18,39 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool loading = false;
+  var name = '';
+  var phone = '';
+  String? profileUrl = '';
+
+  Future asyncTriggerFunction() async {
+    List data = await getProfileInformation();
+    setState(() {
+      name = data[0];
+      phone = data[1];
+      profileUrl = data[2];
+    });
+  }
+
+  Future getProfileInformation() async {
+    Map data = await UploadPropertiesToFirestore().getProfileInformation();
+    String? profileUrl =
+        await UploadPropertiesToFirestore().getProfilePicture();
+    return [data['name'], data['phone'], profileUrl];
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      loading = true;
+    });
+    asyncTriggerFunction();
+    setState(() {
+      loading = false;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,21 +64,29 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 54,
-                          width: 54,
-                          decoration: BoxDecoration(
-                              boxShadow: shadow1,
-                              shape: BoxShape.circle,
-                              border:
-                                  Border.all(color: Colors.orange, width: 1.5)),
-                          child: Image.asset("assets/profile.png",
-                              fit: BoxFit.fill),
-                        ),
-                        const SizedBox(width: 10),
-                        RichText(
+                      child: Row(children: [
+                    Container(
+                      height: 54,
+                      width: 54,
+                      decoration: BoxDecoration(
+                          boxShadow: shadow1,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.orange, width: 1.5)),
+                      child: (profileUrl != '')
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(50.0),
+                              child: Image.network(
+                                profileUrl!,
+                                height: 40.0,
+                                width: 40.0,
+                                fit: BoxFit.fill,
+                              ),
+                            )
+                          : Image.asset("assets/profile.png", fit: BoxFit.fill),
+                    ),
+                    const SizedBox(width: 10),
+                    (!loading)
+                        ? RichText(
                             text: TextSpan(
                                 style: const TextStyle(
                                     height: 1.4,
@@ -49,15 +94,16 @@ class _ProfileState extends State<Profile> {
                                     fontSize: 14,
                                     letterSpacing: -0.15),
                                 children: [
-                              const TextSpan(text: "Kumar\n"),
-                              TextSpan(
-                                  text: "+91 93765 73647",
-                                  style: TextStyle(
-                                      color: Colors.white.withOpacity(0.54)))
-                            ])),
-                      ],
-                    ),
-                  ),
+                                TextSpan(
+                                    text: name.toString().toUpperCase() + "\n"),
+                                TextSpan(
+                                    text: phone,
+                                    style: TextStyle(
+                                        color: Colors.white.withOpacity(0.54)))
+                              ]))
+                        : const SizedBox(
+                            height: 20, child: Center(child: Text('Loading..')))
+                  ])),
                   CustomButton(
                           text: "close_round",
                           onClick: () {
@@ -89,7 +135,12 @@ class _ProfileState extends State<Profile> {
                   containerColor: const Color(0xFFC0D9FF),
                   buttonText: "Edit Profile",
                   buttonWidth: 112,
-                  onButtonClick: () {}),
+                  onButtonClick: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const EditProfile()));
+                  }),
               const SizedBox(height: 20),
               HomeContainer(
                   text:
@@ -110,7 +161,9 @@ class _ProfileState extends State<Profile> {
                   buttonText: "Support",
                   buttonTextColor: const Color(0xFF21293A),
                   buttonColor: const Color(0xFFF3F4F6),
-                  onButtonClick: () {}),
+                  onButtonClick: () {
+                    Navigator.pushNamed(context, RouteName.help);
+                  }),
               const SizedBox(height: 20),
               HomeContainer(
                   text:
@@ -120,7 +173,9 @@ class _ProfileState extends State<Profile> {
                   containerColor: const Color(0xFFF66A83),
                   buttonWidth: 100,
                   buttonText: "We Hear",
-                  onButtonClick: () {}),
+                  onButtonClick: () {
+                    Navigator.pushNamed(context, RouteName.weHear);
+                  }),
               const SizedBox(height: 20),
               HomeContainer(
                   text:
