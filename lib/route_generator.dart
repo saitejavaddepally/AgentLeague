@@ -89,12 +89,7 @@ class RouteGenerator {
           }
           return _errorRoute();
         }
-        return PageTransition(
-            child: BottomBar(
-              isIndexGiven: false,
-              index: 0,
-            ),
-            type: PageTransitionType.leftToRight);
+
       case RouteName.weHear:
         return PageTransition(
             child: const WeHear(), type: PageTransitionType.leftToRight);

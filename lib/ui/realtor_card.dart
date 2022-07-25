@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:agent_league/Services/firestore_crud_operations.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:agent_league/ui/emi.dart';
 import 'package:agent_league/ui/gallery.dart';
@@ -305,8 +307,14 @@ class _RealtorPageState extends State<RealtorPage> {
                                   await FirestoreDataProvider()
                                       .deletePlot(int.parse(currPlot));
                                   await EasyLoading.showSuccess("Deleted");
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      RouteName.bottomBar, (r) => false);
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BottomBar(
+                                              index: 0,
+                                            )),
+                                    (route) => false,
+                                  );
                                 },
                                 child: const Text("Yes"),
                               ),
@@ -393,7 +401,8 @@ class _RealtorPageState extends State<RealtorPage> {
                                   List data = plotPagesInformation[currentPage];
                                   Map<String, dynamic> data1 = data[0];
 
-                                  log("dxdiag" + videoNames.toString() +
+                                  log("dxdiag" +
+                                      videoNames.toString() +
                                       docNames.toString());
 
                                   await SharedPreferencesHelper()
@@ -453,24 +462,21 @@ class _RealtorPageState extends State<RealtorPage> {
                                   TextButton(
                                       onPressed: () async {
                                         var currPlot =
-                                            plotPagesInformation[currentPage][1]
-                                                    ['plotNo']
+                                            plotPagesInformation[currentPage][0]
+                                                    ['plotNumber']
                                                 .toString();
-                                        String? userId =
-                                            await SharedPreferencesHelper()
-                                                .getUserId();
-
+                                        log("plot no is $currPlot");
+                                        EasyLoading.show(
+                                            status: "Please wait...");
                                         Navigator.pop(context);
 
-                                        EasyLoading.show(
-                                            maskType: EasyLoadingMaskType.black,
-                                            indicator:
-                                                const Text("Please Wait..."));
-                                        await FirestoreDataProvider()
-                                            .uploadPropertyToPropertyBox(
-                                                currPlot, userId!);
+                                        await FirestoreCrudOperations()
+                                            .updatePlotInformation(1, {
+                                          "box_enabled": 1,
+                                        });
                                         EasyLoading.dismiss();
-                                        data = 1;
+                                        plotPagesInformation[currentPage][0]
+                                            ['box_enabled'] = 1;
                                       },
                                       child: const Text('Yes')),
                                   TextButton(

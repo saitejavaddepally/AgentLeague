@@ -3,6 +3,7 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/post_your_property.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,6 +30,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _referralCodeController = TextEditingController();
   bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -73,7 +75,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         ),
                         CustomTextField(
                           controller: _nameController,
-                          borderradius: 30,
+                          borderRadius: 30,
                           hint: "Enter your name",
                           onChanged: (value) {
                             name = value;
@@ -114,7 +116,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               }
                             }
                           },
-                          borderradius: 30,
+                          borderRadius: 30,
                           hint: 'Choose location',
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -128,7 +130,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         ),
                         CustomTextField(
                           controller: _referralCodeController,
-                          borderradius: 30,
+                          borderRadius: 30,
                           hint: "Referral Code (optional)",
                           onChanged: (value) {
                             referralCode = value;
@@ -150,8 +152,13 @@ class _SignUpFormState extends State<SignUpForm> {
                                                 _locationController.text);
                                             setState(() => isLoading = false);
 
-                                            Navigator.pushNamed(
-                                                context, RouteName.bottomBar);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BottomBar(
+                                                          index: 0,
+                                                        )));
                                           }
                                         },
                                         width:
@@ -187,8 +194,14 @@ class _SignUpFormState extends State<SignUpForm> {
         {
           'name': name,
           'uid': userId,
-          'location': location,
+          'freeCredit': "1",
           'phone': phoneNumber,
+          'counter': 0,
+          'location': '',
+          'ref_code': '',
+          'email': '',
+          'agent_exp': '',
+          'profile_pic': '',
         },
       );
     } catch (e) {

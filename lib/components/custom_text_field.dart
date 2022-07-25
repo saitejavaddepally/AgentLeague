@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class CustomTextField extends StatefulWidget {
+class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final Widget? icon;
   final void Function(String)? onChanged;
@@ -35,11 +34,7 @@ class CustomTextField extends StatefulWidget {
       Key? key})
       : super(key: key);
 
-  @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
-}
 
-class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -66,7 +61,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         filled: true,
         border: OutlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(borderradius)),
+            borderRadius: BorderRadius.circular(borderRadius)),
 
       ),
     );

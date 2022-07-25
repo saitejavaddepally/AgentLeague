@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:agent_league/Services/auth_methods.dart';
@@ -394,13 +395,17 @@ class _AmentiesState extends State<Amenties> {
                                                                         '"You have used your free credit.."')));
 
                                                         Navigator
-                                                            .pushNamedAndRemoveUntil(
-                                                                context,
-                                                                RouteName
-                                                                    .bottomBar,
-                                                                (route) =>
-                                                                    false);
-
+                                                            .pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      BottomBar(
+                                                                        index:
+                                                                            0,
+                                                                      )),
+                                                          (route) => false,
+                                                        );
                                                         await EasyLoading
                                                             .showSuccess(
                                                                 'Thank you');
@@ -483,31 +488,43 @@ class _AmentiesState extends State<Amenties> {
                                                       await EasyLoading.showSuccess(
                                                           'Saved your property!');
                                                       Navigator
-                                                          .pushNamedAndRemoveUntil(
+                                                          .pushAndRemoveUntil(
                                                         context,
-                                                        (!isEdited)
-                                                            ? RouteName
-                                                                .bottomBar
-                                                            // .propertyDigitalization
-                                                            : RouteName
-                                                                .bottomBar,
-                                                        (r) => false,
-                                                        arguments: {
-                                                          "propData":
-                                                              widget.data[0],
-                                                          "media": {
-                                                            'picture':
-                                                                _images[0],
-                                                            'images': _images,
-                                                            'videos': _videos,
-                                                            'docs': _docs,
-                                                            'docNames':
-                                                                _docNames,
-                                                            'videoNames':
-                                                                _videoNames
-                                                          }
-                                                        },
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                BottomBar(
+                                                                  index:
+                                                                  0,
+                                                                )),
+                                                            (route) => false,
                                                       );
+                                                      // Navigator
+                                                      //     .pushNamedAndRemoveUntil(
+                                                      //   context,
+                                                      //   (!isEdited)
+                                                      //       ? RouteName
+                                                      //           // .bottomBar
+                                                      //       .propertyDigitalization
+                                                      //       : RouteName
+                                                      //           .bottomBar,
+                                                      //   (r) => false,
+                                                      //   arguments: {
+                                                      //     "propData":
+                                                      //         widget.data[0],
+                                                      //     "media": {
+                                                      //       'picture':
+                                                      //           _images[0],
+                                                      //       'images': _images,
+                                                      //       'videos': _videos,
+                                                      //       'docs': _docs,
+                                                      //       'docNames':
+                                                      //           _docNames,
+                                                      //       'videoNames':
+                                                      //           _videoNames
+                                                      //     }
+                                                      //   },
+                                                      // );
                                                     },
                                                     width: 102,
                                                     height: 40,

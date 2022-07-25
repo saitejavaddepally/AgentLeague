@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                             child: Container(
                           margin: const EdgeInsets.only(right: 5),
                           child: CustomTextField(
-                            borderradius: 30,
+                            borderRadius : 30,
                             hint: "Enter Mobile Number",
                             keyboardType: TextInputType.number,
                             controller: _phoneNumberController,
