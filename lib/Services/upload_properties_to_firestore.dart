@@ -140,7 +140,16 @@ class UploadPropertiesToFirestore {
             .doc(allData[0])
             .update(data);
       } else {
-        await ref.doc(value).collection("pages_info").add(data);
+        CollectionReference collectionReference =
+            ref.doc(value).collection("pages_info");
+
+        collectionReference.add(data);
+        QuerySnapshot plotDocuments = await collectionReference.get();
+        final allData = plotDocuments.docs.map((doc) => doc.id).toList();
+        print("ID is ${allData[0]}");
+        FirestoreCrudOperations().updatePlotInformation(
+            int.parse(value.toString().substring(5)),
+            {"documentId": allData[0]});
       }
       print("I am Done here");
     });
@@ -248,5 +257,4 @@ class UploadPropertiesToFirestore {
     }
     return "Updated $type successfully";
   }
-
 }

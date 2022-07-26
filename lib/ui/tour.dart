@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agent_league/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,9 +23,10 @@ class _TourState extends State<Tour> {
 
   Future<List> getVideos() async {
     String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
-    List videos = widget.videos[int.parse(currentPlot!) - 1][0]['videos'];
+    List videos = widget.videos[int.parse(currentPlot!)][0]['videos'];
     List videoNames =
-        widget.videos[int.parse(currentPlot) - 1][0]['videoNames'];
+        widget.videos[int.parse(currentPlot)][0]['videoNames'];
+    log("data is $videoNames");
 
     return [
       {"videos": videos},

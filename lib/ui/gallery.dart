@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -35,7 +37,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Future<void> getImages() async {
     String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
     print("current plot is $currentPlot");
-    res = widget.images[int.parse(currentPlot!)-1][0]['images'];
+    res = widget.images[int.parse(currentPlot!)][0]['images'];
+    print("RESult is $res");
   }
 
   Future urlToFile(String imageUrl) async {

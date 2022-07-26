@@ -391,13 +391,13 @@ class _SellScreenState extends State<SellScreen> {
                                 price: plotPagesInformation[i][0]['price'],
                                 possession: plotPagesInformation[i][0]
                                     ['possessionStatus'],
+                                propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'].toString(),
                                 onClick: () {
                                   SharedPreferencesHelper()
                                       .saveCurrentPage(i.toString());
                                   SharedPreferencesHelper().saveNumProperties(
                                       plotPagesInformation.length.toString());
-                                  SharedPreferencesHelper()
-                                      .saveListOfCards(plotPagesInformation);
+
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
