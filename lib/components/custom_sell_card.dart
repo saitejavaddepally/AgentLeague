@@ -13,6 +13,7 @@ class CustomSellCard extends StatelessWidget {
   final String location;
   final String price;
   final String possession;
+  final String propertyId;
   final Function() onClick;
 
   const CustomSellCard(
@@ -21,6 +22,7 @@ class CustomSellCard extends StatelessWidget {
       required this.category,
       required this.propertyType,
       required this.size,
+      required this.propertyId,
       required this.location,
       required this.price,
       required this.possession,
@@ -47,7 +49,7 @@ class CustomSellCard extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: Container(
-                        height: 180,
+                        // height: 180,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(17.0),
@@ -77,7 +79,7 @@ class CustomSellCard extends StatelessWidget {
                                 flex: 2,
                                 child: Container(
                                     width: 100,
-                                    height: 170,
+                                    // height: 170,
                                     padding: const EdgeInsets.all(8),
                                     // decoration:
                                     //     BoxDecoration(border: Border.all()),
@@ -106,6 +108,10 @@ class CustomSellCard extends StatelessWidget {
                                           CustomContainerText(
                                                   text1: 'Possession',
                                                   text2: possession)
+                                              .use(),
+                                          CustomContainerText(
+                                              text1: 'Property ID',
+                                              text2: propertyId.toString())
                                               .use(),
                                         ],
                                       ),

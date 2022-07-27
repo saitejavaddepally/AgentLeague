@@ -600,6 +600,8 @@ class _PriceState extends State<Price> {
                                 location: info[i][0]['location'],
                                 price: info[i][0]['price'],
                                 possession: info[i][0]['possessionStatus'],
+                                propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'],
+
                                 onClick: () {
                                   SharedPreferencesHelper()
                                       .saveCurrentPage(i.toString());

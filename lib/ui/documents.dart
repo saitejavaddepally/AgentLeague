@@ -22,8 +22,8 @@ class _DocumentsState extends State<Documents> {
 
   Future<List> getDocuments() async {
     String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
-    List docs = widget.documents[int.parse(currentPlot!)-1][0]['docs'];
-    List docNames = widget.documents[int.parse(currentPlot)-1][0]['docNames'];
+    List docs = widget.documents[int.parse(currentPlot!)][0]['docs'];
+    List docNames = widget.documents[int.parse(currentPlot)][0]['docNames'];
 
     return [
       {"docs": docs},

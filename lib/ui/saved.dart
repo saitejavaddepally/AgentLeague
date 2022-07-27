@@ -119,7 +119,9 @@ class _SavedState extends State<Saved> {
                         size: plotPagesInformation[i][0]['size'],
                         location: plotPagesInformation[i][0]['location'],
                         price: plotPagesInformation[i][0]['price'],
-                        possession: plotPagesInformation[i][0]
+                  propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'],
+
+                  possession: plotPagesInformation[i][0]
                             ['possessionStatus'],
                         onClick: () async {
                           await SharedPreferencesHelper().saveCurrentPlot(

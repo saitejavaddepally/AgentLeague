@@ -62,8 +62,8 @@ class _RealtorCardState extends State<RealtorCard> {
         currentPlotFromPreviousPage =
             plotPagesInformation[currentPage][0]['plotNumber'].toString();
       });
-      SharedPreferencesHelper()
-          .saveCurrentPage(currentPlotFromPreviousPage.toString());
+      // SharedPreferencesHelper()
+      //     .saveCurrentPage(currentPlotFromPreviousPage.toString());
       controller = PageController(initialPage: int.parse(value!));
     });
     Future.delayed(const Duration(seconds: 0), () {
@@ -98,7 +98,7 @@ class _RealtorCardState extends State<RealtorCard> {
                   var currentPlotFromList =
                       plotPagesInformation[page][0]['plotNumber'];
                   SharedPreferencesHelper()
-                      .saveCurrentPage(currentPlotFromList.toString());
+                      .saveCurrentPage(page.toString());
                   setState(() {
                     currentPage = page;
                   });
@@ -132,13 +132,7 @@ class RealtorPage extends StatefulWidget {
 class _RealtorPageState extends State<RealtorPage> {
   @override
   void initState() {
-    // controller?.addListener(() {
-    //   var current = (controller?.page)!;
-    //
-    //   currentPage = current.toInt();
-    //   profileImage =
-    //       plotPagesInformation[currentPage + 1][0]['plotProfilePicture'];
-    // });
+
     super.initState();
   }
 
