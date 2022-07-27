@@ -186,10 +186,7 @@ class _SignUpFormState extends State<SignUpForm> {
       User? _user = FirebaseAuth.instance.currentUser;
       String? userId = _user?.uid;
       String? phoneNumber = _user?.phoneNumber;
-      print(userId);
-      print(phoneNumber);
-      print(name);
-      print(location);
+     
       await FirebaseFirestore.instance.collection('users').doc(userId).set(
         {
           'name': name,
@@ -197,7 +194,7 @@ class _SignUpFormState extends State<SignUpForm> {
           'freeCredit': "1",
           'phone': phoneNumber,
           'counter': 0,
-          'location': '',
+          'location': location,
           'ref_code': '',
           'email': '',
           'agent_exp': '',

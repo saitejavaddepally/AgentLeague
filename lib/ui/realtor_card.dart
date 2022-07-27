@@ -7,14 +7,11 @@ import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:agent_league/ui/emi.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/tour.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../theme/colors.dart';
 import 'documents.dart';
 
@@ -52,7 +49,6 @@ class _RealtorCardState extends State<RealtorCard> {
     setState(() {
       plotPagesInformation = widget.plotPagesInformation;
     });
-    print("information is $plotPagesInformation");
     Future.delayed(const Duration(seconds: 0), () {
       SharedPreferencesHelper().getUserId().then((value) {
         setState(() {
@@ -76,10 +72,6 @@ class _RealtorCardState extends State<RealtorCard> {
         return numberOfProperties;
       }).then((value) {
         for (var i = 0; i < int.parse(numberOfProperties); i++) {
-          print(plotPagesInformation[i][0]['plotNumber'].toString());
-          print(plotPagesInformation[i][0]['plotProfilePicture']);
-          print(plotPagesInformation[i][0]['images']);
-          print(plotPagesInformation[i][0]['videos']);
           setState(() {
             pages.add(RealtorPage(
               plotNumber: plotPagesInformation[i][0]['plotNumber'].toString(),
@@ -299,7 +291,6 @@ class _RealtorPageState extends State<RealtorPage> {
                               TextButton(
                                 onPressed: () async {
                                   var currPlot = widget.plotNumber;
-                                  print("delete plot $currPlot");
                                   await EasyLoading.show(
                                     status: 'Deleting.. please wait',
                                     maskType: EasyLoadingMaskType.black,
@@ -414,7 +405,6 @@ class _RealtorPageState extends State<RealtorPage> {
 
                                   await EasyLoading.dismiss();
                                   Navigator.pop(context);
-                                  print(currPlot);
                                   Navigator.pushReplacementNamed(context,
                                       RouteName.postYourPropertyPageOne,
                                       arguments: data1
@@ -466,15 +456,19 @@ class _RealtorPageState extends State<RealtorPage> {
                                                     ['plotNumber']
                                                 .toString();
                                         log("plot no is $currPlot");
-                                        EasyLoading.show(
+                                        await EasyLoading.show(
                                             status: "Please wait...");
                                         Navigator.pop(context);
 
                                         await FirestoreCrudOperations()
-                                            .updatePlotInformation(1, {
+                                            .updatePlotInformation(
+                                                int.parse(currPlot), {
                                           "box_enabled": 1,
                                         });
-                                        EasyLoading.dismiss();
+                                        await EasyLoading.showSuccess(
+                                            "Property Added to property box",
+                                            duration:
+                                                const Duration(seconds: 3));
                                         plotPagesInformation[currentPage][0]
                                             ['box_enabled'] = 1;
                                       },
@@ -490,7 +484,7 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Image.asset('assets/property.png')),
             const Spacer(),
             GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/leads_box'),
+              onTap: () {},
               child: Container(
                 height: 40,
                 width: 40,

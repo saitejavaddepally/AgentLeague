@@ -120,14 +120,14 @@ class FirestoreDataProvider {
         .doc('plot_$plotNo')
         .collection('pages_info');
     Map res = {};
-    await ref.get().then((val) async {
+    await ref.get().then((QuerySnapshot<Object?> val) async {
       if (val.docs.isNotEmpty) {
         res = val.docs[0].data() as Map;
-        detailsOfPages.add(res);
+        Map plotId = {'plot_id': val.docs[0].id};
+
+        detailsOfPages.add({...res, ...plotId});
       }
     });
-
-    print(detailsOfPages);
 
     return detailsOfPages;
   }
