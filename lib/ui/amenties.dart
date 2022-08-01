@@ -9,6 +9,7 @@ import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_title.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/amenities_provider.dart';
 import 'package:agent_league/route_generator.dart';
@@ -329,17 +330,6 @@ class _AmentiesState extends State<Amenties> {
                                             CustomButton(
                                                     text: 'Next',
                                                     onClick: () async {
-                                                      print("docs are " +
-                                                          _docs.toString());
-                                                      print("doc names are " +
-                                                          _docNames.toString());
-                                                      print("videos are " +
-                                                          _videos.toString());
-                                                      print("videoNames are " +
-                                                          _videoNames
-                                                              .toString());
-                                                      print("images are " +
-                                                          _images.toString());
 
                                                       EasyLoading.show();
                                                       String credits =
@@ -348,17 +338,15 @@ class _AmentiesState extends State<Amenties> {
                                                       bool? ifPaid =
                                                           await SharedPreferencesHelper()
                                                               .getPaidCreditStatus();
-                                                      print("check if $ifPaid");
                                                       EasyLoading.dismiss();
                                                       int freeCreditCurrent =
                                                           int.parse(credits);
-                                                      print(freeCreditCurrent);
                                                       if (freeCreditCurrent !=
                                                               0 &&
                                                           !ifPaid!) {
                                                         await EasyLoading.show(
                                                             status:
-                                                                'Please wait..');
+                                                                '0%');
                                                         await UploadPropertiesToFirestore()
                                                             .uploadData(
                                                                 _images,
@@ -417,8 +405,6 @@ class _AmentiesState extends State<Amenties> {
                                                               'Please wait..');
 
                                                       if (isEdited) {
-                                                        print(
-                                                            "I am gonna delete!");
                                                         String? userId;
                                                         await SharedPreferencesHelper()
                                                             .getUserId()
@@ -452,26 +438,7 @@ class _AmentiesState extends State<Amenties> {
                                                                   FieldValue
                                                                       .delete(),
                                                             });
-                                                            List data =
-                                                                (await FirestoreDataProvider()
-                                                                    .getPlotPagesInformation(
-                                                                        number));
-                                                            // print("result is " +
-                                                            //     data.toString());
-                                                            // await FirestoreDataProvider()
-                                                            //     .deleteImages(
-                                                            //         userId!,
-                                                            //         number);
-                                                            // await FirestoreDataProvider()
-                                                            //     .deleteVideos(
-                                                            //         userId!,
-                                                            //         number);
-                                                            // await FirestoreDataProvider()
-                                                            //     .deleteDocs(
-                                                            //         userId!,
-                                                            //         number);
-                                                            // print(
-                                                            //     "Its deleted!");
+
                                                           });
                                                         });
                                                       }
@@ -499,32 +466,6 @@ class _AmentiesState extends State<Amenties> {
                                                                 )),
                                                             (route) => false,
                                                       );
-                                                      // Navigator
-                                                      //     .pushNamedAndRemoveUntil(
-                                                      //   context,
-                                                      //   (!isEdited)
-                                                      //       ? RouteName
-                                                      //           // .bottomBar
-                                                      //       .propertyDigitalization
-                                                      //       : RouteName
-                                                      //           .bottomBar,
-                                                      //   (r) => false,
-                                                      //   arguments: {
-                                                      //     "propData":
-                                                      //         widget.data[0],
-                                                      //     "media": {
-                                                      //       'picture':
-                                                      //           _images[0],
-                                                      //       'images': _images,
-                                                      //       'videos': _videos,
-                                                      //       'docs': _docs,
-                                                      //       'docNames':
-                                                      //           _docNames,
-                                                      //       'videoNames':
-                                                      //           _videoNames
-                                                      //     }
-                                                      //   },
-                                                      // );
                                                     },
                                                     width: 102,
                                                     height: 40,

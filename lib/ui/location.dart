@@ -12,7 +12,8 @@ import '../components/neu_circular_button.dart';
 import '../theme/colors.dart';
 
 class LocationScreen extends StatefulWidget {
-  const LocationScreen({Key? key}) : super(key: key);
+  final int currentPage;
+  const LocationScreen({Key? key, required this.currentPage}) : super(key: key);
 
   @override
   State<LocationScreen> createState() => _LocationScreenState();
@@ -30,14 +31,15 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   void initState() {
+    print("Location current page is ${widget.currentPage}");
     super.initState();
   }
 
   Future<Map<String, dynamic>> getPlotLocation() async {
-    var number = await SharedPreferencesHelper().getCurrentPage();
+    var number = widget.currentPage;
     print("number is $number");
     List data = await FirestoreDataProvider()
-        .getPlotPagesInformation(int.parse(number!));
+        .getPlotPagesInformation(number+1);
     Map locationData = data[0];
     double _lat = locationData['latitude'];
     double _long = locationData['longitude'];

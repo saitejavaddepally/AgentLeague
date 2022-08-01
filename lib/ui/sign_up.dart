@@ -198,7 +198,7 @@ class _SignUpFormState extends State<SignUpForm> {
           'phone': phoneNumber,
           'counter': 0,
           'location': '',
-          'ref_code': '',
+          'ref_code': userId?.substring(0, 6).toUpperCase(),
           'email': '',
           'agent_exp': '',
           'profile_pic': '',

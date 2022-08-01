@@ -356,6 +356,7 @@ class _EditProfileState extends State<EditProfile> {
                                             Flexible(
                                               child: CustomTextField(
                                                 controller: refController,
+                                                readOnly: true,
                                               ),
                                             ),
                                           ],

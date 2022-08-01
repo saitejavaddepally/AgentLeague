@@ -1,20 +1,34 @@
 import 'package:agent_league/components/custom_title.dart';
+import 'package:agent_league/provider/property_upload_provider.dart';
 import 'package:agent_league/provider/upload_provider.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_button.dart';
 import '../theme/colors.dart';
+import 'Home/bottom_navigation.dart';
 
 class UploadsScreen extends StatefulWidget {
-  const UploadsScreen({Key? key}) : super(key: key);
+  final Map projectInfo;
+  const UploadsScreen({Key? key, required this.projectInfo}) : super(key: key);
 
   @override
   State<UploadsScreen> createState() => _UploadsScreenState();
 }
 
 class _UploadsScreenState extends State<UploadsScreen> {
+  late List<dynamic> _images = [];
+  late List<dynamic> _docs = [];
+  late List<dynamic> _videos = [];
+  @override
+  void initState() {
+    // TODO: implement
+    print("The data is ${widget.projectInfo}");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -37,7 +51,23 @@ class _UploadsScreenState extends State<UploadsScreen> {
             const SizedBox(width: 20),
             CustomButton(
               text: 'Next',
-              onClick: () {},
+              onClick: () async {
+                await PropertyUploadProvider().uploadProject(widget.projectInfo, _images, _videos, _docs).then((value) {
+                  Navigator
+                      .pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder:
+                            (context) =>
+                            BottomBar(
+                              index:
+                              0,
+                            )),
+                        (route) => false,
+                  );
+                });
+
+              },
               color: HexColor('FD7E0E'),
               width: 82,
               height: 40,
@@ -72,6 +102,9 @@ class _UploadsScreenState extends State<UploadsScreen> {
                               imageName: 'Image $i',
                               onTap: () {
                                 value.pickImage(i);
+                                _images = value.images;
+                                print(
+                                    "values are ${value.images}");
                               },
                             ))
                         ],
@@ -121,6 +154,9 @@ class _UploadsScreenState extends State<UploadsScreen> {
                               : Image.asset('assets/picker.png'),
                           onTap: () {
                             value.pickVideo(i);
+                            _videos = value.videos;
+                            print(
+                                "values are ${value.videos}");
                           },
                         )),
                     ],
@@ -151,6 +187,9 @@ class _UploadsScreenState extends State<UploadsScreen> {
                               : Image.asset('assets/picker.png'),
                           onTap: () {
                             value.pickPdf(i);
+                            _docs = value.docs;
+                            print(
+                                "values are ${value.docs}");
                           },
                         )),
                     ],

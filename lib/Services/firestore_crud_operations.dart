@@ -23,4 +23,13 @@ class FirestoreCrudOperations {
   }
 
   deletePlotInformation() {}
+
+
+  Future<void> updateProjectInformation(String projectId, Map<String, dynamic> data) async{
+    DocumentReference ref;
+    ref = FirebaseFirestore.instance
+        .collection("projects")
+        .doc(projectId);
+    await ref.update(data);
+  }
 }

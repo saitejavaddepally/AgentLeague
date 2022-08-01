@@ -91,11 +91,9 @@ class AmenitiesProvider extends ChangeNotifier {
 }
 
 getFileSize(File file) {
-  final bytes = file.readAsBytesSync().lengthInBytes;
-  final kb = bytes / 1024;
-  final mb = kb / 1024;
-
-  return mb;
+  int sizeInBytes = file.lengthSync();
+  double sizeInMb = sizeInBytes / (1024 * 1024);
+  return sizeInMb;
 }
 
 class PropertyPhotosProvider extends ChangeNotifier {
