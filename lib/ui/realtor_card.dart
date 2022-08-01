@@ -9,6 +9,7 @@ import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/emi.dart';
 import 'package:agent_league/ui/gallery.dart';
+import 'package:agent_league/ui/search_by.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -97,8 +98,7 @@ class _RealtorCardState extends State<RealtorCard> {
                 onPageChanged: (int page) async {
                   var currentPlotFromList =
                       plotPagesInformation[page][0]['plotNumber'];
-                  SharedPreferencesHelper()
-                      .saveCurrentPage(page.toString());
+                  SharedPreferencesHelper().saveCurrentPage(page.toString());
                   setState(() {
                     currentPage = page;
                   });
@@ -132,7 +132,6 @@ class RealtorPage extends StatefulWidget {
 class _RealtorPageState extends State<RealtorPage> {
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -478,7 +477,13 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Image.asset('assets/property.png')),
             const Spacer(),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                var currPlot = widget.plotNumber;
+                final docId = plotPagesInformation[int.parse(currPlot) - 1][0]
+                    ['documentId'];
+                Navigator.pushNamed(context, RouteName.leadsBox,
+                    arguments: docId);
+              },
               child: Container(
                 height: 40,
                 width: 40,

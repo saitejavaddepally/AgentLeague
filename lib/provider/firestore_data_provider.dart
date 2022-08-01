@@ -8,6 +8,7 @@ class FirestoreDataProvider {
   final _user = FirebaseFirestore.instance.collection('users');
   final _chat = FirebaseFirestore.instance.collection('chats');
   final _leadsBox = FirebaseFirestore.instance.collection('leads_box');
+  final _sellPlots = FirebaseFirestore.instance.collection('sell_plots');
 
   List videos = [];
   List documents = [];
@@ -49,6 +50,35 @@ class FirestoreDataProvider {
     } else {
       return result;
     }
+  }
+
+  Future<List<List<String>>> getAllProperty() async {
+    List<String> _propertyData = [];
+    List<String> _propertyId = [];
+    String? uid = await AuthMethods().getUserId();
+    final _collRefStandlone = _sellPlots.doc(uid).collection('standlone');
+    final _querySnapPlot = await _collRefStandlone.get();
+    for (int i = 0; i < _querySnapPlot.docs.length; i++) {
+      final _plotNo = _querySnapPlot.docs[i].id;
+      final _querySnap =
+          await _collRefStandlone.doc(_plotNo).collection('pages_info').get();
+      final _doc = _querySnap.docs.first;
+      final _data = _doc.data();
+      final _propertyType = _data['propertyType'];
+      final _propertySize = _data['size'];
+      final _price = _data['price'];
+      final _id = _doc.id;
+
+      _propertyData.add("$_propertyType - $_propertySize - $_price/${i + 1}");
+      _propertyId.add(_id);
+    }
+
+    return [_propertyData..insert(0, "All/0"), _propertyId..insert(0, "")];
+  }
+
+  Future<String> getUserProfilePicture(String? uid) async {
+    final docSnap = await _user.doc(uid).get();
+    return docSnap.data()?['profile_pic'] as String;
   }
 
   Future<String> getLatestMessage(String friendUid) async {
@@ -125,7 +155,7 @@ class FirestoreDataProvider {
         res = val.docs[0].data() as Map;
         Map plotId = {'plot_id': val.docs[0].id};
 
-        detailsOfPages.add({...res, ...plotId});
+        detailsOfPages.add(res);
       }
     });
 
@@ -137,6 +167,17 @@ class FirestoreDataProvider {
     String? uid = await AuthMethods().getUserId();
     final _querySnap = await _leadsBox.doc(uid).collection('standlone').get();
 
+    return _querySnap.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getParticularLead(
+      String docId) async {
+    String? uid = await AuthMethods().getUserId();
+    final _querySnap = await _leadsBox
+        .doc(uid)
+        .collection('standlone')
+        .where('propertyId', isEqualTo: docId)
+        .get();
     return _querySnap.docs;
   }
 

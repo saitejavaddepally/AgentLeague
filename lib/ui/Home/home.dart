@@ -1,11 +1,9 @@
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../components/custom_button.dart';
-import '../../components/custom_title.dart';
 import '../../components/home_container.dart';
 import '../../helper/constants.dart';
 import '../../theme/colors.dart';
@@ -70,7 +68,8 @@ class _HomeState extends State<Home> {
                         type: 'static',
                         isDecorated: true,
                         onTap: () {
-                          Navigator.pushNamed(context, '/leads_box');
+                          Navigator.pushNamed(context, '/leads_box',
+                              arguments: null);
                         },
                       ),
                     ]),
@@ -179,9 +178,7 @@ class _HomeState extends State<Home> {
                           Image.asset("assets/digital.png"),
                           CustomButton(
                                   text: 'Go Digital',
-                                  onClick: () {
-
-                                  },
+                                  onClick: () {},
                                   color: HexColor('F3F4F6'),
                                   textColor: HexColor('21293A'),
                                   width: 109)

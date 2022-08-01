@@ -120,8 +120,14 @@ class RouteGenerator {
           return _errorRoute();
         }
       case RouteName.leadsBox:
-        return PageTransition(
-            child: const LeadBox(), type: PageTransitionType.leftToRight);
+        {
+          if (args is String?) {
+            return PageTransition(
+                child: LeadBox(docId: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.login:
         return PageTransition(
             child: const Login(), type: PageTransitionType.leftToRight);
