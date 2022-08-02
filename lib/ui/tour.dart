@@ -24,8 +24,7 @@ class _TourState extends State<Tour> {
   Future<List> getVideos() async {
     String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
     List videos = widget.videos[int.parse(currentPlot!)][0]['videos'];
-    List videoNames =
-        widget.videos[int.parse(currentPlot)][0]['videoNames'];
+    List videoNames = widget.videos[int.parse(currentPlot)][0]['videoNames'];
     log("data is $videoNames");
 
     return [
@@ -156,13 +155,16 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                             });
                           }
                         },
-                        child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          height: 250,
                           child: ClipRRect(
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10)),
-                              child: VideoPlayer(_controller)),
+                              child: InteractiveViewer(
+                                  maxScale: 4,
+                                  child: VideoPlayer(_controller))),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -176,7 +178,9 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                                     color: HexColor('1B1B1B'),
                                     letterSpacing: -0.15)),
                           ),
-                          Image.asset('assets/download.png'),
+                          GestureDetector(
+                              onTap: () {},
+                              child: Image.asset('assets/download.png')),
                           const SizedBox(width: 10),
                           Image.asset('assets/share.png'),
                           const SizedBox(width: 10)
@@ -186,7 +190,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                   ),
                   if (!_controller.value.isPlaying)
                     Padding(
-                      padding: const EdgeInsets.only(top: 60.0),
+                      padding: const EdgeInsets.only(top: 100.0),
                       child: Align(
                           alignment: Alignment.center,
                           child: GestureDetector(
