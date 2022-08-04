@@ -1,14 +1,21 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:agent_league/ui/Home/project.dart';
+import 'package:agent_league/ui/gallery.dart';
+import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../helper/constants.dart';
 import '../theme/colors.dart';
 import 'package:readmore/readmore.dart';
 
+import 'emi.dart';
+
 class ProjectExplorer extends StatefulWidget {
-  const ProjectExplorer({Key? key}) : super(key: key);
+  final Map projectDetails;
+
+  const ProjectExplorer({Key? key, required this.projectDetails})
+      : super(key: key);
 
   @override
   State<ProjectExplorer> createState() => _ProjectExplorerState();
@@ -16,6 +23,15 @@ class ProjectExplorer extends StatefulWidget {
 
 class _ProjectExplorerState extends State<ProjectExplorer> {
   CarouselController buttonCarouselController = CarouselController();
+
+  late Map data;
+
+  @override
+  void initState() {
+    data = widget.projectDetails;
+    print(data);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +51,9 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
               Row(children: [
                 Expanded(
                   child: CustomImage(
-                    height: 200,
+                    height: 220,
                     onTap: () {},
+                    image: data['images'][0],
                   ),
                 ),
               ]),
@@ -144,12 +161,14 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                     Page(
                       controller: buttonCarouselController,
                       pageNumber: 1,
-                      nameList: const ['Location', 'Gallery', 'Tour', 'Layout'],
+                      projectDetails: data,
+                      nameList: const ['location', 'Gallery', 'Tour', 'Layout'],
                     ),
                     Page(
                       controller: buttonCarouselController,
                       pageNumber: 2,
-                      nameList: const ['Layout', 'Emi', 'Realtor', 'Broucher'],
+                      projectDetails: data,
+                      nameList: const ['Layout', 'emi', 'Realtor', 'Broucher'],
                     )
                   ].map((page) {
                     return page;
@@ -196,12 +215,15 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
 class Page extends StatelessWidget {
   final CarouselController controller;
   final int pageNumber;
+  final Map projectDetails;
 
   final List nameList;
+
   const Page(
       {required this.controller,
       required this.pageNumber,
       required this.nameList,
+      required this.projectDetails,
       Key? key})
       : super(key: key);
 
@@ -233,7 +255,34 @@ class Page extends StatelessWidget {
                 text: i,
                 isTextUnder: true,
                 onTap: () {
-                  Navigator.pushNamed(context, '/' + i.toLowerCase());
+                  if (i.toString() == "Gallery") {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return GalleryScreen(info: {
+                        "projectDetails": projectDetails,
+                        "isProject": true
+                      });
+                    }));
+                  }
+                  else if (i.toString() == "Tour") {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                          return Tour(info: {
+                            "projectDetails": projectDetails,
+                            "isProject": true
+                          });
+                        }));
+                  }
+
+                  else if (i.toString() == "emi") {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                          return EMI(info: {
+                            "projectDetails": projectDetails,
+                            "isProject": true
+                          });
+                        }));
+                  }
                 }).use(),
           ),
         if (pageNumber == 1)
@@ -257,6 +306,7 @@ class Page extends StatelessWidget {
 class CustomText extends StatelessWidget {
   final String text1;
   final String text2;
+
   const CustomText({required this.text1, required this.text2, Key? key})
       : super(key: key);
 

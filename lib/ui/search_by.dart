@@ -603,17 +603,14 @@ class _PriceState extends State<Price> {
                                 propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'],
 
                                 onClick: () {
-                                  SharedPreferencesHelper()
-                                      .saveCurrentPage(i.toString());
-                                  SharedPreferencesHelper().saveNumProperties(
-                                      info.length.toString());
-                                  SharedPreferencesHelper()
-                                      .saveListOfCards(info);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => RealtorCard(
-                                              plotPagesInformation: info)));
+                                            plotPagesInformation:
+                                            plotPagesInformation,
+                                            currentPage: i,
+                                          )));
                                 },
                               ),
                           ],

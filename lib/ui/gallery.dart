@@ -11,9 +11,9 @@ import 'dart:io';
 import 'dart:math';
 
 class GalleryScreen extends StatefulWidget {
-  final List<dynamic> images;
+  final Map info;
 
-  const GalleryScreen({Key? key, required this.images}) : super(key: key);
+  const GalleryScreen({Key? key, required this.info}) : super(key: key);
 
   @override
   _GalleryScreenState createState() => _GalleryScreenState();
@@ -35,10 +35,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Future<void> getImages() async {
-    String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
-    print("current plot is $currentPlot");
-    res = widget.images[int.parse(currentPlot!)][0]['images'];
-    print("RESult is $res");
+    if (widget.info['isProject']) {
+      res = widget.info['projectDetails']['images'];
+    } else {
+      int currentPlot = widget.info['currentPage'];
+      res = widget.info['plotPagesInformation'][currentPlot][0]['images'];
+    }
   }
 
   Future urlToFile(String imageUrl) async {

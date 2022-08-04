@@ -205,7 +205,9 @@ class ForYourCustomers extends StatelessWidget {
                 containerColor: HexColor('E4C8F5'),
                 buttonText: 'Monthly EMI',
                 buttonWidth: 121,
-                onButtonClick: () {})
+                onButtonClick: () {
+                  Navigator.pushNamed(context, RouteName.monthlyEmi);
+                })
           ],
         ),
       ),

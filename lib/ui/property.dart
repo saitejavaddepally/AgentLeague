@@ -4,6 +4,7 @@ import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/provider/property_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/property_info.dart';
+import 'package:agent_league/ui/uploads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,8 +47,7 @@ class _PropertyState extends State<Property> {
                   text: 'Next',
                   onClick: () {
                     if (_formKey.currentState!.validate()) {
-                      print(_propertyProvider.getMap());
-                      Navigator.pushNamed(context, RouteName.uploads);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => UploadsScreen(projectInfo: _propertyProvider.getMap())));
                     }
                   },
                   color: HexColor('FD7E0E'),

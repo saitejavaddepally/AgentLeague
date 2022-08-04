@@ -87,8 +87,6 @@ class _SellScreenState extends State<SellScreen> {
       loading = false;
     });
 
-
-
     return plotPagesInformation;
   }
 
@@ -377,10 +375,11 @@ class _SellScreenState extends State<SellScreen> {
                                       ],
                                     ))),
                       ),
-                      for (var i = 0; i < (plotPagesInformation.length); i++)
+                      for (int i = 0; i < (plotPagesInformation.length); i++)
                         (!loading)
                             ? CustomSellCard(
-                                imageUrl: plotPagesInformation[i][0]['plotProfilePicture'],
+                                imageUrl: plotPagesInformation[i][0]
+                                    ['plotProfilePicture'],
                                 category: plotPagesInformation[i][0]
                                     ['propertyCategory'],
                                 propertyType: plotPagesInformation[i][0]
@@ -391,19 +390,18 @@ class _SellScreenState extends State<SellScreen> {
                                 price: plotPagesInformation[i][0]['price'],
                                 possession: plotPagesInformation[i][0]
                                     ['possessionStatus'],
-                                propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'].toString(),
+                                propertyId: "PR_" +
+                                    plotPagesInformation[i][0]['plotNumber']
+                                        .toString(),
                                 onClick: () {
-                                  SharedPreferencesHelper()
-                                      .saveCurrentPage(i.toString());
-                                  SharedPreferencesHelper().saveNumProperties(
-                                      plotPagesInformation.length.toString());
-
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => RealtorCard(
-                                              plotPagesInformation:
-                                                  plotPagesInformation)));
+                                                plotPagesInformation:
+                                                    plotPagesInformation,
+                                                currentPage: i,
+                                              )));
                                 },
                               )
                             : SizedBox(

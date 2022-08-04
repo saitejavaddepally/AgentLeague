@@ -9,30 +9,28 @@ import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/emi.dart';
 import 'package:agent_league/ui/gallery.dart';
-import 'package:agent_league/ui/search_by.dart';
+import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../theme/colors.dart';
 import 'documents.dart';
 
-var currentPage = 0;
 String userId = "";
-String path = "";
-String imageUrl = "";
-bool loading = false;
 PageController? controller;
-late List profileImages = [];
-bool isIncremented = false;
-String profileImage = "";
 late List plotPagesInformation = [];
-late String currentPlotFromPreviousPage;
 
 class RealtorCard extends StatefulWidget {
   final List plotPagesInformation;
+  final int currentPage;
 
-  const RealtorCard({Key? key, required this.plotPagesInformation})
-      : super(key: key);
+  // final int numberOfProperties;
+
+  const RealtorCard({
+    Key? key,
+    required this.plotPagesInformation,
+    required this.currentPage,
+  }) : super(key: key);
 
   @override
   State<RealtorCard> createState() => _RealtorCardState();
@@ -40,10 +38,7 @@ class RealtorCard extends StatefulWidget {
 
 class _RealtorCardState extends State<RealtorCard> {
   late List pages = [];
-
-  // var page = const RealtorPage();
   Color color = CustomColors.dark;
-  String numberOfProperties = "0";
 
   @override
   void initState() {
@@ -57,31 +52,22 @@ class _RealtorCardState extends State<RealtorCard> {
         });
       });
     });
-    SharedPreferencesHelper().getCurrentPage().then((value) {
+    // SharedPreferencesHelper().getCurrentPage().then((value) {
+    //   setState(() {
+    //     currentPage = int.parse(value!);
+    //   });
+    controller = PageController(initialPage: widget.currentPage);
+    // });
+
+    for (var i = 0; i < plotPagesInformation.length; i++) {
       setState(() {
-        currentPage = int.parse(value!);
-        currentPlotFromPreviousPage =
-            plotPagesInformation[currentPage][0]['plotNumber'].toString();
+        pages.add(RealtorPage(
+          plotNumber: plotPagesInformation[i][0]['plotNumber'].toString(),
+          profileImage: plotPagesInformation[i][0]['plotProfilePicture'],
+          currentPage: i,
+        ));
       });
-      // SharedPreferencesHelper()
-      //     .saveCurrentPage(currentPlotFromPreviousPage.toString());
-      controller = PageController(initialPage: int.parse(value!));
-    });
-    Future.delayed(const Duration(seconds: 0), () {
-      SharedPreferencesHelper().getNumProperties().then((value) {
-        numberOfProperties = value.toString();
-        return numberOfProperties;
-      }).then((value) {
-        for (var i = 0; i < int.parse(numberOfProperties); i++) {
-          setState(() {
-            pages.add(RealtorPage(
-              plotNumber: plotPagesInformation[i][0]['plotNumber'].toString(),
-              profileImage: plotPagesInformation[i][0]['plotProfilePicture'],
-            ));
-          });
-        }
-      });
-    });
+    }
     super.initState();
   }
 
@@ -93,19 +79,8 @@ class _RealtorCardState extends State<RealtorCard> {
             body: SafeArea(
                 child: Stack(children: [
               PageView.builder(
-                itemCount: int.parse(numberOfProperties),
+                itemCount: plotPagesInformation.length,
                 controller: controller,
-                onPageChanged: (int page) async {
-                  var currentPlotFromList =
-                      plotPagesInformation[page][0]['plotNumber'];
-                  SharedPreferencesHelper().saveCurrentPage(page.toString());
-                  setState(() {
-                    currentPage = page;
-                  });
-                  SharedPreferencesHelper()
-                      .getCurrentPage()
-                      .then((value) => print("value is $value"));
-                },
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
                   return pages[index];
@@ -119,10 +94,15 @@ class _RealtorCardState extends State<RealtorCard> {
 }
 
 class RealtorPage extends StatefulWidget {
-  String profileImage;
-  String plotNumber;
+  final String profileImage;
+  final String plotNumber;
+  final int currentPage;
 
-  RealtorPage({Key? key, required this.profileImage, required this.plotNumber})
+  const RealtorPage(
+      {Key? key,
+      required this.profileImage,
+      required this.currentPage,
+      required this.plotNumber})
       : super(key: key);
 
   @override
@@ -132,12 +112,8 @@ class RealtorPage extends StatefulWidget {
 class _RealtorPageState extends State<RealtorPage> {
   @override
   void initState() {
+    // print("current page is " + widget.currentPage.toString());
     super.initState();
-  }
-
-  Future getProfileImages() async {
-    var images = await SharedPreferencesHelper().getListOfCards();
-    return images;
   }
 
   var textList = [
@@ -159,25 +135,39 @@ class _RealtorPageState extends State<RealtorPage> {
   @override
   Widget build(BuildContext context) {
     var iconFunctionalities = [
-      () => Navigator.pushNamed(context, '/location', arguments: currentPage),
       () => Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  GalleryScreen(images: plotPagesInformation))),
+                  LocationScreen(currentPage: widget.currentPage))),
       () => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => Tour(videos: plotPagesInformation))),
+              builder: (context) => GalleryScreen(info: {
+                    "currentPage": widget.currentPage,
+                    "plotPagesInformation": plotPagesInformation
+                  }))),
       () => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  Documents(documents: plotPagesInformation))),
+              builder: (context) => Tour(info: {
+                    "currentPage": widget.currentPage,
+                    "plotPagesInformation": plotPagesInformation
+                  }))),
       () => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => EMI(price: plotPagesInformation))),
+              builder: (context) => Documents(info: {
+                    "currentPage": widget.currentPage,
+                    "plotPagesInformation": plotPagesInformation
+                  }))),
+      () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EMI(info: {
+                    "currentPage": widget.currentPage,
+                    "plotPagesInformation": plotPagesInformation
+                  }))),
     ];
     return Stack(children: [
       Column(children: [
@@ -210,24 +200,6 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // FutureBuilder(
-                      //     future: getProfileImages(),
-                      //     builder: (context, snapshot) {
-                      //       if (snapshot.hasData) {}
-                      //       if (snapshot.connectionState !=
-                      //           ConnectionState.done) {
-                      //         return Container(
-                      //           width: 200,
-                      //           height: 200,
-                      //           child: const SpinKitThreeBounce(
-                      //             size: 30,
-                      //             color: Colors.white,
-                      //           ),
-                      //         );
-                      //       }
-                      //
-                      //       // List<String>? data = snapshot.data as List<String>?;
-
                       Container(
                         width: 200,
                         height: 200,
@@ -382,7 +354,8 @@ class _RealtorPageState extends State<RealtorPage> {
                                       i++) {
                                     docNames[i] = plotDocNames[i];
                                   }
-                                  List data = plotPagesInformation[currentPage];
+                                  List data =
+                                      plotPagesInformation[widget.currentPage];
                                   Map<String, dynamic> data1 = data[0];
 
                                   log("dxdiag" +
@@ -433,8 +406,8 @@ class _RealtorPageState extends State<RealtorPage> {
             const SizedBox(width: 12),
             GestureDetector(
                 onTap: () {
-                  var data =
-                      plotPagesInformation[currentPage][0]['box_enabled'];
+                  var data = plotPagesInformation[widget.currentPage][0]
+                      ['box_enabled'];
                   (data == 0)
                       ? showDialog(
                           context: context,
@@ -444,10 +417,10 @@ class _RealtorPageState extends State<RealtorPage> {
                                 actions: [
                                   TextButton(
                                       onPressed: () async {
-                                        var currPlot =
-                                            plotPagesInformation[currentPage][0]
-                                                    ['plotNumber']
-                                                .toString();
+                                        var currPlot = plotPagesInformation[
+                                                    widget.currentPage][0]
+                                                ['plotNumber']
+                                            .toString();
                                         log("plot no is $currPlot");
                                         await EasyLoading.show(
                                             status: "Please wait...");
@@ -462,8 +435,10 @@ class _RealtorPageState extends State<RealtorPage> {
                                             "Property Added to property box",
                                             duration:
                                                 const Duration(seconds: 3));
-                                        plotPagesInformation[currentPage][0]
-                                            ['box_enabled'] = 1;
+
+                                        EasyLoading.dismiss();
+                                        plotPagesInformation[widget.currentPage]
+                                            [0]['box_enabled'] = 1;
                                       },
                                       child: const Text('Yes')),
                                   TextButton(

@@ -11,8 +11,8 @@ import '../helper/shared_preferences.dart';
 import '../provider/firestore_data_provider.dart';
 
 class EMI extends StatefulWidget {
-  final List<dynamic> price;
-  const EMI({Key? key, required this.price}) : super(key: key);
+  final Map info;
+  const EMI({Key? key, required this.info}) : super(key: key);
 
   @override
   State<EMI> createState() => _EMIState();
@@ -31,12 +31,16 @@ class _EMIState extends State<EMI> {
   late String _tenureChosenValue = '5 yrs';
 
   Future<int?> getCurrentPlotPrice() async {
-    var number = await SharedPreferencesHelper().getCurrentPage();
-    print("number is $number");
-    List data = await FirestoreDataProvider()
-        .getPlotPagesInformation(int.parse(number!));
-    String price = data[0]['price'];
 
+    late String price;
+    if (widget.info['isProject']) {
+      print(widget.info['projectDetails']['pricePerUnitText']);
+      price = widget.info['projectDetails']['pricePerUnitText'];
+    }
+    else{
+      int currentPlot = widget.info['currentPage'];
+      price = widget.info['plotPagesInformation'][currentPlot][0]['price'];
+    }
     return int.parse(price);
   }
 

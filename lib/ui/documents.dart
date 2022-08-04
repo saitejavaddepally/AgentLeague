@@ -8,9 +8,9 @@ import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 class Documents extends StatefulWidget {
-  final List<dynamic> documents;
+  final Map info;
 
-  const Documents({Key? key, required this.documents}) : super(key: key);
+  const Documents({Key? key, required this.info}) : super(key: key);
 
   @override
   State<Documents> createState() => _DocumentsState();
@@ -21,9 +21,10 @@ class _DocumentsState extends State<Documents> {
   late List res;
 
   Future<List> getDocuments() async {
-    String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
-    List docs = widget.documents[int.parse(currentPlot!)][0]['docs'];
-    List docNames = widget.documents[int.parse(currentPlot)][0]['docNames'];
+    int currentPlot = widget.info['currentPage'];
+    List docs = widget.info['plotPagesInformation'][currentPlot][0]['docs'];
+    List docNames = widget.info['plotPagesInformation'][currentPlot][0]['docNames'];
+
 
     return [
       {"docs": docs},

@@ -1,18 +1,14 @@
-import 'dart:developer';
-
 import 'package:agent_league/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
-import '../helper/shared_preferences.dart';
-import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 class Tour extends StatefulWidget {
-  final List<dynamic> videos;
+  final Map info;
 
-  const Tour({Key? key, required this.videos}) : super(key: key);
+  const Tour({Key? key, required this.info}) : super(key: key);
 
   @override
   State<Tour> createState() => _TourState();
@@ -22,10 +18,18 @@ class _TourState extends State<Tour> {
   late List res;
 
   Future<List> getVideos() async {
-    String? currentPlot = await SharedPreferencesHelper().getCurrentPage();
-    List videos = widget.videos[int.parse(currentPlot!)][0]['videos'];
-    List videoNames = widget.videos[int.parse(currentPlot)][0]['videoNames'];
-    log("data is $videoNames");
+    List videos;
+    List videoNames;
+
+    if (widget.info['isProject']) {
+      videos = widget.info['projectDetails']['videos'];
+      videoNames = ['video1', 'video2', 'video3', 'video4'];
+    } else {
+      int currentPlot = widget.info['currentPage'];
+      videos = widget.info['plotPagesInformation'][currentPlot][0]['videos'];
+      videoNames =
+          widget.info['plotPagesInformation'][currentPlot][0]['videoNames'];
+    }
 
     return [
       {"videos": videos},
@@ -182,7 +186,9 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                               onTap: () {},
                               child: Image.asset('assets/download.png')),
                           const SizedBox(width: 10),
-                          Image.asset('assets/share.png'),
+                          GestureDetector(
+                              onTap: () {},
+                              child: Image.asset('assets/share.png')),
                           const SizedBox(width: 10)
                         ],
                       )

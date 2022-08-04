@@ -15,6 +15,7 @@ import 'package:agent_league/ui/lead_box.dart';
 import 'package:agent_league/ui/listing.dart';
 import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/login.dart';
+import 'package:agent_league/ui/monthly_emi.dart';
 import 'package:agent_league/ui/onboarding.dart';
 import 'package:agent_league/ui/otp.dart';
 import 'package:agent_league/ui/post_your_property.dart';
@@ -72,6 +73,7 @@ class RouteName {
   static const String listing = '/listing';
   static const String weHear = '/we_hear';
   static const String escrow = '/escrow';
+  static const String monthlyEmi = '/monthly_emi';
 }
 
 class RouteGenerator {
@@ -93,6 +95,9 @@ class RouteGenerator {
       case RouteName.weHear:
         return PageTransition(
             child: const WeHear(), type: PageTransitionType.leftToRight);
+      case RouteName.monthlyEmi:
+        return PageTransition(
+            child: const MonthlyEmi(), type: PageTransitionType.leftToRight);
       case RouteName.escrow:
         return PageTransition(
             child: const Escrow(), type: PageTransitionType.leftToRight);
@@ -152,19 +157,19 @@ class RouteGenerator {
       case RouteName.emi:
         return PageTransition(
             child: const EMI(
-              price: [],
+              info: {},
             ),
             type: PageTransitionType.leftToRight);
       case RouteName.documents:
         return PageTransition(
             child: const Documents(
-              documents: [],
+              info: {},
             ),
             type: PageTransitionType.leftToRight);
       case RouteName.tour:
         return PageTransition(
             child: const Tour(
-              videos: [],
+              info: {},
             ),
             type: PageTransitionType.leftToRight);
       case RouteName.postYourPropertyPageOne:
@@ -183,15 +188,15 @@ class RouteGenerator {
         }
       case RouteName.location:
         return PageTransition(
-            child: const LocationScreen(),
+            child: const LocationScreen(currentPage: 0),
             type: PageTransitionType.leftToRight);
       case RouteName.gallery:
         return PageTransition(
-            child: const GalleryScreen(images: []),
+            child: const GalleryScreen(info: {}),
             type: PageTransitionType.leftToRight);
       case RouteName.projectExplorer:
         return PageTransition(
-            child: const ProjectExplorer(),
+            child: const ProjectExplorer(projectDetails: {},),
             type: PageTransitionType.leftToRight);
       case RouteName.addProject:
         return PageTransition(
@@ -205,7 +210,7 @@ class RouteGenerator {
             type: PageTransitionType.leftToRight);
       case RouteName.uploads:
         return PageTransition(
-            child: const UploadsScreen(), type: PageTransitionType.leftToRight);
+            child: const UploadsScreen(projectInfo: {}, ), type: PageTransitionType.leftToRight);
       case RouteName.register:
         return PageTransition(
             child: const Register(), type: PageTransitionType.leftToRight);
