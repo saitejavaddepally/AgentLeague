@@ -1,7 +1,7 @@
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
-import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../components/custom_button.dart';
 import '../../components/home_container.dart';
@@ -205,7 +205,10 @@ class _HomeState extends State<Home> {
                     buttonText: "Refer Now",
                     buttonTextColor: const Color(0xFF21293A),
                     buttonColor: const Color(0xFFF3F4F6),
-                    onButtonClick: () {}),
+                    onButtonClick: () async {
+                      const url = 'https://www.google.com';
+                      await Share.share('Hello text to share \n\n $url');
+                    }),
                 const SizedBox(height: 30),
                 HomeContainer(
                     text: "Are you a Corporate Agent selling project?",
