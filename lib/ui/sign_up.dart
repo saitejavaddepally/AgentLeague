@@ -2,7 +2,6 @@
 
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_text_field.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/post_your_property.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,14 +104,14 @@ class _SignUpFormState extends State<SignUpForm> {
                                   await GetUserLocation.getCurrentLocation();
                               setState(() => isLoading = false);
                               if (res != null && res.isNotEmpty) {
-                                _locationController.text = res;
+                                _locationController.text = res[0];
                               }
                             }
                             if (result == 2) {
                               final res =
                                   await GetUserLocation.getMapLocation(context);
                               if (res != null && res.isNotEmpty) {
-                                _locationController.text = res;
+                                _locationController.text = res[0];
                               }
                             }
                           },

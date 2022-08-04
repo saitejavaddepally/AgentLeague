@@ -62,14 +62,14 @@ class GetUserLocation {
     return result;
   }
 
-  static Future<String?> getCurrentLocation() async {
+  static Future<List?> getCurrentLocation() async {
     try {
       final location = GetUserLocation();
       final Position position = await location.determinePosition();
 
       final address = await location.getAddressFromCoordinates(
           LatLng(position.latitude, position.longitude));
-      return address;
+      return [address, position.latitude, position.longitude];
     } on Exception catch (e) {
       if (e.toString() == 'Location services are disabled.') {
         Fluttertoast.showToast(msg: 'Please Turn On Location Service First');
@@ -87,8 +87,8 @@ class GetUserLocation {
     }
   }
 
-  static Future<String?> getMapLocation(BuildContext context) async {
-    final String? result = await Navigator.push(
+  static Future<List> getMapLocation(BuildContext context) async {
+    final List result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => FutureBuilder<Position>(
@@ -98,7 +98,11 @@ class GetUserLocation {
                 return PlacePicker(
                   apiKey: 'AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0',
                   onPlacePicked: (result) {
-                    Navigator.of(context).pop(result.formattedAddress);
+                    Navigator.of(context).pop([
+                      result.formattedAddress,
+                      result.geometry?.location.lat,
+                      result.geometry?.location.lng
+                    ]);
                   },
                   hintText: "Search",
                   enableMapTypeButton: false,

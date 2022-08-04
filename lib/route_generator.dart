@@ -25,12 +25,9 @@ import 'package:agent_league/ui/property.dart';
 import 'package:agent_league/ui/property_buying_score.dart';
 import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:agent_league/ui/property_info.dart';
-import 'package:agent_league/ui/realtor_card.dart';
 import 'package:agent_league/ui/register.dart';
-import 'package:agent_league/ui/search_by.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
-import 'package:agent_league/ui/success.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:agent_league/ui/uploads_screen.dart';
 import 'package:agent_league/ui/we_hear.dart';
@@ -187,16 +184,24 @@ class RouteGenerator {
           return _errorRoute();
         }
       case RouteName.location:
-        return PageTransition(
-            child: const LocationScreen(currentPage: 0),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is List) {
+            return PageTransition(
+                child: LocationScreen(latitude: args[0], longitude: args[1]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
       case RouteName.gallery:
         return PageTransition(
             child: const GalleryScreen(info: {}),
             type: PageTransitionType.leftToRight);
       case RouteName.projectExplorer:
         return PageTransition(
-            child: const ProjectExplorer(projectDetails: {},),
+            child: const ProjectExplorer(
+              projectDetails: {},
+            ),
             type: PageTransitionType.leftToRight);
       case RouteName.addProject:
         return PageTransition(
@@ -210,7 +215,10 @@ class RouteGenerator {
             type: PageTransitionType.leftToRight);
       case RouteName.uploads:
         return PageTransition(
-            child: const UploadsScreen(projectInfo: {}, ), type: PageTransitionType.leftToRight);
+            child: const UploadsScreen(
+              projectInfo: {},
+            ),
+            type: PageTransitionType.leftToRight);
       case RouteName.register:
         return PageTransition(
             child: const Register(), type: PageTransitionType.leftToRight);

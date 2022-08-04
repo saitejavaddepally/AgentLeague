@@ -139,7 +139,7 @@ class _RealtorPageState extends State<RealtorPage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  LocationScreen(currentPage: widget.currentPage))),
+                  LocationScreen(latitude: 27.9322661, longitude: 78.0846259))),
       () => Navigator.push(
           context,
           MaterialPageRoute(

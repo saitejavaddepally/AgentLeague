@@ -6,10 +6,13 @@ import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/property_info.dart';
 import 'package:agent_league/ui/uploads_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_button.dart';
+import '../components/custom_map_dialog.dart';
 import '../components/custom_selector.dart';
+import '../location_service.dart';
 import '../theme/colors.dart';
 
 class Property extends StatefulWidget {
@@ -21,6 +24,7 @@ class Property extends StatefulWidget {
 
 class _PropertyState extends State<Property> {
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,11 @@ class _PropertyState extends State<Property> {
                   text: 'Next',
                   onClick: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => UploadsScreen(projectInfo: _propertyProvider.getMap())));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UploadsScreen(
+                                  projectInfo: _propertyProvider.getMap())));
                     }
                   },
                   color: HexColor('FD7E0E'),
@@ -57,194 +65,230 @@ class _PropertyState extends State<Property> {
               ]),
             ),
             body: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 25),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: const Icon(
-                                    Icons.keyboard_backspace_rounded)),
-                            const SizedBox(width: 20),
-                            const Flexible(
-                                child: CustomTitle(text: 'Project Info'))
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        CustomLineUnderText(
-                                text: 'Basic Info',
-                                color: HexColor('FE7F0E'),
-                                height: 4,
-                                width: 60)
-                            .use(),
-                        const SizedBox(height: 5),
-                        Consumer<PropertyProvider>(
-                          builder: (context, value, child) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              child: ModalProgressHUD(
+                inAsyncCall: isLoading,
+                child: SingleChildScrollView(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 25),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(children: [
+                          Row(
                             children: [
-                              CustomWidget(
-                                text: 'Company Name :',
-                                isText: true,
-                                flex: 2,
-                                controller: value.companyNameController,
-                                validator: value.validateCompanyName,
-                                submitted: value.onSubmittedCompanyName,
-                              ).use(),
-                              CustomWidget(
-                                text: 'Venture Name :',
-                                isText: true,
-                                flex: 2,
-                                controller: value.ventureNameController,
-                                validator: value.validateVentureName,
-                                submitted: value.onSubmittedVentureName,
-                              ).use(),
-                              CustomWidget(
-                                text: 'Project category :',
-                                flex: 2,
-                                chosenValue: value.projectCategoryChosenValue,
-                                dropDownItems: value.projectCategoryDropDown,
-                                onChanged: value.onChangedProjectCategory,
-                              ).use(),
-                              CustomWidget(
-                                text: 'Project location :',
-                                isText: true,
-                                flex: 2,
-                                controller: value.projectLocationController,
-                                validator: value.validateProjectLocation,
-                                submitted: value.onSubmittedProjectLocation,
-                              ).use(),
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  const Expanded(
-                                      child: Text('Total project area :',
+                              GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: const Icon(
+                                      Icons.keyboard_backspace_rounded)),
+                              const SizedBox(width: 20),
+                              const Flexible(
+                                  child: CustomTitle(text: 'Project Info'))
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          CustomLineUnderText(
+                                  text: 'Basic Info',
+                                  color: HexColor('FE7F0E'),
+                                  height: 4,
+                                  width: 60)
+                              .use(),
+                          const SizedBox(height: 5),
+                          Consumer<PropertyProvider>(
+                            builder: (context, value, child) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomWidget(
+                                  text: 'Company Name :',
+                                  isText: true,
+                                  flex: 2,
+                                  controller: value.companyNameController,
+                                  validator: value.validateCompanyName,
+                                  submitted: value.onSubmittedCompanyName,
+                                ).use(),
+                                CustomWidget(
+                                  text: 'Venture Name :',
+                                  isText: true,
+                                  flex: 2,
+                                  controller: value.ventureNameController,
+                                  validator: value.validateVentureName,
+                                  submitted: value.onSubmittedVentureName,
+                                ).use(),
+                                CustomWidget(
+                                  text: 'Project category :',
+                                  flex: 2,
+                                  chosenValue: value.projectCategoryChosenValue,
+                                  dropDownItems: value.projectCategoryDropDown,
+                                  onChanged: value.onChangedProjectCategory,
+                                ).use(),
+                                CustomWidget(
+                                  text: 'Project location :',
+                                  isText: true,
+                                  flex: 2,
+                                  readOnly: true,
+                                  onTap: () async {
+                                    final result = await showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (context) =>
+                                            const CustomMapDialog());
+
+                                    if (result == 1) {
+                                      setState(() => isLoading = true);
+                                      final res = await GetUserLocation
+                                          .getCurrentLocation();
+                                      setState(() => isLoading = false);
+                                      if (res != null && res.isNotEmpty) {
+                                        value.projectLocationController.text =
+                                            res[0];
+                                      }
+                                    }
+                                    if (result == 2) {
+                                      final res =
+                                          await GetUserLocation.getMapLocation(
+                                              context);
+                                      if (res.isNotEmpty) {
+                                        value.projectLocationController.text =
+                                            res[0];
+                                      }
+                                    }
+                                  },
+                                  controller: value.projectLocationController,
+                                  validator: value.validateProjectLocation,
+                                ).use(),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    const Expanded(
+                                        child: Text('Total project area :',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 16,
+                                                letterSpacing: -0.15))),
+                                    Expanded(
+                                      child: Row(children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                            validator:
+                                                value.validateTotalProjectArea,
+                                            onChanged: value
+                                                .onSubmittedTotalProjectArea,
+                                            controller: value
+                                                .totalProjectAreaController,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        const Text(
+                                          'Acres',
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 16,
-                                              letterSpacing: -0.15))),
-                                  Expanded(
-                                    child: Row(children: [
-                                      Expanded(
+                                              letterSpacing: -0.15),
+                                        )
+                                      ]),
+                                    ),
+                                  ],
+                                ),
+                                CustomWidget(
+                                  text: 'Total units/plots :',
+                                  isText: true,
+                                  flex: 2,
+                                  controller: value.totalUnitsController,
+                                  validator: value.validateTotalUnits,
+                                  submitted: value.onSubmittedTotalUnits,
+                                ).use(),
+                                CustomWidget(
+                                  text: 'Possession states :',
+                                  flex: 2,
+                                  chosenValue: value.possessionStateChosenValue,
+                                  dropDownItems: value.possessionStateDropDown,
+                                  onChanged: value.onChangedPossessionState,
+                                ).use(),
+                                const SizedBox(height: 15),
+                                const Text('Unit/Plot size :',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                        letterSpacing: -0.15)),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                        flex: 2,
                                         child: CustomTextField(
-                                          validator:
-                                              value.validateTotalProjectArea,
-                                          onChanged:
-                                              value.onSubmittedTotalProjectArea,
                                           controller:
-                                              value.totalProjectAreaController,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Text(
-                                        'Acres',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16,
-                                            letterSpacing: -0.15),
-                                      )
-                                    ]),
-                                  ),
-                                ],
-                              ),
-                              CustomWidget(
-                                text: 'Total units/plots :',
-                                isText: true,
-                                flex: 2,
-                                controller: value.totalUnitsController,
-                                validator: value.validateTotalUnits,
-                                submitted: value.onSubmittedTotalUnits,
-                              ).use(),
-                              CustomWidget(
-                                text: 'Possession states :',
-                                flex: 2,
-                                chosenValue: value.possessionStateChosenValue,
-                                dropDownItems: value.possessionStateDropDown,
-                                onChanged: value.onChangedPossessionState,
-                              ).use(),
-                              const SizedBox(height: 15),
-                              const Text('Unit/Plot size :',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                      letterSpacing: -0.15)),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Flexible(
-                                      flex: 2,
-                                      child: CustomTextField(
-                                        controller: value.unitSizeOneController,
-                                        onChanged: value.onSubmittedUnitSizeOne,
-                                        validator: value.validateUnitSizeOne,
-                                      )),
-                                  const SizedBox(width: 10),
-                                  const Text('to'),
-                                  const SizedBox(width: 10),
-                                  Flexible(
-                                      flex: 2,
-                                      child: CustomTextField(
-                                        controller: value.unitSizeTwoController,
-                                        onChanged: value.onSubmittedUnitSizeTwo,
-                                        validator: value.validateUnitSizeTwo,
-                                      )),
-                                  const SizedBox(width: 5),
-                                  Flexible(
-                                      flex: 3,
-                                      child: CustomSelector(
-                                        borderRadius: 10,
-                                        hint: const Text('Select'),
-                                        dropDownItems: value.unitSizeDropDown,
-                                        onChanged: value.onChangedUnitSize,
-                                        chosenValue: value.unitSizeChosenValue,
-                                      ).use()),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              const Text('Price per unit :',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                      letterSpacing: -0.15)),
-                              const SizedBox(height: 7),
-                              Row(
-                                children: [
-                                  Flexible(
-                                      child: CustomTextField(
-                                    controller: value.pricePerUnitController,
-                                    onChanged: value.onSubmittedPricePerUnit,
-                                    validator: value.validatePricePerUnit,
-                                  )),
-                                  const SizedBox(width: 15),
-                                  const Text('per'),
-                                  const SizedBox(width: 15),
-                                  Flexible(
-                                      child: CustomSelector(
-                                    borderRadius: 10,
-                                    hint: const Text('Select'),
-                                    dropDownItems: value.pricePerUnitDropDown,
-                                    chosenValue: value.pricePerUnitChosenValue,
-                                    onChanged: value.onChangedPricePerUnit,
-                                  ).use()),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              CustomWidget(
-                                text: 'Approved by :',
-                                flex: 2,
-                                chosenValue: value.approvedByChosenValue,
-                                dropDownItems: value.approvedByDropDown,
-                                onChanged: value.onChangedApprovedBy,
-                              ).use(),
-                            ],
-                          ),
-                        )
-                      ]),
-                    )),
+                                              value.unitSizeOneController,
+                                          onChanged:
+                                              value.onSubmittedUnitSizeOne,
+                                          validator: value.validateUnitSizeOne,
+                                        )),
+                                    const SizedBox(width: 10),
+                                    const Text('to'),
+                                    const SizedBox(width: 10),
+                                    Flexible(
+                                        flex: 2,
+                                        child: CustomTextField(
+                                          controller:
+                                              value.unitSizeTwoController,
+                                          onChanged:
+                                              value.onSubmittedUnitSizeTwo,
+                                          validator: value.validateUnitSizeTwo,
+                                        )),
+                                    const SizedBox(width: 5),
+                                    Flexible(
+                                        flex: 3,
+                                        child: CustomSelector(
+                                          borderRadius: 10,
+                                          hint: const Text('Select'),
+                                          dropDownItems: value.unitSizeDropDown,
+                                          onChanged: value.onChangedUnitSize,
+                                          chosenValue:
+                                              value.unitSizeChosenValue,
+                                        ).use()),
+                                  ],
+                                ),
+                                const SizedBox(height: 15),
+                                const Text('Price per unit :',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                        letterSpacing: -0.15)),
+                                const SizedBox(height: 7),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                        child: CustomTextField(
+                                      controller: value.pricePerUnitController,
+                                      onChanged: value.onSubmittedPricePerUnit,
+                                      validator: value.validatePricePerUnit,
+                                    )),
+                                    const SizedBox(width: 15),
+                                    const Text('per'),
+                                    const SizedBox(width: 15),
+                                    Flexible(
+                                        child: CustomSelector(
+                                      borderRadius: 10,
+                                      hint: const Text('Select'),
+                                      dropDownItems: value.pricePerUnitDropDown,
+                                      chosenValue:
+                                          value.pricePerUnitChosenValue,
+                                      onChanged: value.onChangedPricePerUnit,
+                                    ).use()),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                CustomWidget(
+                                  text: 'Approved by :',
+                                  flex: 2,
+                                  chosenValue: value.approvedByChosenValue,
+                                  dropDownItems: value.approvedByDropDown,
+                                  onChanged: value.onChangedApprovedBy,
+                                ).use(),
+                              ],
+                            ),
+                          )
+                        ]),
+                      )),
+                ),
               ),
             ),
           );
