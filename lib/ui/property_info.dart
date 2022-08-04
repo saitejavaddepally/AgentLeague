@@ -470,6 +470,8 @@ class CustomWidget {
   final void Function(String)? submitted;
   final TextEditingController? controller;
   late bool isText;
+  final void Function()? onTap;
+  final bool readOnly;
   final int flex;
 
   CustomWidget(
@@ -479,6 +481,8 @@ class CustomWidget {
       this.validator,
       this.submitted,
       this.controller,
+      this.onTap,
+      this.readOnly = false,
       this.dropDownItems = const [],
       this.isText = false,
       this.flex = 1});
@@ -503,6 +507,8 @@ class CustomWidget {
                     validator: validator,
                     onChanged: submitted,
                     controller: controller,
+                    readOnly: readOnly,
+                    onTap: onTap,
                     cursorColor: Colors.white.withOpacity(0.1),
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10),

@@ -94,7 +94,6 @@ class _BottomBarState extends State<BottomBar> {
         future: AuthMethods().getUserId(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            print(snapshot.data);
             SharedPreferencesHelper().saveUserId(snapshot.data.toString());
           }
 

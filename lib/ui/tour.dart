@@ -1,4 +1,3 @@
-
 import 'package:agent_league/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -19,18 +18,15 @@ class _TourState extends State<Tour> {
   late List res;
 
   Future<List> getVideos() async {
-
     List videos;
     List videoNames;
 
     if (widget.info['isProject']) {
       videos = widget.info['projectDetails']['videos'];
       videoNames = ['video1', 'video2', 'video3', 'video4'];
-    }
-    else {
+    } else {
       int currentPlot = widget.info['currentPage'];
-      videos =
-          widget.info['plotPagesInformation'][currentPlot][0]['videos'];
+      videos = widget.info['plotPagesInformation'][currentPlot][0]['videos'];
       videoNames =
           widget.info['plotPagesInformation'][currentPlot][0]['videoNames'];
     }
@@ -163,13 +159,16 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                             });
                           }
                         },
-                        child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          height: 250,
                           child: ClipRRect(
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10)),
-                              child: VideoPlayer(_controller)),
+                              child: InteractiveViewer(
+                                  maxScale: 4,
+                                  child: VideoPlayer(_controller))),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -183,7 +182,9 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                                     color: HexColor('1B1B1B'),
                                     letterSpacing: -0.15)),
                           ),
-                          Image.asset('assets/download.png'),
+                          GestureDetector(
+                              onTap: () {},
+                              child: Image.asset('assets/download.png')),
                           const SizedBox(width: 10),
                           GestureDetector(
                               onTap: () {},
@@ -195,7 +196,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
                   ),
                   if (!_controller.value.isPlaying)
                     Padding(
-                      padding: const EdgeInsets.only(top: 60.0),
+                      padding: const EdgeInsets.only(top: 100.0),
                       child: Align(
                           alignment: Alignment.center,
                           child: GestureDetector(

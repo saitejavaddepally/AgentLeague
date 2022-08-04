@@ -2,7 +2,6 @@
 
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_text_field.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/post_your_property.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,14 +104,14 @@ class _SignUpFormState extends State<SignUpForm> {
                                   await GetUserLocation.getCurrentLocation();
                               setState(() => isLoading = false);
                               if (res != null && res.isNotEmpty) {
-                                _locationController.text = res;
+                                _locationController.text = res[0];
                               }
                             }
                             if (result == 2) {
                               final res =
                                   await GetUserLocation.getMapLocation(context);
                               if (res != null && res.isNotEmpty) {
-                                _locationController.text = res;
+                                _locationController.text = res[0];
                               }
                             }
                           },
@@ -186,10 +185,7 @@ class _SignUpFormState extends State<SignUpForm> {
       User? _user = FirebaseAuth.instance.currentUser;
       String? userId = _user?.uid;
       String? phoneNumber = _user?.phoneNumber;
-      print(userId);
-      print(phoneNumber);
-      print(name);
-      print(location);
+
       await FirebaseFirestore.instance.collection('users').doc(userId).set(
         {
           'name': name,
@@ -197,7 +193,7 @@ class _SignUpFormState extends State<SignUpForm> {
           'freeCredit': "1",
           'phone': phoneNumber,
           'counter': 0,
-          'location': '',
+          'location': location,
           'ref_code': userId?.substring(0, 6).toUpperCase(),
           'email': '',
           'agent_exp': '',

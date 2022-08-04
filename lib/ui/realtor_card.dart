@@ -7,15 +7,12 @@ import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/Home/sell_screen.dart';
 import 'package:agent_league/ui/emi.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/tour.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../theme/colors.dart';
 import 'documents.dart';
 
@@ -142,7 +139,7 @@ class _RealtorPageState extends State<RealtorPage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  LocationScreen(currentPage: widget.currentPage))),
+                  LocationScreen(latitude: 27.9322661, longitude: 78.0846259))),
       () => Navigator.push(
           context,
           MaterialPageRoute(
@@ -259,7 +256,6 @@ class _RealtorPageState extends State<RealtorPage> {
                               TextButton(
                                 onPressed: () async {
                                   var currPlot = widget.plotNumber;
-                                  print("delete plot $currPlot");
                                   await EasyLoading.show(
                                     status: 'Deleting.. please wait',
                                     maskType: EasyLoadingMaskType.black,
@@ -375,7 +371,6 @@ class _RealtorPageState extends State<RealtorPage> {
 
                                   await EasyLoading.dismiss();
                                   Navigator.pop(context);
-                                  print(currPlot);
                                   Navigator.pushReplacementNamed(context,
                                       RouteName.postYourPropertyPageOne,
                                       arguments: data1
@@ -427,14 +422,20 @@ class _RealtorPageState extends State<RealtorPage> {
                                                 ['plotNumber']
                                             .toString();
                                         log("plot no is $currPlot");
-                                        EasyLoading.show(
+                                        await EasyLoading.show(
                                             status: "Please wait...");
                                         Navigator.pop(context);
 
                                         await FirestoreCrudOperations()
-                                            .updatePlotInformation(1, {
+                                            .updatePlotInformation(
+                                                int.parse(currPlot), {
                                           "box_enabled": 1,
                                         });
+                                        await EasyLoading.showSuccess(
+                                            "Property Added to property box",
+                                            duration:
+                                                const Duration(seconds: 3));
+
                                         EasyLoading.dismiss();
                                         plotPagesInformation[widget.currentPage]
                                             [0]['box_enabled'] = 1;
@@ -451,7 +452,13 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Image.asset('assets/property.png')),
             const Spacer(),
             GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/leads_box'),
+              onTap: () {
+                var currPlot = widget.plotNumber;
+                final docId = plotPagesInformation[int.parse(currPlot) - 1][0]
+                    ['documentId'];
+                Navigator.pushNamed(context, RouteName.leadsBox,
+                    arguments: docId);
+              },
               child: Container(
                 height: 40,
                 width: 40,

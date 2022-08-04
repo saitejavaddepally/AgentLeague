@@ -7,8 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
+import '../route_generator.dart';
+
 class LeadBox extends StatefulWidget {
-  const LeadBox({Key? key}) : super(key: key);
+  final String? docId;
+  const LeadBox({required this.docId, Key? key}) : super(key: key);
 
   @override
   _LeadBoxState createState() => _LeadBoxState();
@@ -64,271 +67,10 @@ class _LeadBoxState extends State<LeadBox> {
             ),
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            // Container(
-            //   margin: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-            //   child: Column(
-            //     children: [
-            //       Row(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Expanded(
-            //               flex: 1,
-            //               child: Container(
-            //                   //child: CustomSelector().use(),
-            //                   ))
-            //         ],
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.symmetric(vertical: 16),
-            //         child: Row(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: [
-            //             // const Expanded(
-            //             //   flex: 1,
-            //             //   child: SizedBox(
-            //             //     width: 100,
-            //             //     height: 70,
-            //             //     // decoration: BoxDecoration(border: Border.all()),
-            //             //     child: Align(
-            //             //       alignment: Alignment.centerLeft,
-            //             //       child: Text(
-            //             //         "Date : ",
-            //             //         style: TextStyle(fontSize: 13),
-            //             //       ),
-            //             //     ),
-            //             //   ),
-            //             // ),
-            //             Expanded(
-            //               flex: 1,
-            //               child: SizedBox(
-            //                 width: 100,
-            //                 height: 70,
-            //                 // decoration: BoxDecoration(border: Border.all()),
-            //                 child: Container(
-            //                   margin: const EdgeInsets.fromLTRB(2, 8, 2, 8),
-            //                   // child: CustomSelector(
-            //                   //         color: Colors.white,
-            //                   //         textColor: Colors.black,
-            //                   //         dim: false,
-            //                   //         hint: 'Date')
-            //                   //     .use(),
-            //                 ),
-            //               ),
-            //             ),
-            //             // const Expanded(
-            //             //   flex: 2,
-            //             //   child: SizedBox(
-            //             //     width: 100,
-            //             //     height: 70,
-            //             //     // decoration: BoxDecoration(border: Border.all()),
-            //             //     child: Align(
-            //             //       alignment: Alignment.centerRight,
-            //             //       child: Text("Status : "),
-            //             //     ),
-            //             //   ),
-            //             // ),
-            //             Expanded(
-            //               flex: 1,
-            //               child: SizedBox(
-            //                 width: 100,
-            //                 height: 70,
-            //                 // decoration: BoxDecoration(border: Border.all()),
-            //                 child: Container(
-            //                   margin: const EdgeInsets.fromLTRB(2, 8, 2, 8),
-            //                   // child: CustomSelector(
-            //                   //         color: Colors.white,
-            //                   //         textColor: Colors.black,
-            //                   //         dim: false,
-            //                   //         hint: 'Status')
-            //                   //     .use(),
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.symmetric(vertical: 16),
-            //         child: const Align(
-            //             alignment: Alignment.centerLeft,
-            //             child: Text(
-            //               "165 leads are interested",
-            //               style: TextStyle(fontSize: 22),
-            //             )),
-            //       ),
-            //       Container(
-            //         child: Neumorphic(
-            //           style: NeumorphicStyle(
-            //             shape: NeumorphicShape.flat,
-            //             boxShape: NeumorphicBoxShape.roundRect(
-            //                 BorderRadius.circular(17)),
-            //             depth: 4,
-            //           ),
-            //           child: Column(
-            //             children: [
-            //               Row(
-            //                 children: [
-            //                   Expanded(
-            //                     child: Container(
-            //                         height: 220,
-            //                         decoration: const BoxDecoration(
-            //                           borderRadius: BorderRadius.only(
-            //                             topLeft: Radius.circular(17.0),
-            //                             topRight: Radius.circular(17.0),
-            //                             bottomLeft: Radius.zero,
-            //                             bottomRight: Radius.zero,
-            //                           ),
-            //                           color: Colors.white,
-            //                         ),
-            //                         child: Row(
-            //                           children: [
-            //                             Expanded(
-            //                               child: Container(
-            //                                 margin: const EdgeInsets.all(8),
-            //                                 padding: const EdgeInsets.all(8),
-            //                                 // decoration:
-            //                                 //     BoxDecoration(border: Border.all()),
-            //                                 child: Image.asset(
-            //                                     "assets/lead_box_image.png"),
-            //                               ),
-            //                             ),
-            //                             Expanded(
-            //                               child: Container(
-            //                                   padding: const EdgeInsets.all(8),
-            //                                   margin: const EdgeInsets.fromLTRB(
-            //                                       0, 18, 0, 18),
-            //                                   // decoration:
-            //                                   //     BoxDecoration(border: Border.all()),
-            //                                   child: Align(
-            //                                     alignment: Alignment.centerLeft,
-            //                                     child: Column(
-            //                                       children: [
-            //                                         CustomContainerText(
-            //                                                 text1: 'Name',
-            //                                                 text2: 'Venkat')
-            //                                             .use(),
-            //                                         CustomContainerText(
-            //                                                 text1: 'Contact',
-            //                                                 text2: '7416698106')
-            //                                             .use(),
-            //                                         CustomContainerText(
-            //                                                 text1: 'Location',
-            //                                                 text2: 'LB Nagar')
-            //                                             .use(),
-            //                                         CustomContainerText(
-            //                                                 text1: 'Profession',
-            //                                                 text2: 'Business')
-            //                                             .use(),
-            //                                         CustomContainerText(
-            //                                                 text1:
-            //                                                     'Buying time ',
-            //                                                 text2: '1 month')
-            //                                             .use(),
-            //                                         CustomContainerText(
-            //                                                 text1:
-            //                                                     'Property ID',
-            //                                                 text2: 'PR1214')
-            //                                             .use(),
-            //                                       ],
-            //                                     ),
-            //                                   )),
-            //                             ),
-            //                           ],
-            //                         )),
-            //                   ),
-            //                 ],
-            //               ),
-            //               Row(
-            //                 children: [
-            //                   Expanded(
-            //                     flex: 1,
-            //                     child: Container(
-            //                         height: 50,
-            //                         padding:
-            //                             const EdgeInsets.fromLTRB(12, 0, 12, 0),
-            //                         decoration: BoxDecoration(
-            //                           color: HexColor('#203b53'),
-            //                           borderRadius: const BorderRadius.only(
-            //                             topLeft: Radius.zero,
-            //                             topRight: Radius.zero,
-            //                             bottomLeft: Radius.circular(17.0),
-            //                             bottomRight: Radius.circular(17.0),
-            //                           ),
-            //                           // border: Border.all()
-            //                         ),
-            //                         child: Row(
-            //                           children: [
-            //                             Expanded(
-            //                               flex: 3,
-            //                               child: Container(
-            //                                 width: 100,
-            //                                 height: 40,
-            //                                 // decoration:
-            //                                 //     BoxDecoration(border: Border.all()),
-            //                                 child: const Align(
-            //                                     alignment: Alignment.centerLeft,
-            //                                     child: Text(
-            //                                       "Notes",
-            //                                       style: TextStyle(
-            //                                           color: Colors.white,
-            //                                           fontSize: 20),
-            //                                     )),
-            //                               ),
-            //                             ),
-            //                             Expanded(
-            //                               flex: 2,
-            //                               child: Container(
-            //                                 height: 40,
-            //                                 //
-            //                                 // decoration:
-            //                                 //     BoxDecoration(border: Border.all()),
-            //                                 child: Padding(
-            //                                   padding:
-            //                                       const EdgeInsets.all(3.0),
-            //                                   child: Row(
-            //                                     children: [
-            //                                       Expanded(
-            //                                         child: CircleButton(
-            //                                             onTap: () {},
-            //                                             iconData: Image.asset(
-            //                                               'assets/chat.png',
-            //                                             )),
-            //                                       ),
-            //                                       Expanded(
-            //                                         child: CircleButton(
-            //                                             onTap: () => {},
-            //                                             iconData: Image.asset(
-            //                                               'assets/call.png',
-            //                                             )),
-            //                                       ),
-            //                                       Expanded(
-            //                                         child: CircleButton(
-            //                                             onTap: () => {},
-            //                                             iconData: Image.asset(
-            //                                               'assets/social.png',
-            //                                             )),
-            //                                       ),
-            //                                     ],
-            //                                   ),
-            //                                 ),
-            //                               ),
-            //                             ),
-            //                           ],
-            //                         )),
-            //                   ),
-            //                 ],
-            //               )
-            //             ],
-            //           ),
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            Standlone(),
-            Icon(Icons.directions_transit),
+            Standlone(docId: widget.docId),
+            const Icon(Icons.directions_transit),
             // Icon(Icons.directions_transit),
           ],
         ),
@@ -337,8 +79,24 @@ class _LeadBoxState extends State<LeadBox> {
   }
 }
 
-class Standlone extends StatelessWidget {
-  const Standlone({Key? key}) : super(key: key);
+class Standlone extends StatefulWidget {
+  final String? docId;
+
+  const Standlone({required this.docId, Key? key}) : super(key: key);
+
+  @override
+  State<Standlone> createState() => _StandloneState();
+}
+
+class _StandloneState extends State<Standlone> {
+  String? _chosenValue;
+  String? docId;
+
+  @override
+  void initState() {
+    docId = widget.docId;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,12 +106,66 @@ class Standlone extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomSelector(
-                    dropDownItems: [],
-                    onChanged: (value) {},
-                    chosenValue: null,
-                    borderRadius: 10)
-                .use(),
+            FutureBuilder<List<List<String>>>(
+                future: FirestoreDataProvider().getAllProperty(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<String> dropDownItems = snapshot.data![0];
+                    if (docId == null) {
+                      _chosenValue = 'All/0';
+                    } else {
+                      final index = snapshot.data?[1]
+                          .indexWhere((element) => element == docId);
+                      _chosenValue = snapshot.data?[0][index!];
+                    }
+                    return DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<String>(
+                            icon: const Icon(Icons.keyboard_arrow_down_outlined,
+                                color: Colors.red),
+                            dropdownColor: const Color(0xFF213C53),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              fillColor: const Color(0xFF213C53),
+                              filled: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 7, horizontal: 5),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none),
+                            ),
+                            items: dropDownItems
+                                .map((String e) => DropdownMenuItem<String>(
+                                    value: e,
+                                    child: FittedBox(
+                                        child: Text(e.split('/')[0]))))
+                                .toList(),
+                            validator: (value) =>
+                                value == null ? 'Field Required' : null,
+                            value: _chosenValue,
+                            isExpanded: true,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _chosenValue = value;
+                                final index = value?.split('/')[1];
+                                final id = snapshot.data?[1][int.parse(index!)];
+                                if (id!.isNotEmpty) {
+                                  docId = id;
+                                } else {
+                                  docId = null;
+                                }
+                              });
+                            }),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                }),
             const SizedBox(height: 15),
             Row(children: [
               Expanded(
@@ -393,223 +205,260 @@ class Standlone extends StatelessWidget {
             ]),
             const SizedBox(height: 20),
             Expanded(
-              child: FutureBuilder<
-                      List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
-                  future: FirestoreDataProvider().getAllLeads(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "${snapshot.data?.length ?? 0} leads are interested",
-                              style: const TextStyle(fontSize: 22)),
-                          const SizedBox(height: 15),
-                          Expanded(
-                            child: ListView.builder(
-                                itemCount: snapshot.data?.length ?? 0,
-                                itemBuilder: (context, index) {
-                                  final currentItem =
-                                      snapshot.data?[index].data();
-                                  final name = currentItem?['name'];
-                                  final contact = currentItem?['mobile'];
-                                  final location = currentItem?['location'];
-                                  final buyingTime =
-                                      currentItem?['buying_time'];
-                                  return Neumorphic(
-                                    margin: const EdgeInsets.only(bottom: 20),
-                                    style: NeumorphicStyle(
-                                      shape: NeumorphicShape.flat,
-                                      boxShape: NeumorphicBoxShape.roundRect(
-                                          BorderRadius.circular(17)),
-                                      depth: 4,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(
+              child:
+                  FutureBuilder<
+                          List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
+                      future: (docId == null)
+                          ? FirestoreDataProvider().getAllLeads()
+                          : FirestoreDataProvider().getParticularLead(docId!),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "${snapshot.data?.length ?? 0} leads are interested",
+                                  style: const TextStyle(fontSize: 22)),
+                              const SizedBox(height: 15),
+                              Expanded(
+                                child: ListView.builder(
+                                    itemCount: snapshot.data?.length ?? 0,
+                                    itemBuilder: (context, index) {
+                                      final currentItem =
+                                          snapshot.data?[index].data();
+                                      final name = currentItem?['name'];
+                                      final contact = currentItem?['mobile'];
+                                      final location = currentItem?['location'];
+                                      final buyingTime =
+                                          currentItem?['buying_time'];
+                                      final profile = currentItem?['profile'];
+                                      final leadUid =
+                                          currentItem?['interestedUserUid'];
+                                      final leadName = currentItem?['name'];
+                                      return Neumorphic(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 20),
+                                        style: NeumorphicStyle(
+                                          shape: NeumorphicShape.flat,
+                                          boxShape:
+                                              NeumorphicBoxShape.roundRect(
+                                                  BorderRadius.circular(17)),
+                                          depth: 4,
+                                        ),
+                                        child: Column(
                                           children: [
-                                            Expanded(
-                                              child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(17.0),
-                                                      topRight:
-                                                          Radius.circular(17.0),
-                                                    ),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    // textBaseline: TextBaseline
-                                                    //     .ideographic,
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 2,
-                                                        child: Container(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 8,
-                                                                  left: 8,
-                                                                  bottom: 8),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8),
-                                                          child: Image.asset(
-                                                              "assets/lead_box_image.png"),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  17.0),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  17.0),
                                                         ),
+                                                        color: Colors.white,
                                                       ),
-                                                      Expanded(
-                                                        flex: 3,
-                                                        child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8),
-                                                            margin:
-                                                                const EdgeInsets
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        // textBaseline: TextBaseline
+                                                        //     .ideographic,
+                                                        children: [
+                                                          Expanded(
+                                                              flex: 2,
+                                                              child: Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top: 8,
+                                                                        left: 8,
+                                                                        bottom:
+                                                                            8),
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(8),
+                                                                child:
+                                                                    FutureBuilder<
+                                                                        String>(
+                                                                  initialData:
+                                                                      '',
+                                                                  future: FirestoreDataProvider()
+                                                                      .getUserProfilePicture(
+                                                                          leadUid),
+                                                                  builder: (context,
+                                                                          snapshot) =>
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    child: (snapshot
+                                                                            .data!
+                                                                            .isEmpty)
+                                                                        ? Image.asset(
+                                                                            'assets/profile.png',
+                                                                            height:
+                                                                                120,
+                                                                            fit: BoxFit
+                                                                                .fill)
+                                                                        : Image
+                                                                            .network(
+                                                                            snapshot.data!,
+                                                                            height:
+                                                                                120,
+                                                                            fit:
+                                                                                BoxFit.fill,
+                                                                          ),
+                                                                  ),
+                                                                ),
+                                                              )),
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(8),
+                                                                margin: const EdgeInsets
                                                                         .fromLTRB(
                                                                     0,
                                                                     18,
                                                                     0,
                                                                     18),
-                                                            child: Align(
-                                                              alignment: Alignment
-                                                                  .centerLeft,
-                                                              child: Column(
-                                                                children: [
-                                                                  CustomContainerText(
-                                                                          text1:
-                                                                              'Name',
-                                                                          text2:
-                                                                              name)
-                                                                      .use(),
-                                                                  CustomContainerText(
-                                                                          text1:
-                                                                              'Contact',
-                                                                          text2:
-                                                                              contact)
-                                                                      .use(),
-                                                                  CustomContainerText(
-                                                                          text1:
-                                                                              'Location',
-                                                                          text2:
-                                                                              location)
-                                                                      .use(),
-                                                                  CustomContainerText(
-                                                                          text1:
-                                                                              'Buying time ',
-                                                                          text2:
-                                                                              buyingTime)
-                                                                      .use(),
-                                                                ],
-                                                              ),
-                                                            )),
-                                                      ),
-                                                    ],
-                                                  )),
+                                                                child: Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child: Column(
+                                                                    children: [
+                                                                      CustomContainerText(
+                                                                              text1: 'Name',
+                                                                              text2: name)
+                                                                          .use(),
+                                                                      CustomContainerText(
+                                                                              text1: 'Contact',
+                                                                              text2: contact)
+                                                                          .use(),
+                                                                      CustomContainerText(
+                                                                              text1: 'Location',
+                                                                              text2: location)
+                                                                          .use(),
+                                                                      CustomContainerText(
+                                                                              text1: 'Buying time ',
+                                                                              text2: buyingTime)
+                                                                          .use(),
+                                                                    ],
+                                                                  ),
+                                                                )),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
                                                           12, 6, 12, 6),
-                                                  decoration: BoxDecoration(
-                                                    color: HexColor('#203b53'),
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(17.0),
-                                                      bottomRight:
-                                                          Radius.circular(17.0),
-                                                    ),
-                                                    // border: Border.all()
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      const Expanded(
-                                                        flex: 3,
-                                                        child: Text(
-                                                          "Notes",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 20),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            HexColor('#203b53'),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  17.0),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  17.0),
                                                         ),
+                                                        // border: Border.all()
                                                       ),
-                                                      Expanded(
-                                                        flex: 2,
-                                                        child: SizedBox(
-                                                          height: 40,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(3.0),
-                                                            child: Row(
-                                                              children: [
-                                                                Expanded(
-                                                                  child:
-                                                                      CircleButton(
-                                                                          onTap:
-                                                                              () {},
-                                                                          iconData:
-                                                                              Image.asset(
-                                                                            'assets/chat.png',
-                                                                          )),
-                                                                ),
-                                                                Expanded(
-                                                                  child:
-                                                                      CircleButton(
-                                                                          onTap: () =>
-                                                                              {},
-                                                                          iconData:
-                                                                              Image.asset(
-                                                                            'assets/call.png',
-                                                                          )),
-                                                                ),
-                                                                Expanded(
-                                                                  child:
-                                                                      CircleButton(
-                                                                          onTap: () =>
-                                                                              {},
-                                                                          iconData:
-                                                                              Image.asset(
-                                                                            'assets/social.png',
-                                                                          )),
-                                                                ),
-                                                              ],
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              "Notes",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 20),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )),
-                                            ),
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: SizedBox(
+                                                              height: 40,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        3.0),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: CircleButton(
+                                                                          onTap: () {
+                                                                            Navigator.pushNamed(context,
+                                                                                RouteName.chatDetail, arguments: [
+                                                                              leadUid,
+                                                                              leadName
+                                                                            ]);
+                                                                          },
+                                                                          iconData: Image.asset(
+                                                                            'assets/chat.png',
+                                                                          )),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: CircleButton(
+                                                                          onTap: () => {},
+                                                                          iconData: Image.asset(
+                                                                            'assets/call.png',
+                                                                          )),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: CircleButton(
+                                                                          onTap: () => {},
+                                                                          iconData: Image.asset(
+                                                                            'assets/social.png',
+                                                                          )),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ),
+                                              ],
+                                            )
                                           ],
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ],
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Center(
-                          child: CustomLabel(text: 'Something Went Wrong'));
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  }),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            ],
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Center(
+                              child: CustomLabel(text: 'Something Went Wrong'));
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      }),
             ),
           ],
         ),

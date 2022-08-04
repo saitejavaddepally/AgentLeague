@@ -147,7 +147,8 @@ class PropertyDocumentsProvider extends ChangeNotifier {
   UnmodifiableListView<dynamic> get docNames => UnmodifiableListView(_docNames);
 
   void pickDocuments(int index) async {
-    final path = await FlutterDocumentPicker.openDocument();
+    final path = await FlutterDocumentPicker.openDocument(
+        params: FlutterDocumentPickerParams(allowedFileExtensions: ['pdf']));
 
     if (path == null) return;
     final docTemp = File(path);

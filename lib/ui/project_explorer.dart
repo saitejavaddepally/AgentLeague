@@ -6,6 +6,7 @@ import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../helper/constants.dart';
+import '../route_generator.dart';
 import '../theme/colors.dart';
 import 'package:readmore/readmore.dart';
 
@@ -263,25 +264,25 @@ class Page extends StatelessWidget {
                         "isProject": true
                       });
                     }));
-                  }
-                  else if (i.toString() == "Tour") {
+                  } else if (i.toString() == "Tour") {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return Tour(info: {
-                            "projectDetails": projectDetails,
-                            "isProject": true
-                          });
-                        }));
-                  }
-
-                  else if (i.toString() == "emi") {
+                      return Tour(info: {
+                        "projectDetails": projectDetails,
+                        "isProject": true
+                      });
+                    }));
+                  } else if (i.toString() == "emi") {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return EMI(info: {
-                            "projectDetails": projectDetails,
-                            "isProject": true
-                          });
-                        }));
+                      return EMI(info: {
+                        "projectDetails": projectDetails,
+                        "isProject": true
+                      });
+                    }));
+                  } else if (i.toString() == 'location') {
+                    Navigator.pushNamed(context, RouteName.location,
+                        arguments: [27.9322661, 78.0846259]);
                   }
                 }).use(),
           ),

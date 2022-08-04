@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:agent_league/helper/file_compressor.dart';
-import 'package:agent_league/provider/amenities_provider.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +8,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:video_compress/video_compress.dart';
 import '../helper/shared_preferences.dart';
 import 'auth_methods.dart';
 import 'firestore_crud_operations.dart';
@@ -256,11 +254,11 @@ class UploadPropertiesToFirestore {
 
           print(
               "type is $type and video names are $_videoNames and docs are $_docNames");
-          snapshot= (await _firebaseStorage
+          snapshot = (await _firebaseStorage
               .ref()
               .child(
                   'sell_images/$value/standlone/$currentPlot/$type/${(type == 'images') ? type + "_$i" : (type == 'docs') ? _docNames[i] : _videoNames[i]}')
-              .putFile(temp! as File)) ;
+              .putFile(temp! as File));
 
           // task.snapshotEvents.listen((event) {
           //   var progress = ((event.bytesTransferred.toDouble() /
@@ -268,7 +266,6 @@ class UploadPropertiesToFirestore {
           //           100)
           //       .roundToDouble();
           // });
-
         });
       }
     }
