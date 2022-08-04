@@ -31,8 +31,16 @@ class _EMIState extends State<EMI> {
   late String _tenureChosenValue = '5 yrs';
 
   Future<int?> getCurrentPlotPrice() async {
-    int currentPlot = widget.info['currentPage'];
-    String price = widget.info['plotPagesInformation'][currentPlot][0]['price'];
+
+    late String price;
+    if (widget.info['isProject']) {
+      print(widget.info['projectDetails']['pricePerUnitText']);
+      price = widget.info['projectDetails']['pricePerUnitText'];
+    }
+    else{
+      int currentPlot = widget.info['currentPage'];
+      price = widget.info['plotPagesInformation'][currentPlot][0]['price'];
+    }
     return int.parse(price);
   }
 

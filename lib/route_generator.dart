@@ -190,7 +190,7 @@ class RouteGenerator {
             type: PageTransitionType.leftToRight);
       case RouteName.projectExplorer:
         return PageTransition(
-            child: const ProjectExplorer(),
+            child: const ProjectExplorer(projectDetails: {},),
             type: PageTransitionType.leftToRight);
       case RouteName.addProject:
         return PageTransition(

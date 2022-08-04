@@ -52,7 +52,7 @@ class _UploadsScreenState extends State<UploadsScreen> {
             CustomButton(
               text: 'Next',
               onClick: () async {
-                await PropertyUploadProvider().uploadProject(widget.projectInfo, _images, _videos, _docs).then((value) {
+                await PropertyUploadProvider().uploadProject(widget.projectInfo as Map<String, dynamic>, _images, _videos, _docs).then((value) {
                   Navigator
                       .pushAndRemoveUntil(
                     context,

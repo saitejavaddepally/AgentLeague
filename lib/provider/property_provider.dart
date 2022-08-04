@@ -40,7 +40,7 @@ class PropertyProvider extends ChangeNotifier {
   }
 
   // for projectCategoryDropDown
-  final List<String> _projectCategoryDropDown = ['abc', 'def'];
+  final List<String> _projectCategoryDropDown = ['villas', 'hiRise', 'hmda'];
   String? _projectCategoryChosenValue;
 
   String? get projectCategoryChosenValue => _projectCategoryChosenValue;

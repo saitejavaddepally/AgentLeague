@@ -19,10 +19,21 @@ class _TourState extends State<Tour> {
   late List res;
 
   Future<List> getVideos() async {
-    int currentPlot = widget.info['currentPage'];
-    List videos = widget.info['plotPagesInformation'][currentPlot][0]['videos'];
-    List videoNames =
-        widget.info['plotPagesInformation'][currentPlot][0]['videoNames'];
+
+    List videos;
+    List videoNames;
+
+    if (widget.info['isProject']) {
+      videos = widget.info['projectDetails']['videos'];
+      videoNames = ['video1', 'video2', 'video3', 'video4'];
+    }
+    else {
+      int currentPlot = widget.info['currentPage'];
+      videos =
+          widget.info['plotPagesInformation'][currentPlot][0]['videos'];
+      videoNames =
+          widget.info['plotPagesInformation'][currentPlot][0]['videoNames'];
+    }
 
     return [
       {"videos": videos},

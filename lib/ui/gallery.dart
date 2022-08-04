@@ -35,8 +35,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Future<void> getImages() async {
-    int currentPlot = widget.info['currentPage'];
-    res = widget.info['plotPagesInformation'][currentPlot][0]['images'];
+    if (widget.info['isProject']) {
+      res = widget.info['projectDetails']['images'];
+    } else {
+      int currentPlot = widget.info['currentPage'];
+      res = widget.info['plotPagesInformation'][currentPlot][0]['images'];
+    }
   }
 
   Future urlToFile(String imageUrl) async {
