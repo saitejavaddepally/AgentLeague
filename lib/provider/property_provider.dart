@@ -57,6 +57,8 @@ class PropertyProvider extends ChangeNotifier {
   final TextEditingController _projectLocationController =
       TextEditingController();
   String _projectLocation = '';
+  late double latitude;
+  late double longitude;
 
   TextEditingController get projectLocationController =>
       _projectLocationController;

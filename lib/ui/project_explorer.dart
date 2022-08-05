@@ -11,6 +11,7 @@ import '../theme/colors.dart';
 import 'package:readmore/readmore.dart';
 
 import 'emi.dart';
+import 'location.dart';
 
 class ProjectExplorer extends StatefulWidget {
   final Map projectDetails;
@@ -281,8 +282,16 @@ class Page extends StatelessWidget {
                       });
                     }));
                   } else if (i.toString() == 'location') {
-                    Navigator.pushNamed(context, RouteName.location,
-                        arguments: [27.9322661, 78.0846259]);
+                      double latitude =
+                      projectDetails["latitude"];
+                      double longitude =
+                      projectDetails["longitude"];
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  LocationScreen(latitude: latitude, longitude: longitude)));
                   }
                 }).use(),
           ),

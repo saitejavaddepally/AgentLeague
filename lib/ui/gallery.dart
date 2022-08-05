@@ -36,8 +36,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   Future<void> getImages() async {
     if (widget.info['isProject']) {
+      print(widget.info['isProject']);
       res = widget.info['projectDetails']['images'];
     } else {
+      print("Where Am I? ");
       int currentPlot = widget.info['currentPage'];
       res = widget.info['plotPagesInformation'][currentPlot][0]['images'];
     }

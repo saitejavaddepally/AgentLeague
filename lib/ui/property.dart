@@ -25,6 +25,8 @@ class Property extends StatefulWidget {
 class _PropertyState extends State<Property> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  late double _latitude;
+  late double _longitude;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +53,17 @@ class _PropertyState extends State<Property> {
                   text: 'Next',
                   onClick: () {
                     if (_formKey.currentState!.validate()) {
+
+                      Map<String, dynamic> data = _propertyProvider.getMap();
+                      data.addAll({
+                        'latitude': _latitude,
+                        'longitude': _longitude
+                      });
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => UploadsScreen(
-                                  projectInfo: _propertyProvider.getMap())));
+                                  projectInfo: data)));
                     }
                   },
                   color: HexColor('FD7E0E'),
@@ -136,6 +144,11 @@ class _PropertyState extends State<Property> {
                                       setState(() => isLoading = true);
                                       final res = await GetUserLocation
                                           .getCurrentLocation();
+
+                                      print(res![0]);
+                                      _latitude = (res[1]);
+                                      _longitude = (res[2]);
+
                                       setState(() => isLoading = false);
                                       if (res != null && res.isNotEmpty) {
                                         value.projectLocationController.text =

@@ -135,22 +135,31 @@ class _RealtorPageState extends State<RealtorPage> {
   @override
   Widget build(BuildContext context) {
     var iconFunctionalities = [
-      () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  LocationScreen(latitude: 27.9322661, longitude: 78.0846259))),
+      () {
+        double latitude =
+            plotPagesInformation[widget.currentPage][0]["latitude"];
+        double longitude =
+            plotPagesInformation[widget.currentPage][0]["longitude"];
+
+        return Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LocationScreen(latitude: latitude, longitude: longitude)));
+      },
       () => Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => GalleryScreen(info: {
                     "currentPage": widget.currentPage,
-                    "plotPagesInformation": plotPagesInformation
+                    "plotPagesInformation": plotPagesInformation,
+                    "isProject": false,
                   }))),
       () => Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => Tour(info: {
+                    "isProject": false,
                     "currentPage": widget.currentPage,
                     "plotPagesInformation": plotPagesInformation
                   }))),
@@ -158,6 +167,7 @@ class _RealtorPageState extends State<RealtorPage> {
           context,
           MaterialPageRoute(
               builder: (context) => Documents(info: {
+                    "isProject": false,
                     "currentPage": widget.currentPage,
                     "plotPagesInformation": plotPagesInformation
                   }))),
@@ -165,6 +175,7 @@ class _RealtorPageState extends State<RealtorPage> {
           context,
           MaterialPageRoute(
               builder: (context) => EMI(info: {
+                    "isProject": false,
                     "currentPage": widget.currentPage,
                     "plotPagesInformation": plotPagesInformation
                   }))),
