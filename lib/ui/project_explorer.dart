@@ -1,5 +1,7 @@
 import 'package:agent_league/components/custom_button.dart';
+import 'package:agent_league/components/custom_snackbar.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
+import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/ui/Home/project.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/tour.dart';
@@ -23,6 +25,8 @@ class ProjectExplorer extends StatefulWidget {
   State<ProjectExplorer> createState() => _ProjectExplorerState();
 }
 
+late String userId;
+
 class _ProjectExplorerState extends State<ProjectExplorer> {
   CarouselController buttonCarouselController = CarouselController();
 
@@ -31,8 +35,19 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
   @override
   void initState() {
     data = widget.projectDetails;
-    print(data);
+    asyncTrigger();
+    print("userId is $userId");
     super.initState();
+  }
+
+  asyncTrigger() async{
+    await getUserId();
+  }
+
+  getUserId() async{
+   await SharedPreferencesHelper().getUserId().then((value) {
+      userId = value!;
+    });
   }
 
   @override
@@ -229,6 +244,23 @@ class Page extends StatelessWidget {
       Key? key})
       : super(key: key);
 
+
+  bool checkIfProjectIsPaidOrNot(Map projectDetails, String userId, BuildContext context){
+  //  if it is a same userId, then show the details
+  //  check for the list of userId's
+
+    bool isPaid = false;
+      List accessibleUserIds = projectDetails['userId'];
+      for (var element in accessibleUserIds) {
+        if(element == userId){
+          return true;
+        }
+      }
+
+
+    return isPaid;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -257,7 +289,17 @@ class Page extends StatelessWidget {
                 text: i,
                 isTextUnder: true,
                 onTap: () {
-                  if (i.toString() == "Gallery") {
+
+                  // bool isAccessibleToThisUser = checkIfProjectIsPaidOrNot(projectDetails, userId, context);
+                  bool isAccessibleToThisUser = true;
+                  print("is accessible to the user ?  $isAccessibleToThisUser");
+                  if(!isAccessibleToThisUser){
+                    mySnackBar(context, "Please subscribe to view this project..");
+
+                  }
+
+                  else if (i.toString() == "Gallery") {
+
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return GalleryScreen(info: {
@@ -282,16 +324,14 @@ class Page extends StatelessWidget {
                       });
                     }));
                   } else if (i.toString() == 'location') {
-                      double latitude =
-                      projectDetails["latitude"];
-                      double longitude =
-                      projectDetails["longitude"];
+                    double latitude = projectDetails["latitude"];
+                    double longitude = projectDetails["longitude"];
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  LocationScreen(latitude: latitude, longitude: longitude)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LocationScreen(
+                                latitude: latitude, longitude: longitude)));
                   }
                 }).use(),
           ),

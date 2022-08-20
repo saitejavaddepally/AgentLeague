@@ -16,9 +16,10 @@ class PropertyUploadProvider {
       Map<String, dynamic> data, List images, List videos, List docs) async {
     EasyLoading.show(status: "Uploading projectInfo");
     String? uid = await SharedPreferencesHelper().getUserId();
+    List userIds = [uid];
     CollectionReference ref = FirebaseFirestore.instance.collection("projects");
     data.addAll( {
-      "userId" : uid,
+      "userId" : FieldValue.arrayUnion([...userIds]),
     });
 
     print("data is $data");
