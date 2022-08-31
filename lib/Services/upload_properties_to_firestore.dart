@@ -60,6 +60,8 @@ class UploadPropertiesToFirestore {
       res = event.data() as Map;
     });
 
+    print(res);
+
     return res['freeCredit'];
   }
 
@@ -87,6 +89,13 @@ class UploadPropertiesToFirestore {
           .ref()
           .child('sell_images/$value/profile_pic')
           .putFile(image!);
+      String? url = await getProfilePicture();
+      print("url is $url");
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(value)
+          .set({"profilePicture": url});
+      print("done!");
     });
   }
 

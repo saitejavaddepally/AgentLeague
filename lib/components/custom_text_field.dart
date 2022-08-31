@@ -30,39 +30,42 @@ class CustomTextField extends StatelessWidget {
       this.maxLength,
       this.style,
       this.contentPadding =
-          const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+          const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
       Key? key})
       : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      maxLength: maxLength,
-      validator: validator,
-      onChanged: onChanged,
-      controller: controller,
-      onTap: onTap,
-      readOnly: readOnly,
-      keyboardType: keyboardType,
-      style: style,
-      cursorColor: Colors.white.withOpacity(0.1),
-      decoration: InputDecoration(
-        isDense: isDense,
-        suffixIcon: icon,
-        counterText: '',
-        contentPadding: contentPadding,
-        hintText: hint,
-        hintStyle: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            color: Colors.white.withOpacity(0.3)),
-        fillColor: Colors.white.withOpacity(0.1),
-        filled: true,
-        border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(borderRadius)),
+    return SizedBox(
+      height: height,
+      child: TextFormField(
+        maxLength: maxLength,
+        validator: validator,
+        onChanged: onChanged,
+        controller: controller,
+        onTap: onTap,
+        readOnly: readOnly,
+        keyboardType: keyboardType,
+        style: style,
+        cursorColor: Colors.white.withOpacity(0.1),
+        decoration: InputDecoration(
+          isDense: isDense,
+          suffixIcon: icon,
+          counterText: '',
+          contentPadding: contentPadding,
+          hintText: hint,
+          hintStyle: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Colors.white.withOpacity(0.3)),
+          fillColor: Colors.white.withOpacity(0.1),
+          filled: true,
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(borderRadius)),
 
+        ),
       ),
     );
   }

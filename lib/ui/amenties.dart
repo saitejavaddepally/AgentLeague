@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:math';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/property_digitalization.dart';
+import 'package:agent_league/ui/realtor_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:agent_league/Services/auth_methods.dart';
@@ -330,7 +332,6 @@ class _AmentiesState extends State<Amenties> {
                                             CustomButton(
                                                     text: 'Next',
                                                     onClick: () async {
-
                                                       EasyLoading.show();
                                                       String credits =
                                                           await UploadPropertiesToFirestore()
@@ -339,14 +340,15 @@ class _AmentiesState extends State<Amenties> {
                                                           await SharedPreferencesHelper()
                                                               .getPaidCreditStatus();
                                                       EasyLoading.dismiss();
+
+                                                      print(credits);
                                                       int freeCreditCurrent =
                                                           int.parse(credits);
                                                       if (freeCreditCurrent !=
                                                               0 &&
                                                           !ifPaid!) {
                                                         await EasyLoading.show(
-                                                            status:
-                                                                '0%');
+                                                            status: '0%');
                                                         await UploadPropertiesToFirestore()
                                                             .uploadData(
                                                                 _images,
@@ -438,7 +440,6 @@ class _AmentiesState extends State<Amenties> {
                                                                   FieldValue
                                                                       .delete(),
                                                             });
-
                                                           });
                                                         });
                                                       }
@@ -458,13 +459,19 @@ class _AmentiesState extends State<Amenties> {
                                                           .pushAndRemoveUntil(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                BottomBar(
-                                                                  index:
-                                                                  0,
+                                                            builder: (context) =>
+                                                                PropertyDigitalization(
+                                                                  formData: {
+                                                                    "propData":
+                                                                        widget.data[0],
+                                                                    "media": {
+                                                                      "picture":
+                                                                          _images[
+                                                                              0]
+                                                                    }
+                                                                  },
                                                                 )),
-                                                            (route) => false,
+                                                        (route) => false,
                                                       );
                                                     },
                                                     width: 102,
