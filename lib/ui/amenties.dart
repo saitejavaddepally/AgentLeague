@@ -1,23 +1,15 @@
-import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
-import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
-import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_title.dart';
-import 'package:video_compress/video_compress.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/amenities_provider.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/uploads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../Services/firestore_crud_operations.dart';
@@ -330,7 +322,6 @@ class _AmentiesState extends State<Amenties> {
                                             CustomButton(
                                                     text: 'Next',
                                                     onClick: () async {
-
                                                       EasyLoading.show();
                                                       String credits =
                                                           await UploadPropertiesToFirestore()
@@ -345,8 +336,7 @@ class _AmentiesState extends State<Amenties> {
                                                               0 &&
                                                           !ifPaid!) {
                                                         await EasyLoading.show(
-                                                            status:
-                                                                '0%');
+                                                            status: '0%');
                                                         await UploadPropertiesToFirestore()
                                                             .uploadData(
                                                                 _images,
@@ -438,7 +428,6 @@ class _AmentiesState extends State<Amenties> {
                                                                   FieldValue
                                                                       .delete(),
                                                             });
-
                                                           });
                                                         });
                                                       }
@@ -460,11 +449,10 @@ class _AmentiesState extends State<Amenties> {
                                                         MaterialPageRoute(
                                                             builder:
                                                                 (context) =>
-                                                                BottomBar(
-                                                                  index:
-                                                                  0,
-                                                                )),
-                                                            (route) => false,
+                                                                    BottomBar(
+                                                                      index: 0,
+                                                                    )),
+                                                        (route) => false,
                                                       );
                                                     },
                                                     width: 102,

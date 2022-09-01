@@ -1,18 +1,18 @@
-import 'package:agent_league/components/custom_container_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/provider/property_upload_provider.dart';
 import 'package:agent_league/route_generator.dart';
+import 'package:agent_league/ui/Home/project.dart';
 import 'package:agent_league/ui/realtor_card.dart';
 import 'package:agent_league/ui/search_by.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import '../../components/custom_sell_card.dart';
+import '../../components/custom_title.dart';
 import '../../theme/colors.dart';
 import '../saved.dart';
 
@@ -48,7 +48,6 @@ class _SellScreenState extends State<SellScreen> {
 
   @override
   void initState() {
-    print("Am I here? ");
     super.initState();
 
     getPlotInformation();
@@ -58,18 +57,15 @@ class _SellScreenState extends State<SellScreen> {
     setState(() {
       loading = true;
     });
-    String? userId = await SharedPreferencesHelper().getUserId();
     List numberOfProperties = await FirestoreDataProvider().getPlots();
     int number = int.parse(numberOfProperties.length.toString());
 
     for (var i = 0; i < number; i++) {
       String plot = numberOfProperties[i] as String;
       var plotNumber = plot.substring(5);
-      print("the plot is $plotNumber");
       List detailsOfPages = await FirestoreDataProvider()
           .getPlotPagesInformation(int.parse(plotNumber));
 
-      print("The details of pages are  $detailsOfPages");
       if (detailsOfPages.isEmpty || detailsOfPages[0]['isPaid'] == "false") {
         continue;
       }
@@ -111,7 +107,6 @@ class _SellScreenState extends State<SellScreen> {
     }
     // price high to low
     else if (type == "Price Low - High") {
-      print("Am I here?");
       plotPagesInformation.sort((a, b) =>
           int.parse(a[0]['price']).compareTo(int.parse(b[0]['price'])));
       setState(() {
@@ -414,11 +409,76 @@ class _SellScreenState extends State<SellScreen> {
                   ),
                 ),
               ),
-              const Icon(Icons.directions_transit),
+              const Ventures(),
               // Icon(Icons.directions_transit),
             ],
           ),
         ));
+  }
+}
+
+class Ventures extends StatefulWidget {
+  const Ventures({Key? key}) : super(key: key);
+
+  @override
+  State<Ventures> createState() => _VenturesState();
+}
+
+class _VenturesState extends State<Ventures> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Column(children: [
+            FutureBuilder<List<Map<String, dynamic>>>(
+              initialData: const [],
+              future: PropertyUploadProvider.getExportedProjects(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.isNotEmpty) {
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: snapshot.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final currentItem = snapshot.data![index];
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: Row(children: [
+                              Expanded(
+                                child: CustomImage(
+                                  height: 220,
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, RouteName.projectExplorer,
+                                        arguments: currentItem);
+                                  },
+                                  image: currentItem['images'][0],
+                                ),
+                              ),
+                            ]),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                        child: CustomTitle(text: 'No projects Available'));
+                  }
+                } else if (snapshot.hasError) {
+                  return const Center(
+                      child: CustomTitle(text: 'Somethng Went Wrong'));
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            )
+          ]),
+        ),
+      ),
+    );
   }
 }
 

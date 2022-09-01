@@ -177,7 +177,7 @@ class CustomImage extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: CustomContainer(
-        child: Container(
+        child: SizedBox(
           height: height,
           child: Image.network(image, fit: BoxFit.fill),
           width: MediaQuery.of(context).size.width,

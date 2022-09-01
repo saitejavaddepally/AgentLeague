@@ -13,9 +13,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_button.dart';
-import '../components/custom_container_text.dart';
 import '../components/custom_title.dart';
-import '../helper/shared_preferences.dart';
 import '../location_service.dart';
 import '../theme/colors.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
@@ -120,67 +118,6 @@ class _SearchLocationState extends State<SearchLocation> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
-  Future<List?> getCurrentLocation() async {
-    try {
-      final location = GetUserLocation();
-      final Position position = await location.determinePosition();
-
-      final address = await location.getAddressFromCoordinates(
-          LatLng(position.latitude, position.longitude));
-      return [address, position.latitude, position.longitude];
-    } on Exception catch (e) {
-      if (e.toString() == 'Location services are disabled.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Please Turn On Location Service First")));
-      } else if (e.toString() == 'Location permissions are denied') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Please Allow Location Permission otherwise you didn't use this feature.")));
-      } else if (e.toString() ==
-          'Location permissions are permanently denied, we cannot request permissions.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Sorry You are not allowed to use this feature because you didn't allow permission.")));
-      }
-      return null;
-    }
-  }
-
-  Future<List?> getMapLocation() async {
-    final List? result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FutureBuilder<Position>(
-            future: GetUserLocation().determinePosition(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return PlacePicker(
-                  apiKey: 'AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0',
-                  onPlacePicked: (result) {
-                    Navigator.of(context).pop([
-                      result.formattedAddress,
-                      result.geometry!.location.lat,
-                      result.geometry!.location.lng
-                    ]);
-                  },
-                  hintText: "Search",
-                  enableMapTypeButton: false,
-                  initialPosition:
-                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                  useCurrentLocation: true,
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            }),
-      ),
-    );
-
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -249,19 +186,20 @@ class _SearchLocationState extends State<SearchLocation> {
 
                                 if (result == 1) {
                                   setState(() => isLoading = true);
-                                  final List? res = await getCurrentLocation();
+                                  final List? res = await GetUserLocation
+                                      .getCurrentLocation();
                                   setState(() => isLoading = false);
                                   if (res != null && res.isNotEmpty) {
-                                    print(res);
                                     _pr.locationController.text = res[0];
                                     _pr.latitude = res[1];
                                     _pr.longitude = res[2];
                                   }
                                 }
                                 if (result == 2) {
-                                  final List? res = await getMapLocation();
-                                  if (res != null && res.isNotEmpty) {
-                                    print(res);
+                                  final List res =
+                                      await GetUserLocation.getMapLocation(
+                                          context);
+                                  if (res.isNotEmpty) {
                                     _pr.locationController.text = res[0];
                                     _pr.latitude = res[1];
                                     _pr.longitude = res[2];
@@ -309,9 +247,7 @@ class _SearchLocationState extends State<SearchLocation> {
                           itemCount: value.matchedRecords.length,
                           itemBuilder: (context, index) {
                             final item = value.matchedRecords[index][0];
-                            final picture =
-                                value.matchedRecords[index][2]['picture'];
-                            print(picture);
+                            final picture = item['images'];
                             return Container(
                               margin: const EdgeInsets.only(bottom: 15),
                               padding: const EdgeInsets.only(
@@ -327,7 +263,7 @@ class _SearchLocationState extends State<SearchLocation> {
                                             BorderRadius.circular(12)),
                                     width: MediaQuery.of(context).size.width *
                                         0.30,
-                                    child: Image.network(picture,
+                                    child: Image.network(picture[0],
                                         fit: BoxFit.fill)),
                                 Expanded(
                                     child: Container(
@@ -600,17 +536,17 @@ class _PriceState extends State<Price> {
                                 location: info[i][0]['location'],
                                 price: info[i][0]['price'],
                                 possession: info[i][0]['possessionStatus'],
-                                propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'],
-
+                                propertyId: "PR_" +
+                                    plotPagesInformation[i][0]['plotNumber'],
                                 onClick: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => RealtorCard(
-                                            plotPagesInformation:
-                                            plotPagesInformation,
-                                            currentPage: i,
-                                          )));
+                                                plotPagesInformation:
+                                                    plotPagesInformation,
+                                                currentPage: i,
+                                              )));
                                 },
                               ),
                           ],

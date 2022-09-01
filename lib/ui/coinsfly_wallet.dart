@@ -1,8 +1,10 @@
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_button.dart';
 import '../components/custom_title.dart';
+import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 class CoinsflyWallet extends StatefulWidget {
@@ -27,7 +29,9 @@ class _CoinsflyWalletState extends State<CoinsflyWallet> {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           CustomButton(
             text: 'History',
-            onClick: () {},
+            onClick: () {
+              Navigator.pushNamed(context, RouteName.walletHistory);
+            },
             color: HexColor('082640'),
             width: 101,
             height: 40,
@@ -83,14 +87,17 @@ class _CoinsflyWalletState extends State<CoinsflyWallet> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Flexible(child: Image.asset('assets/Wallet.png')),
-                        CustomButton(
-                                text: '399',
-                                onClick: () {},
-                                isNeu: false,
-                                height: 40,
-                                width: 71,
-                                color: HexColor('1B1B1B'))
-                            .use()
+                        FutureBuilder<num>(
+                            initialData: 0,
+                            future: FirestoreDataProvider.getWalletBalance(),
+                            builder: (context, snapshot) => CustomButton(
+                                    text: snapshot.data.toString(),
+                                    onClick: () {},
+                                    isNeu: false,
+                                    height: 40,
+                                    width: 71,
+                                    color: HexColor('1B1B1B'))
+                                .use())
                       ],
                     )
                   ],

@@ -24,37 +24,34 @@ class CustomSelector {
   });
 
   use() {
-    return SizedBox(
-      height: height,
-      child: DropdownButtonHideUnderline(
-        child: ButtonTheme(
-          alignedDropdown: true,
-          child: DropdownButtonFormField(
-              icon: const Icon(Icons.keyboard_arrow_down_outlined,
-                  color: Colors.red),
-              dropdownColor: color,
-              decoration: InputDecoration(
-                isDense: isDense,
-                fillColor: color,
-                filled: true,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 7, horizontal: 5),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    borderSide: BorderSide.none),
-              ),
-              items: dropDownItems
-                  .map((e) => DropdownMenuItem(
-                      value: e, child: FittedBox(child: Text("$e"))))
-                  .toList(),
-              validator: (value) => value == null ? 'Field Required' : null,
-              hint: hint,
-              value: chosenValue,
-              isExpanded: true,
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, fontSize: 16, color: textColor),
-              onChanged: onChanged),
-        ),
+    return DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        alignedDropdown: true,
+        child: DropdownButtonFormField(
+            icon: const Icon(Icons.keyboard_arrow_down_outlined,
+                color: Colors.red),
+            dropdownColor: color,
+            decoration: InputDecoration(
+              isDense: isDense,
+              fillColor: color,
+              filled: true,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 7, horizontal: 5),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  borderSide: BorderSide.none),
+            ),
+            items: dropDownItems
+                .map((e) => DropdownMenuItem(
+                    value: e, child: FittedBox(child: Text("$e"))))
+                .toList(),
+            validator: (value) => value == null ? 'Field Required' : null,
+            hint: hint,
+            value: chosenValue,
+            isExpanded: true,
+            style: TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 16, color: textColor),
+            onChanged: onChanged),
       ),
     );
   }

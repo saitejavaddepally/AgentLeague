@@ -105,8 +105,7 @@ class ForYou extends StatelessWidget {
                 buttonText: "What is Escrow",
                 buttonWidth: 140,
                 onButtonClick: () {
-                  Navigator.pushNamed(
-                      context, RouteName.escrow);
+                  Navigator.pushNamed(context, RouteName.escrow);
                 }),
             const SizedBox(height: 25),
             const CustomTitle(text: "Personal loan :"),
@@ -164,7 +163,9 @@ class ForYourCustomers extends StatelessWidget {
                 buttonText: 'How it Works',
                 buttonWidth: 127,
                 textColor: Colors.white,
-                onButtonClick: () {}),
+                onButtonClick: () {
+                  Navigator.pushNamed(context, RouteName.propertyLoan);
+                }),
             const SizedBox(height: 20),
             ExploreContainer(
                 containerColor: HexColor('EDBE88'),
@@ -175,7 +176,9 @@ class ForYourCustomers extends StatelessWidget {
                     'Our experts will provide vasthu consultancy for you customers at their doorstep',
                 buttonText: 'Book Now',
                 buttonWidth: 108,
-                onButtonClick: () {}),
+                onButtonClick: () {
+                  Navigator.pushNamed(context, RouteName.vasthu);
+                }),
             const SizedBox(height: 20),
             ExploreContainer(
                 containerColor: HexColor('BAD8B0'),

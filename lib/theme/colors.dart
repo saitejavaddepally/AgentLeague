@@ -14,5 +14,6 @@ class HexColor extends Color {
 
 class CustomColors {
   static Color dark = HexColor('#082640');
+  static Color orange = HexColor('FE7F0E');
   static Color light = Colors.white;
 }

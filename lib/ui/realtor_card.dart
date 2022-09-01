@@ -419,46 +419,17 @@ class _RealtorPageState extends State<RealtorPage> {
                 onTap: () {
                   var data = plotPagesInformation[widget.currentPage][0]
                       ['box_enabled'];
-                  (data == 0)
-                      ? showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: const Text(
-                                    "Are you sure you want to upload this property to property box"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () async {
-                                        var currPlot = plotPagesInformation[
-                                                    widget.currentPage][0]
-                                                ['plotNumber']
-                                            .toString();
-                                        log("plot no is $currPlot");
-                                        await EasyLoading.show(
-                                            status: "Please wait...");
-                                        Navigator.pop(context);
+                  if (data == 0) {
+                    var currPlot = plotPagesInformation[widget.currentPage][0]
+                            ['plotNumber']
+                        .toString();
 
-                                        await FirestoreCrudOperations()
-                                            .updatePlotInformation(
-                                                int.parse(currPlot), {
-                                          "box_enabled": 1,
-                                        });
-                                        await EasyLoading.showSuccess(
-                                            "Property Added to property box",
-                                            duration:
-                                                const Duration(seconds: 3));
-
-                                        EasyLoading.dismiss();
-                                        plotPagesInformation[widget.currentPage]
-                                            [0]['box_enabled'] = 1;
-                                      },
-                                      child: const Text('Yes')),
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text('No'))
-                                ],
-                              ))
-                      : EasyLoading.showToast(
-                          "Property Already Added to Property Box");
+                    Navigator.pushNamed(context, RouteName.listingPropertyBox,
+                        arguments: currPlot);
+                  } else {
+                    EasyLoading.showToast(
+                        "Property Already Added to Property Box");
+                  }
                 },
                 child: Image.asset('assets/property.png')),
             const Spacer(),

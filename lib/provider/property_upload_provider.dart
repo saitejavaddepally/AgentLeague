@@ -7,7 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../Services/auth_methods.dart';
+
 class PropertyUploadProvider {
+  static final _projects = FirebaseFirestore.instance.collection('projects');
   static const String _IMAGE = 'images';
   static const String _VIDEO = 'videos';
   static const String _DOCS = 'docs';
@@ -17,8 +20,8 @@ class PropertyUploadProvider {
     EasyLoading.show(status: "Uploading projectInfo");
     String? uid = await SharedPreferencesHelper().getUserId();
     CollectionReference ref = FirebaseFirestore.instance.collection("projects");
-    data.addAll( {
-      "userId" : uid,
+    data.addAll({
+      "userId": uid,
     });
 
     print("data is $data");
@@ -144,13 +147,42 @@ class PropertyUploadProvider {
     return docs;
   }
 
-
-  Future<List> getAllProjects() async{
-
-    CollectionReference ref = FirebaseFirestore.instance.collection('projects');
-    QuerySnapshot querySnapshot = await ref.get();
-    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-
+  Future<List> getAllProjects() async {
+    final querySnap = await _projects.get();
+    final allData = querySnap.docs
+        .map((doc) => doc.data()..addAll({'docId': doc.id}))
+        .toList();
     return allData;
+  }
+
+  static Future<void> updateProject(String docId) async {
+    await _projects.doc(docId).update({'isExport': true});
+  }
+
+  static Future<List<Map<String, dynamic>>> getExportedProjects() async {
+    final querySnap = await _projects.where('isExport', isEqualTo: true).get();
+
+    return querySnap.docs
+        .map((e) => e.data()..addAll({'docId': e.id}))
+        .toList();
+  }
+
+  static Future isSubscribedUser(String docId) async {
+    String? userId = await AuthMethods().getUserId();
+    final docSnap = await _projects.doc(docId).get();
+    if (docSnap.data()?['subscribedUsers'] == null) {
+      return false;
+    } else if (docSnap.data()?['subscribedUsers'][userId] == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static Future<void> subscribeUser(String docId) async {
+    String? userId = await AuthMethods().getUserId();
+    await _projects
+        .doc(docId)
+        .update({'subscribedUsers.$userId': FieldValue.serverTimestamp()});
   }
 }

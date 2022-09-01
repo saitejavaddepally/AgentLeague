@@ -4,6 +4,7 @@ import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -205,286 +206,337 @@ class _StandloneState extends State<Standlone> {
             ]),
             const SizedBox(height: 20),
             Expanded(
-              child:
-                  FutureBuilder<
-                          List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
-                      future: (docId == null)
-                          ? FirestoreDataProvider().getAllLeads()
-                          : FirestoreDataProvider().getParticularLead(docId!),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  "${snapshot.data?.length ?? 0} leads are interested",
-                                  style: const TextStyle(fontSize: 22)),
-                              const SizedBox(height: 15),
-                              Expanded(
-                                child: ListView.builder(
-                                    itemCount: snapshot.data?.length ?? 0,
-                                    itemBuilder: (context, index) {
-                                      final currentItem =
-                                          snapshot.data?[index].data();
-                                      final name = currentItem?['name'];
-                                      final contact = currentItem?['mobile'];
-                                      final location = currentItem?['location'];
-                                      final buyingTime =
-                                          currentItem?['buying_time'];
-                                      final profile = currentItem?['profile'];
-                                      final leadUid =
-                                          currentItem?['interestedUserUid'];
-                                      final leadName = currentItem?['name'];
-                                      return Neumorphic(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 20),
-                                        style: NeumorphicStyle(
-                                          shape: NeumorphicShape.flat,
-                                          boxShape:
-                                              NeumorphicBoxShape.roundRect(
-                                                  BorderRadius.circular(17)),
-                                          depth: 4,
-                                        ),
-                                        child: Column(
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: (docId == null)
+                      ? FirestoreDataProvider.getAllLeads()
+                      : FirestoreDataProvider.getParticularLead(docId!),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              "${snapshot.data?.docs.length ?? 0} leads are interested",
+                              style: const TextStyle(fontSize: 22)),
+                          const SizedBox(height: 15),
+                          Expanded(
+                            child: ListView.builder(
+                                itemCount: snapshot.data?.docs.length,
+                                itemBuilder: (context, index) {
+                                  final currentItem =
+                                      snapshot.data?.docs[index].data();
+                                  final name = currentItem?['name'];
+                                  final contact = currentItem?['mobile'];
+                                  final location = currentItem?['location'];
+                                  final buyingTime =
+                                      currentItem?['buying_time'];
+                                  final leadUid =
+                                      currentItem?['interestedUserUid'];
+                                  final leadName = currentItem?['name'];
+                                  final status = currentItem?['status'];
+                                  final leadId = snapshot.data?.docs[index].id;
+                                  return Neumorphic(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    style: NeumorphicStyle(
+                                      shape: NeumorphicShape.flat,
+                                      boxShape: NeumorphicBoxShape.roundRect(
+                                          BorderRadius.circular(17)),
+                                      depth: 4,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
                                           children: [
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  17.0),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  17.0),
-                                                        ),
-                                                        color: Colors.white,
-                                                      ),
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        // textBaseline: TextBaseline
-                                                        //     .ideographic,
-                                                        children: [
-                                                          Expanded(
-                                                              flex: 2,
-                                                              child: Container(
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top: 8,
-                                                                        left: 8,
-                                                                        bottom:
-                                                                            8),
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(8),
-                                                                child:
-                                                                    FutureBuilder<
-                                                                        String>(
-                                                                  initialData:
-                                                                      '',
-                                                                  future: FirestoreDataProvider()
-                                                                      .getUserProfilePicture(
-                                                                          leadUid),
-                                                                  builder: (context,
-                                                                          snapshot) =>
-                                                                      ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
+                                            Expanded(
+                                              child: Container(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(17.0),
+                                                      topRight:
+                                                          Radius.circular(17.0),
+                                                    ),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    // textBaseline: TextBaseline
+                                                    //     .ideographic,
+                                                    children: [
+                                                      Expanded(
+                                                          flex: 2,
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 8,
+                                                                    left: 8,
+                                                                    bottom: 8),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8),
+                                                            child:
+                                                                FutureBuilder<
+                                                                    String>(
+                                                              initialData: '',
+                                                              future: FirestoreDataProvider()
+                                                                  .getUserProfilePicture(
+                                                                      leadUid),
+                                                              builder: (context,
+                                                                      snapshot) =>
+                                                                  ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
                                                                             10),
-                                                                    child: (snapshot
-                                                                            .data!
-                                                                            .isEmpty)
-                                                                        ? Image.asset(
-                                                                            'assets/profile.png',
-                                                                            height:
-                                                                                120,
-                                                                            fit: BoxFit
-                                                                                .fill)
-                                                                        : Image
-                                                                            .network(
-                                                                            snapshot.data!,
-                                                                            height:
-                                                                                120,
-                                                                            fit:
-                                                                                BoxFit.fill,
-                                                                          ),
-                                                                  ),
-                                                                ),
-                                                              )),
-                                                          Expanded(
-                                                            flex: 3,
-                                                            child: Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(8),
-                                                                margin: const EdgeInsets
+                                                                child: (snapshot
+                                                                        .data!
+                                                                        .isEmpty)
+                                                                    ? Image.asset(
+                                                                        'assets/profile.png',
+                                                                        height:
+                                                                            120,
+                                                                        fit: BoxFit
+                                                                            .fill)
+                                                                    : Image
+                                                                        .network(
+                                                                        snapshot
+                                                                            .data!,
+                                                                        height:
+                                                                            120,
+                                                                        fit: BoxFit
+                                                                            .fill,
+                                                                      ),
+                                                              ),
+                                                            ),
+                                                          )),
+                                                      Expanded(
+                                                        flex: 3,
+                                                        child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8),
+                                                            margin:
+                                                                const EdgeInsets
                                                                         .fromLTRB(
                                                                     0,
                                                                     18,
                                                                     0,
                                                                     18),
-                                                                child: Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child: Column(
-                                                                    children: [
-                                                                      CustomContainerText(
-                                                                              text1: 'Name',
-                                                                              text2: name)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Contact',
-                                                                              text2: contact)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Location',
-                                                                              text2: location)
-                                                                          .use(),
-                                                                      CustomContainerText(
-                                                                              text1: 'Buying time ',
-                                                                              text2: buyingTime)
-                                                                          .use(),
-                                                                    ],
-                                                                  ),
-                                                                )),
-                                                          ),
-                                                        ],
-                                                      )),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Container(
-                                                      padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                          12, 6, 12, 6),
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            HexColor('#203b53'),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  17.0),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  17.0),
-                                                        ),
-                                                        // border: Border.all()
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          const Expanded(
-                                                            flex: 3,
-                                                            child: Text(
-                                                              "Notes",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 20),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 2,
-                                                            child: SizedBox(
-                                                              height: 40,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child: CircleButton(
-                                                                          onTap: () {
-                                                                            Navigator.pushNamed(context,
-                                                                                RouteName.chatDetail, arguments: [
-                                                                              leadUid,
-                                                                              leadName
-                                                                            ]);
-                                                                          },
-                                                                          iconData: Image.asset(
-                                                                            'assets/chat.png',
-                                                                          )),
-                                                                    ),
-                                                                    Expanded(
-                                                                      child: CircleButton(
-                                                                          onTap: () => {},
-                                                                          iconData: Image.asset(
-                                                                            'assets/call.png',
-                                                                          )),
-                                                                    ),
-                                                                    Expanded(
-                                                                      child: CircleButton(
-                                                                          onTap: () => {},
-                                                                          iconData: Image.asset(
-                                                                            'assets/social.png',
-                                                                          )),
-                                                                    ),
-                                                                  ],
-                                                                ),
+                                                            child: Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: Column(
+                                                                children: [
+                                                                  CustomContainerText(
+                                                                          text1:
+                                                                              'Name',
+                                                                          text2:
+                                                                              name)
+                                                                      .use(),
+                                                                  CustomContainerText(
+                                                                          text1:
+                                                                              'Contact',
+                                                                          text2:
+                                                                              contact)
+                                                                      .use(),
+                                                                  CustomContainerText(
+                                                                          text1:
+                                                                              'Location',
+                                                                          text2:
+                                                                              location)
+                                                                      .use(),
+                                                                  CustomContainerText(
+                                                                          text1:
+                                                                              'Buying time ',
+                                                                          text2:
+                                                                              buyingTime)
+                                                                      .use(),
+                                                                ],
                                                               ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )),
-                                                ),
-                                              ],
-                                            )
+                                                            )),
+                                                      ),
+                                                    ],
+                                                  )),
+                                            ),
                                           ],
                                         ),
-                                      );
-                                    }),
-                              ),
-                            ],
-                          );
-                        } else if (snapshot.hasError) {
-                          return const Center(
-                              child: CustomLabel(text: 'Something Went Wrong'));
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      }),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          12, 6, 12, 6),
+                                                  decoration: BoxDecoration(
+                                                    color: HexColor('#203b53'),
+                                                    borderRadius:
+                                                        const BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(17.0),
+                                                      bottomRight:
+                                                          Radius.circular(17.0),
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(children: [
+                                                        CircleButton(
+                                                            onTap: () async =>
+                                                                await showDeleteDialog(
+                                                                    context,
+                                                                    leadId!),
+                                                            iconData: Image.asset(
+                                                                'assets/trash.png')),
+                                                        const SizedBox(
+                                                            width: 7),
+                                                        CircleButton(
+                                                            onTap: () => {
+                                                                  Navigator.pushNamed(
+                                                                      context,
+                                                                      RouteName
+                                                                          .leadNotes,
+                                                                      arguments:
+                                                                          leadId)
+                                                                },
+                                                            iconData:
+                                                                Image.asset(
+                                                              'assets/social.png',
+                                                            )),
+                                                        const SizedBox(
+                                                            width: 7),
+                                                        CircleButton(
+                                                          onTap: () => {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                RouteName
+                                                                    .leadStatus,
+                                                                arguments: [
+                                                                  leadId,
+                                                                  status
+                                                                ])
+                                                          },
+                                                          color: (status ==
+                                                                  'new customer')
+                                                              ? Colors.yellow
+                                                              : (status ==
+                                                                      'deal in progress')
+                                                                  ? Colors
+                                                                      .orange
+                                                                  : (status ==
+                                                                          'deal successful')
+                                                                      ? Colors
+                                                                          .green
+                                                                      : Colors
+                                                                          .red,
+                                                        ),
+                                                      ]),
+                                                      Row(
+                                                        children: [
+                                                          CircleButton(
+                                                              onTap: () {
+                                                                Navigator.pushNamed(
+                                                                    context,
+                                                                    RouteName
+                                                                        .chatDetail,
+                                                                    arguments: [
+                                                                      leadUid,
+                                                                      leadName
+                                                                    ]);
+                                                              },
+                                                              iconData:
+                                                                  Image.asset(
+                                                                'assets/chat.png',
+                                                              )),
+                                                          const SizedBox(
+                                                              width: 7),
+                                                          CircleButton(
+                                                              onTap: () => {},
+                                                              iconData:
+                                                                  Image.asset(
+                                                                'assets/call.png',
+                                                              )),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Center(
+                          child: CustomLabel(text: 'Something Went Wrong'));
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
             ),
           ],
         ),
       ),
     );
   }
+
+  Future<void> showDeleteDialog(BuildContext context, String leadId) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Are you sure to delete this lead?'),
+              actions: [
+                TextButton(
+                    onPressed: () async {
+                      EasyLoading.show(status: 'Please Wait...');
+                      await FirestoreDataProvider.deleteLead(leadId);
+                      await EasyLoading.showSuccess('Lead Successfully Deleted',
+                          duration: const Duration(seconds: 2));
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Yes')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No')),
+              ],
+            ));
+  }
 }
 
 class CircleButton extends StatelessWidget {
   final GestureTapCallback onTap;
-  final Image iconData;
+  final Image? iconData;
+  final Color color;
 
-  const CircleButton({Key? key, required this.onTap, required this.iconData})
+  const CircleButton(
+      {Key? key, required this.onTap, this.iconData, this.color = Colors.white})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double size = 40.0;
+    double size = 30.0;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: size,
         height: size,
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: color,
           shape: BoxShape.circle,
         ),
         child: iconData,

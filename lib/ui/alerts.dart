@@ -94,7 +94,7 @@ class _AlertsState extends State<Alerts> {
     ));
   }
 
-  String formatTimestamp(Timestamp timestamp) {
+  static String formatTimestamp(Timestamp timestamp) {
     // return DateFormat().add_yMd().add_jm().format(timestamp.toDate());
     var format = DateFormat('d-MM-y h:mm:a'); // <- use skeleton here
     return format.format(timestamp.toDate());

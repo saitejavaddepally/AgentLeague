@@ -5,7 +5,9 @@ import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../helper/constants.dart';
+import '../provider/property_upload_provider.dart';
 import '../route_generator.dart';
 import '../theme/colors.dart';
 import 'package:readmore/readmore.dart';
@@ -31,7 +33,6 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
   @override
   void initState() {
     data = widget.projectDetails;
-    print(data);
     super.initState();
   }
 
@@ -187,20 +188,45 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomButton(
-                          width: 123,
-                          height: 41,
-                          text: 'Export',
-                          onClick: () {},
-                          color: HexColor('082640'),
-                          radius: 30)
-                      .use(),
+                  if (!widget.projectDetails['isExport'])
+                    CustomButton(
+                            width: 123,
+                            height: 41,
+                            text: 'Export',
+                            onClick: () async {
+                              await EasyLoading.show(status: 'Please wait...');
+                              await PropertyUploadProvider.updateProject(
+                                  widget.projectDetails['docId']);
+                              await EasyLoading.dismiss();
+                              await EasyLoading.showSuccess('Export Complete',
+                                  duration: const Duration(seconds: 1));
+                              setState(() {
+                                widget.projectDetails['isExport'] = true;
+                              });
+                            },
+                            color: HexColor('082640'),
+                            radius: 30)
+                        .use(),
                   const SizedBox(width: 25),
                   CustomButton(
                           width: 123,
                           height: 41,
                           text: 'Subscribe',
-                          onClick: () {},
+                          onClick: () async {
+                            final docId = widget.projectDetails['docId'];
+
+                            EasyLoading.show(status: 'Please Wait...');
+                            final res =
+                                await PropertyUploadProvider.isSubscribedUser(
+                                    docId);
+                            if (res) {
+                              await EasyLoading.showToast('Already Subscribed');
+                            } else {
+                              PropertyUploadProvider.subscribeUser(docId);
+                              await EasyLoading.showSuccess(
+                                  'Subscribed Successfully');
+                            }
+                          },
                           color: HexColor('fd7e0e'),
                           radius: 30)
                       .use()
@@ -282,16 +308,14 @@ class Page extends StatelessWidget {
                       });
                     }));
                   } else if (i.toString() == 'location') {
-                      double latitude =
-                      projectDetails["latitude"];
-                      double longitude =
-                      projectDetails["longitude"];
+                    double latitude = projectDetails["latitude"];
+                    double longitude = projectDetails["longitude"];
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  LocationScreen(latitude: latitude, longitude: longitude)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LocationScreen(
+                                latitude: latitude, longitude: longitude)));
                   }
                 }).use(),
           ),

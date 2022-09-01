@@ -54,6 +54,7 @@ class LocationSearchProvider extends ChangeNotifier {
           _matchedRecords.add(plotPageInformation[i]);
         }
       }
+      print(_matchedRecords);
       notifyListeners();
     } on Exception catch (e) {
       print(e);

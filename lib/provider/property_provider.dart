@@ -255,6 +255,7 @@ class PropertyProvider extends ChangeNotifier {
       'pricePerUnitText': _pricePerUnit,
       'pricePerUnitDropDow': _pricePerUnitChosenValue,
       'approvedBy': _approvedByChosenValue,
+      'isExport': false,
     };
   }
 }

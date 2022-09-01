@@ -1,14 +1,18 @@
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Services/auth_methods.dart';
 
 class FirestoreDataProvider {
-  final _user = FirebaseFirestore.instance.collection('users');
-  final _chat = FirebaseFirestore.instance.collection('chats');
-  final _leadsBox = FirebaseFirestore.instance.collection('leads_box');
-  final _sellPlots = FirebaseFirestore.instance.collection('sell_plots');
+  static final _user = FirebaseFirestore.instance.collection('users');
+  static final _chat = FirebaseFirestore.instance.collection('chats');
+  static final _leadsBox = FirebaseFirestore.instance.collection('leads_box');
+  static final _sellPlots = FirebaseFirestore.instance.collection('sell_plots');
+  static final _wallet = FirebaseFirestore.instance.collection('wallet');
+  static final User? _currentUser = FirebaseAuth.instance.currentUser;
 
   List videos = [];
   List documents = [];
@@ -39,6 +43,17 @@ class FirestoreDataProvider {
       }
     }
     return _totalCounter;
+  }
+
+  Future<num> getPropertyBoxFreeCredit() async {
+    String? userId = await AuthMethods().getUserId();
+    final docSnap = await _user.doc(userId).get();
+    return docSnap.data()?['freeCreditPropertyBox'] ?? 0;
+  }
+
+  Future<void> decrementPropertyBoxFreeCredit(num currentValue) async {
+    String? userId = await AuthMethods().getUserId();
+    await _user.doc(userId).update({'freeCreditPropertyBox': currentValue - 1});
   }
 
   Future<num> getParticularChatCounter(String uid) async {
@@ -81,8 +96,8 @@ class FirestoreDataProvider {
     return docSnap.data()?['profile_pic'] as String;
   }
 
-  Future<String> getLatestMessage(String friendUid) async {
-    String msg = "";
+  Future<List> getLatestMessage(String friendUid) async {
+    List msg = [null, ''];
     String? currentUid = await AuthMethods().getUserId();
     final querySnapshot = await _chat
         .where('users', isEqualTo: {friendUid: null, currentUid: null})
@@ -99,14 +114,16 @@ class FirestoreDataProvider {
 
       if (querySnap.docs.isNotEmpty) {
         final data = querySnap.docs.first.data();
+        msg[0] = data['createdOn'];
+
         if (data['type'] == 'image') {
-          msg = 'Image';
+          msg[1] = 'Image';
         } else if (data['type'] == 'pdf') {
-          msg = 'Pdf';
+          msg[1] = 'Pdf';
         } else if (data['type'] == 'loc') {
-          msg = "Location";
+          msg[1] = 'location';
         } else {
-          msg = data['msg'];
+          msg[1] = data['msg'];
         }
       }
     }
@@ -162,23 +179,83 @@ class FirestoreDataProvider {
     return detailsOfPages;
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
-      getAllLeads() async {
-    String? uid = await AuthMethods().getUserId();
-    final _querySnap = await _leadsBox.doc(uid).collection('standlone').get();
-
-    return _querySnap.docs;
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllLeads() {
+    return _leadsBox
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('standlone')
+        .where('isDelete', isEqualTo: false)
+        .snapshots();
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getParticularLead(
-      String docId) async {
-    String? uid = await AuthMethods().getUserId();
-    final _querySnap = await _leadsBox
-        .doc(uid)
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getParticularLead(
+      String docId) {
+    return _leadsBox
+        .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('standlone')
         .where('propertyId', isEqualTo: docId)
+        .where('isDelete', isEqualTo: false)
+        .snapshots();
+  }
+
+  static Future<void> deleteLead(String leadId) async {
+    await _leadsBox
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('standlone')
+        .doc(leadId)
+        .update({'isDelete': true});
+  }
+
+  static Future<void> updateLeadNotes(String leadId, String notes) async {
+    await _leadsBox
+        .doc(_currentUser?.uid)
+        .collection('standlone')
+        .doc(leadId)
+        .update({'notes': notes});
+  }
+
+  static Future<String> getLeadNotes(String leadId) async {
+    final docSnap = await _leadsBox
+        .doc(_currentUser?.uid)
+        .collection('standlone')
+        .doc(leadId)
         .get();
-    return _querySnap.docs;
+    return docSnap.data()?['notes'] ?? '';
+  }
+
+  static Future<void> changeLeadStatus(String leadId, String status) async {
+    await _leadsBox
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('standlone')
+        .doc(leadId)
+        .update({'status': status});
+  }
+
+  static Future<bool> checkReferralCode(
+      String referralCode, String name) async {
+    final _querySnap =
+        await _user.where('ref_code', isEqualTo: referralCode).get();
+    if (_querySnap.docs.isNotEmpty) {
+      final uid = _querySnap.docs.first.id;
+      await _user.doc(uid).update({'wallet_amount': FieldValue.increment(100)});
+      await _wallet.doc(uid).collection('standlone').add({
+        'timestamp': FieldValue.serverTimestamp(),
+        'description': 'You earned a referral bonus by referring $name',
+        'type': 'credit',
+        'amount': 100,
+      });
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<num> getWalletBalance() async {
+    final _docSnap = await _user.doc(_currentUser?.uid).get();
+    return _docSnap.data()?['wallet_amount'] ?? 0;
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getWalletHistory() {
+    return _wallet.doc(_currentUser?.uid).collection('standlone').snapshots();
   }
 
   Future<void> deletePlot(int plotNo) async {

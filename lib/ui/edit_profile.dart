@@ -18,7 +18,6 @@ import '../components/custom_line_under_text.dart';
 import '../components/custom_map_dialog.dart';
 import '../components/custom_selector.dart';
 import '../components/custom_text_field.dart';
-import '../provider/post_your_property_provider_one.dart';
 import '../theme/colors.dart';
 
 class EditProfile extends StatefulWidget {
@@ -73,74 +72,12 @@ class _EditProfileState extends State<EditProfile> {
     await UploadPropertiesToFirestore().uploadProfilePicture(imageTemporary);
   }
 
-  Future<String?> getCurrentLocation() async {
-    try {
-      final location = GetUserLocation();
-      final Position position = await location.determinePosition();
-
-      _latitude = position.latitude;
-      _longitude = position.longitude;
-
-      final address = await location.getAddressFromCoordinates(
-          LatLng(position.latitude, position.longitude));
-      return address;
-    } on Exception catch (e) {
-      if (e.toString() == 'Location services are disabled.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Please Turn On Location Service First")));
-      } else if (e.toString() == 'Location permissions are denied') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Please Allow Location Permission otherwise you didn't use this feature.")));
-      } else if (e.toString() ==
-          'Location permissions are permanently denied, we cannot request permissions.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Sorry You are not allowed to use this feature because you didn't allow permission.")));
-      }
-      return null;
-    }
-  }
-
   String? validateLocation(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Location can't be empty";
     } else {
       return null;
     }
-  }
-
-  Future<String?> getMapLocation() async {
-    final String? result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FutureBuilder<Position>(
-            future: GetUserLocation().determinePosition(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return PlacePicker(
-                  apiKey: 'AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0',
-                  onPlacePicked: (result) {
-                    _latitude = result.geometry!.location.lat;
-                    _longitude = result.geometry!.location.lng;
-                    Navigator.of(context).pop(result.formattedAddress);
-                  },
-                  hintText: "Search",
-                  enableMapTypeButton: false,
-                  initialPosition:
-                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                  useCurrentLocation: true,
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            }),
-      ),
-    );
-
-    return result;
   }
 
   Future grabUserDetails() async {
@@ -274,16 +211,16 @@ class _EditProfileState extends State<EditProfile> {
                                           ),
                                         ),
                                       ),
-
                                     ]),
-                                   Row(
-                                     children: [
-                                       const Expanded(
-                                           child: CustomLabel(text: '')),
-                                       Flexible(
-                                         child: Center(
-                                           child: Padding(
-                                                padding: const EdgeInsets.all(8),
+                                    Row(
+                                      children: [
+                                        const Expanded(
+                                            child: CustomLabel(text: '')),
+                                        Flexible(
+                                          child: Center(
+                                            child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
                                                 child: CustomButton(
                                                     color: Colors.orange,
                                                     radius: 10,
@@ -291,16 +228,17 @@ class _EditProfileState extends State<EditProfile> {
                                                     text: "Authorize",
                                                     onClick: () {
                                                       Navigator.pushNamed(
-                                                          context, RouteName.otp,
+                                                          context,
+                                                          RouteName.otp,
                                                           arguments: [
                                                             phoneNumber,
                                                             "true"
                                                           ]);
                                                     }).use()),
-                                         ),
-                                       ),
-                                     ],
-                                   )
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
                                 const SizedBox(height: 10),
@@ -324,17 +262,18 @@ class _EditProfileState extends State<EditProfile> {
 
                                           if (result == 1) {
                                             setState(() => isLoading = true);
-                                            final res =
-                                                await getCurrentLocation();
+                                            final res = await GetUserLocation
+                                                .getCurrentLocation();
                                             setState(() => isLoading = false);
                                             if (res != null && res.isNotEmpty) {
-                                              locationController.text = res;
+                                              locationController.text = res[0];
                                             }
                                           }
                                           if (result == 2) {
-                                            final res = await getMapLocation();
-                                            if (res != null && res.isNotEmpty) {
-                                              locationController.text = res;
+                                            final res = await GetUserLocation
+                                                .getMapLocation(context);
+                                            if (res.isNotEmpty) {
+                                              locationController.text = res[0];
                                             }
                                           }
                                         },
@@ -417,33 +356,7 @@ class _EditProfileState extends State<EditProfile> {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                // Row(
-                                //   children: [
-                                //     const Expanded(
-                                //         child: CustomLabel(text: 'Agent Type :')),
-                                //     Flexible(
-                                //         child:  SizedBox(
-                                //           height: 40,
-                                //           child: CustomSelector(
-                                //             dropDownItems: [
-                                //               '',
-                                //               'FreeLancer',
-                                //               'Corporate',
-                                //             ],
-                                //             borderRadius: 10,
-                                //             onChanged: (value) {
-                                //               setState(() {
-                                //                 _chosenValue = value;
-                                //               });
-                                //             },
-                                //             chosenValue: _chosenValue,
-                                //
-                                //           ).use(),
-                                //         ),
-                                //     ),
-                                //   ],
-                                // ),
-                                const SizedBox(height: 10),
+                                
                               ]),
                           const SizedBox(height: 25),
                           const SizedBox(
@@ -501,7 +414,8 @@ class _EditProfileState extends State<EditProfile> {
                                               Navigator.pushNamedAndRemoveUntil(
                                                   context,
                                                   RouteName.bottomBar,
-                                                  (route) => false);
+                                                  (route) => false,
+                                                  arguments: 0);
                                               await EasyLoading.showSuccess(
                                                   "Done..");
                                             }).use())),

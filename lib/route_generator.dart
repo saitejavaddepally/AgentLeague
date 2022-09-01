@@ -12,7 +12,10 @@ import 'package:agent_league/ui/explore.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/help.dart';
 import 'package:agent_league/ui/lead_box.dart';
+import 'package:agent_league/ui/lead_notes.dart';
+import 'package:agent_league/ui/lead_status.dart';
 import 'package:agent_league/ui/listing.dart';
+import 'package:agent_league/ui/listing_property.dart';
 import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/login.dart';
 import 'package:agent_league/ui/monthly_emi.dart';
@@ -25,11 +28,14 @@ import 'package:agent_league/ui/property.dart';
 import 'package:agent_league/ui/property_buying_score.dart';
 import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:agent_league/ui/property_info.dart';
+import 'package:agent_league/ui/property_loan.dart';
 import 'package:agent_league/ui/register.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:agent_league/ui/uploads_screen.dart';
+import 'package:agent_league/ui/vasthu.dart';
+import 'package:agent_league/ui/wallet_history.dart';
 import 'package:agent_league/ui/we_hear.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -71,6 +77,12 @@ class RouteName {
   static const String weHear = '/we_hear';
   static const String escrow = '/escrow';
   static const String monthlyEmi = '/monthly_emi';
+  static const String propertyLoan = '/property_loan';
+  static const String vasthu = '/vasthu';
+  static const String listingPropertyBox = '/listing_property_box';
+  static const String leadStatus = '/lead_status';
+  static const String leadNotes = '/lead_notes';
+  static const String walletHistory = '/wallet_history';
 }
 
 class RouteGenerator {
@@ -133,6 +145,16 @@ class RouteGenerator {
       case RouteName.login:
         return PageTransition(
             child: const Login(), type: PageTransitionType.leftToRight);
+
+      case RouteName.projectExplorer:
+        {
+          if (args is Map) {
+            return PageTransition(
+                child: ProjectExplorer(projectDetails: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.profile:
         return PageTransition(
             child: const Profile(), type: PageTransitionType.leftToRight);
@@ -197,12 +219,7 @@ class RouteGenerator {
         return PageTransition(
             child: const GalleryScreen(info: {}),
             type: PageTransitionType.leftToRight);
-      case RouteName.projectExplorer:
-        return PageTransition(
-            child: const ProjectExplorer(
-              projectDetails: {},
-            ),
-            type: PageTransitionType.leftToRight);
+
       case RouteName.addProject:
         return PageTransition(
             child: const AddProject(), type: PageTransitionType.leftToRight);
@@ -213,6 +230,9 @@ class RouteGenerator {
         return PageTransition(
             child: const CoinsflyWallet(),
             type: PageTransitionType.leftToRight);
+      case RouteName.walletHistory:
+        return PageTransition(
+            child: const WalletHistory(), type: PageTransitionType.leftToRight);
       case RouteName.uploads:
         return PageTransition(
             child: const UploadsScreen(
@@ -269,6 +289,44 @@ class RouteGenerator {
       case RouteName.listing:
         return PageTransition(
             child: const Listing(), type: PageTransitionType.leftToRight);
+
+      case RouteName.propertyLoan:
+        return PageTransition(
+            child: const PropertyLoan(), type: PageTransitionType.leftToRight);
+
+      case RouteName.vasthu:
+        return PageTransition(
+            child: const VasthuScreen(), type: PageTransitionType.leftToRight);
+
+      case RouteName.leadStatus:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: LeadStatus(leadId: args[0], currentStatus: args[1]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
+      case RouteName.leadNotes:
+        {
+          if (args is String) {
+            return PageTransition(
+                child: LeadNotes(leadId: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
+      case RouteName.listingPropertyBox:
+        {
+          if (args is String) {
+            return PageTransition(
+                child: ListingPropertyBox(plotNumber: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       default:
         return _errorRoute();
     }

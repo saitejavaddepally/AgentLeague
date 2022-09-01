@@ -2,10 +2,7 @@ import 'dart:convert';
 
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/key_id.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -22,13 +19,10 @@ class PaymentRazorpay extends StatefulWidget {
 }
 
 class _PaymentRazorpayState extends State<PaymentRazorpay> {
-
   CollectionReference successPayment =
       FirebaseFirestore.instance.collection('successPayment');
   String? orderId;
   late Razorpay _razorpay;
-
-
 
   void openCheckout() async {
     http.Response response = await http.post(
@@ -37,7 +31,7 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
         headers: <String, String>{'username': key_id},
         body: jsonEncode(<String, dynamic>{
           // "amount": widget.data['grandTotal'] * 100,
-          "amount": 1*100,
+          "amount": 1 * 100,
           "currency": "INR"
         }));
 
@@ -100,10 +94,8 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
       await updatePaymentSuccess(response.orderId!);
 
       Navigator.of(context).pop();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Success(data: widget.data)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => Success(data: widget.data)));
     } else {
       Fluttertoast.showToast(msg: "Payment Not Verified");
       Navigator.pop(context);

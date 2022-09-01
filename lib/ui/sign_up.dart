@@ -7,9 +7,13 @@ import 'package:agent_league/ui/post_your_property.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../location_service.dart';
+import '../provider/firestore_data_provider.dart';
+import '../route_generator.dart';
 import '../theme/colors.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -110,7 +114,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             if (result == 2) {
                               final res =
                                   await GetUserLocation.getMapLocation(context);
-                              if (res != null && res.isNotEmpty) {
+                              if (res.isNotEmpty) {
                                 _locationController.text = res[0];
                               }
                             }
@@ -146,18 +150,35 @@ class _SignUpFormState extends State<SignUpForm> {
                                           if (_formKey.currentState!
                                               .validate()) {
                                             setState(() => isLoading = true);
+
+                                            if (referralCode
+                                                .trim()
+                                                .isNotEmpty) {
+                                              final result =
+                                                  await FirestoreDataProvider
+                                                      .checkReferralCode(
+                                                          _referralCodeController
+                                                              .text
+                                                              .toUpperCase(),
+                                                          _nameController.text);
+
+                                              if (result == false) {
+                                                await EasyLoading.showError(
+                                                    'Incorrect Referral Code');
+                                                setState(
+                                                    () => isLoading = false);
+
+                                                return;
+                                              }
+                                            }
                                             await registerUser(
                                                 _nameController.text,
                                                 _locationController.text);
                                             setState(() => isLoading = false);
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        BottomBar(
-                                                          index: 0,
-                                                        )));
+                                            Navigator.pushNamed(
+                                                context, RouteName.bottomBar,
+                                                arguments: 0);
                                           }
                                         },
                                         width:
@@ -191,8 +212,11 @@ class _SignUpFormState extends State<SignUpForm> {
           'name': name,
           'uid': userId,
           'freeCredit': "1",
+          'isSubscribed': false,
+          'freeCreditPropertyBox': 1,
           'phone': phoneNumber,
           'counter': 0,
+          'wallet_amount': 0,
           'location': location,
           'ref_code': userId?.substring(0, 6).toUpperCase(),
           'email': '',

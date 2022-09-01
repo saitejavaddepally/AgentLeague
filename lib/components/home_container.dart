@@ -4,6 +4,7 @@ import 'custom_button.dart';
 
 class HomeContainer extends StatelessWidget {
   final String text;
+  final bool isFirstText;
   final Color textColor;
   final String image;
   final Color? containerColor;
@@ -28,6 +29,7 @@ class HomeContainer extends StatelessWidget {
     this.text2 = '',
     this.isButtonDisabled = false,
     this.isSecondText = false,
+    this.isFirstText = true,
     this.textColor = const Color(0xFF1B1B1B),
     this.buttonWidth = 105,
     this.buttonTextColor = Colors.white,
@@ -36,8 +38,6 @@ class HomeContainer extends StatelessWidget {
     this.gradient,
     Key? key,
   }) : super(key: key);
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +52,19 @@ class HomeContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(text,
-              style: TextStyle(
-                  color: textColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  height: 1.4)),
+          if (isFirstText)
+            Text(text,
+                style: TextStyle(
+                    color: textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4)),
           (isSecondText)
               ? Column(children: [
                   const SizedBox(height: 5),
                   Text(text2,
                       style: TextStyle(
-                        color: textColor,
+                          color: textColor,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           height: 1.4)),
@@ -73,7 +74,11 @@ class HomeContainer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(image, width: 84.09, height: 90,),
+              Image.asset(
+                image,
+                width: 84.09,
+                height: 90,
+              ),
               CustomButton(
                       text: buttonText,
                       onClick: onButtonClick,
