@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/route_generator.dart';
@@ -18,6 +19,8 @@ import '../components/custom_line_under_text.dart';
 import '../components/custom_map_dialog.dart';
 import '../components/custom_selector.dart';
 import '../components/custom_text_field.dart';
+import '../helper/constants.dart';
+import '../provider/post_your_property_provider_one.dart';
 import '../theme/colors.dart';
 
 class EditProfile extends StatefulWidget {
@@ -39,9 +42,9 @@ class _EditProfileState extends State<EditProfile> {
 
   String phoneNumber = '';
   bool isLoading = false;
-
+  File? selectedImage;
   String? _chosenValue;
-  String? _imageName = 'Browse';
+  String? _imageName;
 
   late double _latitude;
   late double _longitude;
@@ -52,10 +55,10 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
-  void pickImage() async {
+  Future<File?> pickImage() async {
     final image = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 50);
-    if (image == null) return;
+    if (image == null) return null;
     List splitPath = image.path.split('/');
     _imageName = splitPath[splitPath.length - 1];
 
@@ -69,7 +72,8 @@ class _EditProfileState extends State<EditProfile> {
       _imageName = name;
     });
     final imageTemporary = File(image.path);
-    await UploadPropertiesToFirestore().uploadProfilePicture(imageTemporary);
+    // await UploadPropertiesToFirestore().uploadProfilePicture(imageTemporary);
+    return imageTemporary;
   }
 
   String? validateLocation(String? value) {
@@ -92,13 +96,14 @@ class _EditProfileState extends State<EditProfile> {
     await UploadPropertiesToFirestore().getProfileInformation().then((value) {
       print(value);
       setState(() {
-        phoneNumber = phoneNumberController.text = value['phone'];
+        phoneNumber =
+            phoneNumberController.text = value['phone'].toString().substring(3);
         nameController.text = value['name'];
         locationController.text = value['location'];
         emailController.text = value['email'];
         refController.text = value['ref_code'];
         agentExpController.text = value['agent_exp'];
-        _imageName = value['profile_pic'];
+        _imageName = value['profilePicture'];
       });
     });
   }
@@ -137,6 +142,41 @@ class _EditProfileState extends State<EditProfile> {
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Center(
+                                  child: Container(
+                                    height: 80,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                        boxShadow: shadow1,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.orange, width: 1.5)),
+                                    child: (selectedImage != null ||
+                                            _imageName != null)
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(50.0),
+                                            child: (selectedImage != null)
+                                                ? Image.file(
+                                                    selectedImage!,
+                                                    height: 40.0,
+                                                    width: 40.0,
+                                                    fit: BoxFit.fill,
+                                                  )
+                                                : Image.network(
+                                                    _imageName!,
+                                                    height: 40.0,
+                                                    width: 40.0,
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                          )
+                                        : Image.asset("assets/profile.png",
+                                            fit: BoxFit.fill),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 Row(
                                   children: [
                                     const Expanded(
@@ -231,7 +271,7 @@ class _EditProfileState extends State<EditProfile> {
                                                           context,
                                                           RouteName.otp,
                                                           arguments: [
-                                                            phoneNumber,
+                                                            "+91$phoneNumber",
                                                             "true"
                                                           ]);
                                                     }).use()),
@@ -319,8 +359,8 @@ class _EditProfileState extends State<EditProfile> {
                                 Row(
                                   children: [
                                     const Expanded(
-                                        child: CustomLabel(
-                                            text: 'Agent Exp (yrs) : ')),
+                                        child:
+                                            CustomLabel(text: 'Exp (yrs) : ')),
                                     Expanded(
                                       child: CustomTextField(
                                         controller: agentExpController,
@@ -347,8 +387,12 @@ class _EditProfileState extends State<EditProfile> {
                                                           .size
                                                           .width /
                                                       2,
-                                                  onClick: () {
-                                                    pickImage();
+                                                  onClick: () async {
+                                                    selectedImage =
+                                                        await pickImage();
+                                                    setState(() {
+                                                      selectedImage;
+                                                    });
                                                   },
                                                   text: '...')
                                               .use()),
@@ -356,7 +400,32 @@ class _EditProfileState extends State<EditProfile> {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                
+                                // Row(
+                                //   children: [
+                                //     const Expanded(
+                                //         child: CustomLabel(text: 'Agent Type :')),
+                                //     Flexible(
+                                //         child:  SizedBox(
+                                //           height: 40,
+                                //           child: CustomSelector(
+                                //             dropDownItems: [
+                                //               '',
+                                //               'FreeLancer',
+                                //               'Corporate',
+                                //             ],
+                                //             borderRadius: 10,
+                                //             onChanged: (value) {
+                                //               setState(() {
+                                //                 _chosenValue = value;
+                                //               });
+                                //             },
+                                //             chosenValue: _chosenValue,
+                                //
+                                //           ).use(),
+                                //         ),
+                                //     ),
+                                //   ],
+                                // ),
                               ]),
                           const SizedBox(height: 25),
                           const SizedBox(
@@ -386,6 +455,9 @@ class _EditProfileState extends State<EditProfile> {
                                               try {
                                                 final userId = FirebaseAuth
                                                     .instance.currentUser?.uid;
+                                                await UploadPropertiesToFirestore()
+                                                    .uploadProfilePicture(
+                                                        selectedImage);
                                                 await FirebaseFirestore.instance
                                                     .collection('users')
                                                     .doc(userId)
@@ -411,11 +483,14 @@ class _EditProfileState extends State<EditProfile> {
                                                 print(e);
                                               }
 
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  RouteName.bottomBar,
-                                                  (route) => false,
-                                                  arguments: 0);
+                                              Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        BottomBar(index: 0)),
+                                                (r) => false,
+                                              );
                                               await EasyLoading.showSuccess(
                                                   "Done..");
                                             }).use())),

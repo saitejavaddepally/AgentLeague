@@ -29,7 +29,9 @@ import 'package:agent_league/ui/property_buying_score.dart';
 import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:agent_league/ui/property_info.dart';
 import 'package:agent_league/ui/property_loan.dart';
+import 'package:agent_league/ui/property_range.dart';
 import 'package:agent_league/ui/register.dart';
+import 'package:agent_league/ui/show_property_range.dart';
 import 'package:agent_league/ui/sign_up.dart';
 import 'package:agent_league/ui/signin_edit.dart';
 import 'package:agent_league/ui/tour.dart';
@@ -83,6 +85,8 @@ class RouteName {
   static const String leadStatus = '/lead_status';
   static const String leadNotes = '/lead_notes';
   static const String walletHistory = '/wallet_history';
+  static const String propertyRange = '/property_range';
+  static const String showPropertyRange = '/show_property_range';
 }
 
 class RouteGenerator {
@@ -297,6 +301,26 @@ class RouteGenerator {
       case RouteName.vasthu:
         return PageTransition(
             child: const VasthuScreen(), type: PageTransitionType.leftToRight);
+
+      case RouteName.propertyRange:
+        {
+          if (args is List<num>) {
+            return PageTransition(
+                child: PropertyRange(ranges: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
+      case RouteName.showPropertyRange:
+        {
+          if (args is List<num>) {
+            return PageTransition(
+                child: ShowPropertyRange(range: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
 
       case RouteName.leadStatus:
         {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/property_digitalization.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
@@ -330,6 +331,8 @@ class _AmentiesState extends State<Amenties> {
                                                           await SharedPreferencesHelper()
                                                               .getPaidCreditStatus();
                                                       EasyLoading.dismiss();
+
+                                                      print(credits);
                                                       int freeCreditCurrent =
                                                           int.parse(credits);
                                                       if (freeCreditCurrent !=
@@ -447,11 +450,19 @@ class _AmentiesState extends State<Amenties> {
                                                           .pushAndRemoveUntil(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    BottomBar(
-                                                                      index: 0,
-                                                                    )),
+                                                            builder: (context) =>
+                                                                PropertyDigitalization(
+                                                                  formData: {
+                                                                    "propData":
+                                                                        widget.data[
+                                                                            0],
+                                                                    "media": {
+                                                                      "picture":
+                                                                          _images[
+                                                                              0]
+                                                                    }
+                                                                  },
+                                                                )),
                                                         (route) => false,
                                                       );
                                                     },

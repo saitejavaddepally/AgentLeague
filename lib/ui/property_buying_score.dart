@@ -1,5 +1,6 @@
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/provider/property_buying_score_provider.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,12 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                   child: CustomButton(
                     text: 'Calculate',
                     onClick: () {
-                      if (_formKey.currentState!.validate()) {}
+                      if (_formKey.currentState!.validate()) {
+                        final range = _pr.calculateRange();
+                        print(range);
+                        Navigator.pushNamed(context, RouteName.propertyRange,
+                            arguments: range);
+                      }
                     },
                     color: HexColor('082640'),
                     width: 121,
@@ -85,6 +91,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                 child: CustomTextField(
                                     controller: _pr.dobController,
                                     readOnly: true,
+                                    isDense: true,
                                     validator: _pr.validateDate),
                               ),
                               const SizedBox(width: 5),
@@ -99,7 +106,6 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                         const SizedBox(height: 10),
                         const Flexible(
                             child: CustomLabel(text: 'Profession :')),
-
                         Flexible(
                           child: Consumer<PropertyBuyingScoreProvider>(
                             builder: (context, value, child) => Row(
@@ -158,22 +164,6 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                             ),
                           ),
                         ),
-                        // const SizedBox(height: 5),
-                        // Flexible(
-                        //   child: Row(
-                        //     children: [
-                        //       const Expanded(
-                        //           child: CustomLabel(text: 'Profession :')),
-                        //       Expanded(
-                        //           child: CustomTextField(
-                        //         controller: _pr.professionController,
-                        //         onChanged: _pr.onSubmittedProfession,
-                        //         validator: _pr.validateProfession,
-                        //       )),
-                        //       const SizedBox(width: 28)
-                        //     ],
-                        //   ),
-                        // ),
                         const SizedBox(height: 5),
                         Flexible(
                           child: Row(
@@ -182,6 +172,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               const SizedBox(width: 10),
                               Expanded(
                                   child: CustomTextField(
+                                isDense: true,
                                 controller: _pr.monthlyIncomeController,
                                 onChanged: _pr.onSubmittedMonthlyIncome,
                                 validator: _pr.validateMonthlyIncome,
@@ -201,6 +192,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               const SizedBox(width: 10),
                               Expanded(
                                   child: CustomTextField(
+                                isDense: true,
                                 controller: _pr.monthlyEmiController,
                                 onChanged: _pr.onSubmittedMonthlyEmi,
                                 validator: _pr.validateMonthlyEmi,
@@ -220,6 +212,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               const SizedBox(width: 10),
                               Expanded(
                                   child: CustomTextField(
+                                isDense: true,
                                 controller: _pr.extraIncomeController,
                                 onChanged: _pr.onSubmittedExtraIncome,
                                 validator: _pr.validateExtraIncome,
@@ -238,6 +231,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               const SizedBox(width: 10),
                               Expanded(
                                   child: CustomTextField(
+                                isDense: true,
                                 controller: _pr.downPaymentController,
                                 onChanged: _pr.onSubmittedDownPayment,
                                 validator: _pr.validateDownPayment,
@@ -425,8 +419,12 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
 class CustomDialog extends StatelessWidget {
   CustomDialog({Key? key}) : super(key: key);
 
+  final _monthlyIncomeController = TextEditingController();
+  final _existingEmiController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   String? monthlyIncome;
-  String? existingEMI;
+  String? existingEmi;
 
   @override
   Widget build(BuildContext context) {
@@ -436,62 +434,86 @@ class CustomDialog extends StatelessWidget {
       child: SizedBox(
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  const Text('Co-borrower monthly income : '),
-                  Expanded(child: CustomTextField(
-                    onChanged: (value) {
-                      monthlyIncome = value;
-                    },
-                  )),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Text("Co-borrower existing EMI's : "),
-                  Expanded(child: CustomTextField(
-                    onChanged: (value) {
-                      existingEMI = value;
-                    },
-                  )),
-                ],
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                      child: const Text('Submit',
-                          style: TextStyle(color: Colors.black)),
-                      onPressed: () {
-                        if (monthlyIncome != null &&
-                            monthlyIncome!.trim().isNotEmpty &&
-                            existingEMI != null &&
-                            existingEMI!.trim().isNotEmpty) {
-                          Navigator.pop(context,
-                              [monthlyIncome!.trim(), existingEMI!.trim()]);
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    const Text('Co-borrower monthly income : '),
+                    Expanded(
+                        child: CustomTextField(
+                      isDense: true,
+                      keyboardType: TextInputType.number,
+                      controller: _monthlyIncomeController,
+                      onChanged: (value) {
+                        monthlyIncome = value;
+                      },
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Field Required";
+                        } else {
+                          return null;
                         }
                       },
-                      style: TextButton.styleFrom(
-                          backgroundColor: HexColor('FE7F0E'))),
-                  const SizedBox(width: 20),
-                  TextButton(
-                      child: Text('Cancel',
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.8))),
-                      onPressed: () {
-                        Navigator.pop(context);
+                    )),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Text("Co-borrower existing EMI's : "),
+                    Expanded(
+                        child: CustomTextField(
+                      isDense: true,
+                      keyboardType: TextInputType.number,
+                      controller: _existingEmiController,
+                      onChanged: (value) {
+                        existingEmi = value;
                       },
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.1))),
-                ],
-              ),
-            ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return "Field Required";
+                        } else {
+                          return null;
+                        }
+                      },
+                    )),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        child: const Text('Submit',
+                            style: TextStyle(color: Colors.black)),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.pop(context, [
+                              _monthlyIncomeController.text,
+                              _existingEmiController.text
+                            ]);
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                            backgroundColor: HexColor('FE7F0E'))),
+                    const SizedBox(width: 20),
+                    TextButton(
+                        child: Text('Cancel',
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8))),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.1))),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

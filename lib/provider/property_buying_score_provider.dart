@@ -63,22 +63,6 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
     }
   }
 
-  // // for professionTextField
-  // final TextEditingController professionController = TextEditingController();
-  // String _profession = '';
-
-  // onSubmittedProfession(value) {
-  //   _profession = value;
-  // }
-
-  // String? validateProfession(String? value) {
-  //   if (value == null || value.trim().isEmpty) {
-  //     return "Profession Required";
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
   // for monthlyIncomeTextField
   final TextEditingController monthlyIncomeController = TextEditingController();
   String _monthlyIncome = '';
@@ -183,8 +167,8 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
 // coBorrowerButtom
   bool _coBorrower = false;
-  String? _coBorrowerIncome;
-  String? _coBorrowerEMI;
+  String _coBorrowerIncome = '0';
+  String _coBorrowerEMI = '0';
   bool get coBorrower => _coBorrower;
 
   onYesClickCoBorrower(BuildContext context) async {
@@ -205,8 +189,8 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
   onNoClickCoBorrower() {
     if (_coBorrower == true) {
-      _coBorrowerIncome = null;
-      _coBorrowerEMI = null;
+      _coBorrowerIncome = '0';
+      _coBorrowerEMI = '0';
       _coBorrower = false;
       notifyListeners();
     }
@@ -221,8 +205,30 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
     _coBorrower = false;
     _incomeTax = false;
     _loan = false;
-    _coBorrowerIncome = null;
-    _coBorrowerEMI = null;
+    _coBorrowerIncome = '0';
+    _coBorrowerEMI = '0';
     notifyListeners();
+  }
+
+  Map<String, dynamic> getData() => {
+        'dob': dobController.text,
+        'monthlyIncome': int.parse(monthlyIncomeController.text),
+        'monthlyEmi': int.parse(monthlyEmiController.text),
+        'extraIncome': int.parse(extraIncomeController.text),
+        'downPayment': int.parse(downPaymentController.text),
+        'coBorrowerIncome': int.parse(_coBorrowerIncome),
+        'coBorrowerEmi': int.parse(_coBorrowerEMI)
+      };
+
+  List<num> calculateRange() {
+    final range = (int.parse(monthlyIncomeController.text) +
+                int.parse(extraIncomeController.text) -
+                int.parse(monthlyEmiController.text)) *
+            50 +
+        (int.parse(_coBorrowerIncome) - int.parse(_coBorrowerEMI)) * 50 +
+        int.parse(downPaymentController.text);
+
+    final rangePlus = range + (range * 0.20);
+    return [range, rangePlus];
   }
 }

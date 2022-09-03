@@ -92,6 +92,16 @@ class Standlone extends StatefulWidget {
 class _StandloneState extends State<Standlone> {
   String? _chosenValue;
   String? docId;
+  final List<String> _dateDropDown = ['Recent First', 'Recent Last'];
+  String _dateChosenValue = 'Recent First';
+  final List<String> _statusDropDown = [
+    'All',
+    'New customer',
+    'Deal in progress',
+    'Deal successful',
+    'Not interested'
+  ];
+  String _statusChosenValue = 'All';
 
   @override
   void initState() {
@@ -175,13 +185,18 @@ class _StandloneState extends State<Standlone> {
                     const Text('Date : '),
                     Flexible(
                         child: CustomSelector(
-                                borderRadius: 10,
-                                dropDownItems: ['abc', 'def'],
-                                color: Colors.white,
-                                textColor: Colors.black,
-                                onChanged: (value) {},
-                                chosenValue: null)
-                            .use())
+                      isDense: true,
+                      borderRadius: 10,
+                      dropDownItems: _dateDropDown,
+                      color: Colors.white,
+                      textColor: Colors.black,
+                      onChanged: (value) {
+                        setState(() {
+                          _dateChosenValue = value;
+                        });
+                      },
+                      chosenValue: _dateChosenValue,
+                    ).use())
                   ],
                 ),
               ),
@@ -192,12 +207,17 @@ class _StandloneState extends State<Standlone> {
                     const Text('Status : '),
                     Flexible(
                       child: CustomSelector(
+                              isDense: true,
                               borderRadius: 10,
                               color: Colors.white,
                               textColor: Colors.black,
-                              dropDownItems: [],
-                              onChanged: (value) {},
-                              chosenValue: null)
+                              dropDownItems: _statusDropDown,
+                              onChanged: (value) {
+                                setState(() {
+                                  _statusChosenValue = value;
+                                });
+                              },
+                              chosenValue: _statusChosenValue)
                           .use(),
                     ),
                   ],
@@ -208,8 +228,10 @@ class _StandloneState extends State<Standlone> {
             Expanded(
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: (docId == null)
-                      ? FirestoreDataProvider.getAllLeads()
-                      : FirestoreDataProvider.getParticularLead(docId!),
+                      ? FirestoreDataProvider.getAllLeads(
+                          _dateChosenValue, _statusChosenValue.toLowerCase())
+                      : FirestoreDataProvider.getParticularLead(docId!,
+                          _dateChosenValue, _statusChosenValue.toLowerCase()),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Column(

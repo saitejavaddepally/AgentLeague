@@ -298,13 +298,12 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       'possessionStatus': _possessionStatusChosenValue,
       'location': _locationController.text,
       'age': _ageChosenValue,
-      'price': _controller.text,
+      'price': int.parse(_controller.text),
       'facing': _facingChosenValue,
       'handOverYear': handOverYearController.text,
       'handOverMonth': handOverMonthController.text,
       'size': _sizeController.text + ' ' + _sizeChosenValue!,
       'box_enabled': 0,
-      
     };
   }
 

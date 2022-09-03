@@ -382,7 +382,8 @@ class _SellScreenState extends State<SellScreen> {
                                 size: plotPagesInformation[i][0]['size'],
                                 location: plotPagesInformation[i][0]
                                     ['location'],
-                                price: plotPagesInformation[i][0]['price'],
+                                price: plotPagesInformation[i][0]['price']
+                                    .toString(),
                                 possession: plotPagesInformation[i][0]
                                     ['possessionStatus'],
                                 propertyId: "PR_" +

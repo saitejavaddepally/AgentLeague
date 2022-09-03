@@ -179,21 +179,49 @@ class FirestoreDataProvider {
     return detailsOfPages;
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllLeads() {
+  static Future<List<Map<String, dynamic>>> showPropertyRange(
+      List<num> range) async {
+    final List<Map<String, dynamic>> plots = [];
+    final collRef = _sellPlots.doc(_currentUser?.uid).collection('standlone');
+    final querySnap = await collRef.get();
+    for (int i = 0; i < querySnap.docs.length; i++) {
+      final plotNo = querySnap.docs[i].id;
+
+      final querySnapPlot = await collRef
+          .doc(plotNo)
+          .collection('pages_info')
+          .where('price',
+              isGreaterThanOrEqualTo: range[0], isLessThanOrEqualTo: range[1])
+          .get();
+      if (querySnapPlot.docs.isNotEmpty) {
+        plots.add(querySnapPlot.docs.first.data());
+      }
+    }
+    return plots;
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllLeads(
+      String date, String status) {
     return _leadsBox
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('standlone')
         .where('isDelete', isEqualTo: false)
+        .where('status', isEqualTo: (status == 'all') ? null : status)
+        .orderBy('timestamp',
+            descending: (date == 'Recent First') ? true : false)
         .snapshots();
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getParticularLead(
-      String docId) {
+      String docId, String date, String status) {
     return _leadsBox
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('standlone')
         .where('propertyId', isEqualTo: docId)
         .where('isDelete', isEqualTo: false)
+        .where('status', isEqualTo: (status == 'all') ? null : status)
+        .orderBy('timestamp',
+            descending: (date == 'Recent First') ? true : false)
         .snapshots();
   }
 
