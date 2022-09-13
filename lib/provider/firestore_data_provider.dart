@@ -6,6 +6,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Services/auth_methods.dart';
 
+
+
+
+// get, post, put, delete --> sell plots!
+
 class FirestoreDataProvider {
   static final _user = FirebaseFirestore.instance.collection('users');
   static final _chat = FirebaseFirestore.instance.collection('chats');

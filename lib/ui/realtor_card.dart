@@ -52,10 +52,7 @@ class _RealtorCardState extends State<RealtorCard> {
         });
       });
     });
-    // SharedPreferencesHelper().getCurrentPage().then((value) {
-    //   setState(() {
-    //     currentPage = int.parse(value!);
-    //   });
+
     controller = PageController(initialPage: widget.currentPage);
     // });
 

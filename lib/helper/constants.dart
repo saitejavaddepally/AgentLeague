@@ -25,3 +25,8 @@ const shadow2 = [
       spreadRadius: 0,
       color: Color(0xFF031E35)),
 ];
+
+
+// Neumorphic module.
+
+// Involve main.dart constant here.
