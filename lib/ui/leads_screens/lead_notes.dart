@@ -3,8 +3,8 @@ import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import '../components/custom_button.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../theme/colors.dart';
 import 'package:flutter/services.dart';
 
 class LeadNotes extends StatefulWidget {

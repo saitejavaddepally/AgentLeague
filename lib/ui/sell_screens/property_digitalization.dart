@@ -4,11 +4,11 @@ import 'package:agent_league/ui/success.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../Services/payment_razorpay.dart';
-import '../components/custom_text_field.dart';
-import '../components/custom_title.dart';
-import '../provider/property_digitalization_provider.dart';
-import '../theme/colors.dart';
+import '../../Services/payment_razorpay.dart';
+import '../../components/custom_text_field.dart';
+import '../../components/custom_title.dart';
+import '../../provider/property_digitalization_provider.dart';
+import '../../theme/colors.dart';
 
 class PropertyDigitalization extends StatefulWidget {
   final Map<String, dynamic> formData;
@@ -21,12 +21,12 @@ class PropertyDigitalization extends StatefulWidget {
 }
 
 class _PropertyDigitalizationState extends State<PropertyDigitalization> {
-
   @override
   void initState() {
     print("data is passed ${widget.formData}");
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final _size = MediaQuery.of(context).size;
@@ -66,7 +66,8 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PaymentRazorpay(data: data)));
+                                  builder: (context) =>
+                                      PaymentRazorpay(data: data)));
                         },
                         style: TextButton.styleFrom(
                             backgroundColor: HexColor('FE7F0E'),
@@ -117,9 +118,11 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                             child: (widget.formData['picture'].runtimeType
                                         .toString() ==
                                     'String')
-                                ? Image.network(widget.formData['media']['picture'],
+                                ? Image.network(
+                                    widget.formData['media']['picture'],
                                     fit: BoxFit.fill)
-                                : Image.file(widget.formData['media']['picture'],
+                                : Image.file(
+                                    widget.formData['media']['picture'],
                                     fit: BoxFit.fill)),
                         Expanded(
                             child: Container(
@@ -127,7 +130,8 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                           child: Column(children: [
                             CustomContainerText1(
                                 text1: 'Price',
-                                text2: "${widget.formData['propData']['price']} INR"),
+                                text2:
+                                    "${widget.formData['propData']['price']} INR"),
                             const SizedBox(height: 3),
                             const CustomContainerText1(
                                 text1: 'Status', text2: 'Uploaded'),

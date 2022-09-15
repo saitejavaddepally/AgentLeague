@@ -6,14 +6,14 @@ import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../helper/constants.dart';
-import '../provider/property_upload_provider.dart';
-import '../route_generator.dart';
-import '../theme/colors.dart';
+import '../../helper/constants.dart';
+import '../../provider/property_upload_provider.dart';
+import '../../route_generator.dart';
+import '../../theme/colors.dart';
 import 'package:readmore/readmore.dart';
 
-import 'emi.dart';
-import 'location.dart';
+import '../emi.dart';
+import '../location.dart';
 
 class ProjectExplorer extends StatefulWidget {
   final Map projectDetails;
@@ -72,11 +72,12 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                       Container(
                           height: 30,
                           width: 60,
+                          child: Image.network(widget.projectDetails['docs'][0],
+                              fit: BoxFit.fill),
                           decoration: BoxDecoration(
-                              color: HexColor('F14B4B'),
                               borderRadius: BorderRadius.circular(4))),
                       const SizedBox(height: 5),
-                      Text('Venture Name',
+                      Text("${widget.projectDetails['ventureName']}",
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
@@ -96,7 +97,8 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                                 children: [
                               const TextSpan(text: 'Price'),
                               TextSpan(
-                                  text: ' : 5500 - 6000 Sq.yd',
+                                  text:
+                                      ' : ${widget.projectDetails["pricePerUnitText"]} ${widget.projectDetails["pricePerUnitDropDow"]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.white.withOpacity(0.7)))
@@ -111,7 +113,8 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                                 children: [
                               const TextSpan(text: 'Plot sale'),
                               TextSpan(
-                                  text: ' : 1100 - 2600 Sq.yd',
+                                  text:
+                                      ' : ${widget.projectDetails["unitSizeOne"]} - ${widget.projectDetails["unitSizeTwo"]} ${widget.projectDetails["unitSizeDropDown"]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.white.withOpacity(0.7)))
@@ -283,6 +286,7 @@ class Page extends StatelessWidget {
                 text: i,
                 isTextUnder: true,
                 onTap: () {
+                  print(i);
                   if (i.toString() == "Gallery") {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
@@ -316,6 +320,15 @@ class Page extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => LocationScreen(
                                 latitude: latitude, longitude: longitude)));
+                  } else if (i.toString() == 'Layout') {
+                    Navigator.pushNamed(context, RouteName.layout,
+                        arguments: [projectDetails['docs'][2]]);
+                  } else if (i.toString() == 'Realtor') {
+                    Navigator.pushNamed(context, RouteName.realtorVideo,
+                        arguments: [projectDetails['videos'][0]]);
+                  } else if (i.toString() == 'Broucher') {
+                    Navigator.pushNamed(context, RouteName.broucher,
+                        arguments: [projectDetails['docs'][1]]);
                   }
                 }).use(),
           ),

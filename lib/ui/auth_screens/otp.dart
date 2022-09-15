@@ -10,7 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
-import '../route_generator.dart';
+import '../../route_generator.dart';
 
 class Otp extends StatefulWidget {
   final List args;

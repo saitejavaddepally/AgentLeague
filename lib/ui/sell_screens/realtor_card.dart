@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agent_league/Services/firestore_crud_operations.dart';
 import 'package:agent_league/components/custom_button.dart';
+import 'package:agent_league/components/custom_delete_dialog.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
@@ -13,8 +14,8 @@ import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../theme/colors.dart';
-import 'documents.dart';
+import '../../theme/colors.dart';
+import '../documents.dart';
 
 String userId = "";
 PageController? controller;
@@ -260,39 +261,27 @@ class _RealtorPageState extends State<RealtorPage> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text(
-                                "Are you sure you want to delete this property"),
-                            actions: [
-                              TextButton(
-                                onPressed: () async {
-                                  var currPlot = widget.plotNumber;
-                                  await EasyLoading.show(
-                                    status: 'Deleting.. please wait',
-                                    maskType: EasyLoadingMaskType.black,
-                                  );
-                                  await FirestoreDataProvider()
-                                      .deletePlot(int.parse(currPlot));
-                                  await EasyLoading.showSuccess("Deleted");
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => BottomBar(
-                                              index: 0,
-                                            )),
-                                    (route) => false,
-                                  );
-                                },
-                                child: const Text("Yes"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("No"),
-                              )
-                            ],
-                          );
+                          return CustomDeleteDialog(
+                              content: 'property',
+                              onCancel: () => Navigator.pop(context),
+                              onDelete: () async {
+                                var currPlot = widget.plotNumber;
+                                await EasyLoading.show(
+                                  status: 'Deleting.. please wait',
+                                  maskType: EasyLoadingMaskType.black,
+                                );
+                                await FirestoreDataProvider()
+                                    .deletePlot(int.parse(currPlot));
+                                await EasyLoading.showSuccess("Deleted");
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BottomBar(
+                                            index: 0,
+                                          )),
+                                  (route) => false,
+                                );
+                              });
                         },
                       );
                     },

@@ -3,17 +3,17 @@ import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/provider/property_provider.dart';
 import 'package:agent_league/route_generator.dart';
-import 'package:agent_league/ui/property_info.dart';
-import 'package:agent_league/ui/uploads_screen.dart';
+import 'package:agent_league/ui/sell_screens/post_your_property_page_two.dart';
+import 'package:agent_league/ui/project_screen/uploads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
-import '../components/custom_button.dart';
-import '../components/custom_map_dialog.dart';
-import '../components/custom_selector.dart';
-import '../location_service.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../components/custom_map_dialog.dart';
+import '../../components/custom_selector.dart';
+import '../../location_service.dart';
+import '../../theme/colors.dart';
 
 class Property extends StatefulWidget {
   const Property({Key? key}) : super(key: key);
@@ -53,17 +53,14 @@ class _PropertyState extends State<Property> {
                   text: 'Next',
                   onClick: () {
                     if (_formKey.currentState!.validate()) {
-
                       Map<String, dynamic> data = _propertyProvider.getMap();
-                      data.addAll({
-                        'latitude': _latitude,
-                        'longitude': _longitude
-                      });
+                      data.addAll(
+                          {'latitude': _latitude, 'longitude': _longitude});
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => UploadsScreen(
-                                  projectInfo: data)));
+                              builder: (context) =>
+                                  UploadsScreen(projectInfo: data)));
                     }
                   },
                   color: HexColor('FD7E0E'),
@@ -181,6 +178,7 @@ class _PropertyState extends State<Property> {
                                       child: Row(children: [
                                         Expanded(
                                           child: CustomTextField(
+                                            isDense: true,
                                             validator:
                                                 value.validateTotalProjectArea,
                                             onChanged: value
@@ -228,6 +226,7 @@ class _PropertyState extends State<Property> {
                                     Flexible(
                                         flex: 2,
                                         child: CustomTextField(
+                                          isDense: true,
                                           controller:
                                               value.unitSizeOneController,
                                           onChanged:
@@ -240,6 +239,7 @@ class _PropertyState extends State<Property> {
                                     Flexible(
                                         flex: 2,
                                         child: CustomTextField(
+                                          isDense: true,
                                           controller:
                                               value.unitSizeTwoController,
                                           onChanged:
@@ -251,6 +251,7 @@ class _PropertyState extends State<Property> {
                                         flex: 3,
                                         child: CustomSelector(
                                           borderRadius: 10,
+                                          isDense: true,
                                           hint: const Text('Select'),
                                           dropDownItems: value.unitSizeDropDown,
                                           onChanged: value.onChangedUnitSize,
@@ -270,6 +271,7 @@ class _PropertyState extends State<Property> {
                                   children: [
                                     Flexible(
                                         child: CustomTextField(
+                                      isDense: true,
                                       controller: value.pricePerUnitController,
                                       onChanged: value.onSubmittedPricePerUnit,
                                       validator: value.validatePricePerUnit,
@@ -279,6 +281,7 @@ class _PropertyState extends State<Property> {
                                     const SizedBox(width: 15),
                                     Flexible(
                                         child: CustomSelector(
+                                      isDense: true,
                                       borderRadius: 10,
                                       hint: const Text('Select'),
                                       dropDownItems: value.pricePerUnitDropDown,

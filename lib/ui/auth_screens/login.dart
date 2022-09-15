@@ -1,11 +1,11 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-import '../components/custom_button.dart';
-import '../components/custom_text_field.dart';
-import '../components/custom_title.dart';
-import '../route_generator.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../components/custom_text_field.dart';
+import '../../components/custom_title.dart';
+import '../../route_generator.dart';
+import '../../theme/colors.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                             child: Container(
                           margin: const EdgeInsets.only(right: 5),
                           child: CustomTextField(
-                            borderRadius : 30,
+                            borderRadius: 30,
                             hint: "Enter Mobile Number",
                             keyboardType: TextInputType.number,
                             controller: _phoneNumberController,

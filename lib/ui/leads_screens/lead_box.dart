@@ -1,4 +1,5 @@
 import 'package:agent_league/components/custom_container_text.dart';
+import 'package:agent_league/components/custom_delete_dialog.dart';
 import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
-import '../route_generator.dart';
+import '../../route_generator.dart';
 
 class LeadBox extends StatefulWidget {
   final String? docId;
@@ -413,9 +414,22 @@ class _StandloneState extends State<Standlone> {
                                                       Row(children: [
                                                         CircleButton(
                                                             onTap: () async =>
-                                                                await showDeleteDialog(
-                                                                    context,
-                                                                    leadId!),
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder: (context) =>
+                                                                        CustomDeleteDialog(
+                                                                            content:
+                                                                                "lead",
+                                                                            onCancel: () => Navigator.pop(
+                                                                                context),
+                                                                            onDelete:
+                                                                                () async {
+                                                                              EasyLoading.show(status: 'Please Wait...');
+                                                                              await FirestoreDataProvider.deleteLead(leadId!);
+                                                                              await EasyLoading.showSuccess('Lead Successfully Deleted', duration: const Duration(seconds: 2));
+                                                                              Navigator.pop(context);
+                                                                            })),
                                                             iconData: Image.asset(
                                                                 'assets/trash.png')),
                                                         const SizedBox(
@@ -512,30 +526,6 @@ class _StandloneState extends State<Standlone> {
         ),
       ),
     );
-  }
-
-  Future<void> showDeleteDialog(BuildContext context, String leadId) async {
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text('Are you sure to delete this lead?'),
-              actions: [
-                TextButton(
-                    onPressed: () async {
-                      EasyLoading.show(status: 'Please Wait...');
-                      await FirestoreDataProvider.deleteLead(leadId);
-                      await EasyLoading.showSuccess('Lead Successfully Deleted',
-                          duration: const Duration(seconds: 2));
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Yes')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('No')),
-              ],
-            ));
   }
 }
 

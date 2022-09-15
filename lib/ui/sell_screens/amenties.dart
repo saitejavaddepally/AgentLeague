@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/property_digitalization.dart';
+import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
@@ -8,14 +8,14 @@ import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/amenities_provider.dart';
 import 'package:agent_league/theme/colors.dart';
-import 'package:agent_league/ui/uploads_screen.dart';
+import 'package:agent_league/ui/project_screen/uploads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../Services/firestore_crud_operations.dart';
-import '../components/custom_button.dart';
-import '../helper/constants.dart';
+import '../../Services/firestore_crud_operations.dart';
+import '../../components/custom_button.dart';
+import '../../helper/constants.dart';
 
 class Amenties extends StatefulWidget {
   final List data;

@@ -16,9 +16,9 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import '../components/custom_label.dart';
-import '../components/custom_text_field.dart';
-import '../theme/colors.dart';
+import '../../components/custom_label.dart';
+import '../../components/custom_text_field.dart';
+import '../../theme/colors.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 import '../helper/shared_preferences.dart';
-import '../ui/realtor_card.dart';
+import '../ui/sell_screens/realtor_card.dart';
 import 'custom_container_text.dart';
 
 class CustomSellCard extends StatelessWidget {
@@ -110,8 +110,8 @@ class CustomSellCard extends StatelessWidget {
                                                   text2: possession)
                                               .use(),
                                           CustomContainerText(
-                                              text1: 'Property ID',
-                                              text2: propertyId.toString())
+                                                  text1: 'Property ID',
+                                                  text2: propertyId.toString())
                                               .use(),
                                         ],
                                       ),

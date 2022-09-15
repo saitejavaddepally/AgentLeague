@@ -1,6 +1,6 @@
 import 'package:agent_league/theme/colors.dart';
-import 'package:agent_league/ui/property_digitalization.dart';
-import 'package:agent_league/ui/realtor_card.dart';
+import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
+import 'package:agent_league/ui/sell_screens/realtor_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -119,9 +119,9 @@ class _SavedState extends State<Saved> {
                         size: plotPagesInformation[i][0]['size'],
                         location: plotPagesInformation[i][0]['location'],
                         price: plotPagesInformation[i][0]['price'],
-                  propertyId: "PR_" + plotPagesInformation[i][0]['plotNumber'],
-
-                  possession: plotPagesInformation[i][0]
+                        propertyId:
+                            "PR_" + plotPagesInformation[i][0]['plotNumber'],
+                        possession: plotPagesInformation[i][0]
                             ['possessionStatus'],
                         onClick: () async {
                           await SharedPreferencesHelper().saveCurrentPlot(

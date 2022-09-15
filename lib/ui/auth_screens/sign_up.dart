@@ -3,7 +3,7 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/post_your_property.dart';
+import 'package:agent_league/ui/sell_screens/post_your_property_page_one.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +11,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../location_service.dart';
-import '../provider/firestore_data_provider.dart';
-import '../route_generator.dart';
-import '../theme/colors.dart';
+import '../../location_service.dart';
+import '../../provider/firestore_data_provider.dart';
+import '../../route_generator.dart';
+import '../../theme/colors.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class SignUpForm extends StatefulWidget {

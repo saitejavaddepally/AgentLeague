@@ -4,7 +4,7 @@ import 'package:agent_league/components/home_container.dart';
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
-import 'package:agent_league/ui/edit_profile.dart';
+import 'package:agent_league/ui/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

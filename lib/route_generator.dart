@@ -1,9 +1,10 @@
 import 'package:agent_league/Services/payment_razorpay.dart';
 import 'package:agent_league/ui/Home/Chat/chat_detail.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/add_project.dart';
+import 'package:agent_league/ui/project_screen/add_project.dart';
 import 'package:agent_league/ui/alerts.dart';
-import 'package:agent_league/ui/amenties.dart';
+import 'package:agent_league/ui/sell_screens/amenties.dart';
+import 'package:agent_league/ui/browcher.dart';
 import 'package:agent_league/ui/coinsfly_wallet.dart';
 import 'package:agent_league/ui/documents.dart';
 import 'package:agent_league/ui/emi.dart';
@@ -11,31 +12,33 @@ import 'package:agent_league/ui/escrow.dart';
 import 'package:agent_league/ui/explore.dart';
 import 'package:agent_league/ui/gallery.dart';
 import 'package:agent_league/ui/help.dart';
-import 'package:agent_league/ui/lead_box.dart';
-import 'package:agent_league/ui/lead_notes.dart';
-import 'package:agent_league/ui/lead_status.dart';
+import 'package:agent_league/ui/layout.dart';
+import 'package:agent_league/ui/leads_screens/lead_box.dart';
+import 'package:agent_league/ui/leads_screens/lead_notes.dart';
+import 'package:agent_league/ui/leads_screens/lead_status.dart';
 import 'package:agent_league/ui/listing.dart';
 import 'package:agent_league/ui/listing_property.dart';
 import 'package:agent_league/ui/location.dart';
-import 'package:agent_league/ui/login.dart';
+import 'package:agent_league/ui/auth_screens/login.dart';
 import 'package:agent_league/ui/monthly_emi.dart';
 import 'package:agent_league/ui/onboarding.dart';
-import 'package:agent_league/ui/otp.dart';
-import 'package:agent_league/ui/post_your_property.dart';
-import 'package:agent_league/ui/profile.dart';
-import 'package:agent_league/ui/project_explorer.dart';
-import 'package:agent_league/ui/property.dart';
+import 'package:agent_league/ui/auth_screens/otp.dart';
+import 'package:agent_league/ui/sell_screens/post_your_property_page_one.dart';
+import 'package:agent_league/ui/profile/profile.dart';
+import 'package:agent_league/ui/project_screen/project_explorer.dart';
+import 'package:agent_league/ui/project_screen/property.dart';
 import 'package:agent_league/ui/property_buying_score.dart';
-import 'package:agent_league/ui/property_digitalization.dart';
-import 'package:agent_league/ui/property_info.dart';
+import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
+import 'package:agent_league/ui/sell_screens/post_your_property_page_two.dart';
 import 'package:agent_league/ui/property_loan.dart';
 import 'package:agent_league/ui/property_range.dart';
-import 'package:agent_league/ui/register.dart';
+import 'package:agent_league/ui/realtor_video.dart';
+
 import 'package:agent_league/ui/show_property_range.dart';
-import 'package:agent_league/ui/sign_up.dart';
-import 'package:agent_league/ui/signin_edit.dart';
+import 'package:agent_league/ui/auth_screens/sign_up.dart';
+
 import 'package:agent_league/ui/tour.dart';
-import 'package:agent_league/ui/uploads_screen.dart';
+import 'package:agent_league/ui/project_screen/uploads_screen.dart';
 import 'package:agent_league/ui/vasthu.dart';
 import 'package:agent_league/ui/wallet_history.dart';
 import 'package:agent_league/ui/we_hear.dart';
@@ -87,6 +90,9 @@ class RouteName {
   static const String walletHistory = '/wallet_history';
   static const String propertyRange = '/property_range';
   static const String showPropertyRange = '/show_property_range';
+  static const String layout = '/layout';
+  static const String realtorVideo = '/realtorVideo';
+  static const String broucher = '/broucher';
 }
 
 class RouteGenerator {
@@ -120,9 +126,7 @@ class RouteGenerator {
       case RouteName.alerts:
         return PageTransition(
             child: const Alerts(), type: PageTransitionType.leftToRight);
-      case RouteName.signInEdit:
-        return PageTransition(
-            child: const SignInEdit(), type: PageTransitionType.leftToRight);
+
       case RouteName.signUp:
         return PageTransition(
             child: const SignUpForm(), type: PageTransitionType.leftToRight);
@@ -219,6 +223,25 @@ class RouteGenerator {
           return _errorRoute();
         }
 
+      case RouteName.realtorVideo:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: RealtorVideo(videos: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+      case RouteName.broucher:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: Broucher(docs: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
       case RouteName.gallery:
         return PageTransition(
             child: const GalleryScreen(info: {}),
@@ -243,9 +266,7 @@ class RouteGenerator {
               projectInfo: {},
             ),
             type: PageTransitionType.leftToRight);
-      case RouteName.register:
-        return PageTransition(
-            child: const Register(), type: PageTransitionType.leftToRight);
+
       case RouteName.propertyBuyingScore:
         return PageTransition(
             child: const PropertyBuyingScore(),
@@ -327,6 +348,16 @@ class RouteGenerator {
           if (args is List) {
             return PageTransition(
                 child: LeadStatus(leadId: args[0], currentStatus: args[1]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
+      case RouteName.layout:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: Layout(docs: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();

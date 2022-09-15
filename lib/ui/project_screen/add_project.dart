@@ -3,7 +3,7 @@ import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 
-import '../theme/colors.dart';
+import '../../theme/colors.dart';
 
 class AddProject extends StatefulWidget {
   const AddProject({Key? key}) : super(key: key);

@@ -5,7 +5,7 @@ import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/provider/property_upload_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/project.dart';
-import 'package:agent_league/ui/realtor_card.dart';
+import 'package:agent_league/ui/sell_screens/realtor_card.dart';
 import 'package:agent_league/ui/search_by.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';

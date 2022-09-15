@@ -58,17 +58,23 @@ class PdfUploadProvider extends ChangeNotifier {
   final List<File?> _docs = List.generate(4, (index) => null);
 
   UnmodifiableListView<File?> get docs => UnmodifiableListView(_docs);
-
+  FilePickerResult? result;
   void pickPdf(int index) async {
-    final result = await FilePicker.platform
-        .pickFiles(allowedExtensions: ['pdf'], type: FileType.custom);
+    if (index == 0) {
+      result = await FilePicker.platform
+          .pickFiles(allowedExtensions: ['png', 'jpg'], type: FileType.custom);
+    } else {
+      result = await FilePicker.platform
+          .pickFiles(allowedExtensions: ['pdf'], type: FileType.custom);
+    }
+
     if (result == null) return;
-    final file = result.files.first;
+    final file = result!.files.first;
     final kb = file.size / 1024;
     final mb = kb / 1024;
     if (mb > 3) {
       Fluttertoast.showToast(
-          msg: 'Pdf Should be less than 3mb', toastLength: Toast.LENGTH_LONG);
+          msg: 'File Should be less than 3mb', toastLength: Toast.LENGTH_LONG);
       return;
     } else {
       _docs[index] = File(file.path!);

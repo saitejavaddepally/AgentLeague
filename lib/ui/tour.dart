@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
+import '../components/custom_title.dart';
 import '../theme/colors.dart';
 
 class Tour extends StatefulWidget {
@@ -22,8 +23,9 @@ class _TourState extends State<Tour> {
     List videoNames;
 
     if (widget.info['isProject']) {
-      videos = widget.info['projectDetails']['videos'];
-      videoNames = ['video1', 'video2', 'video3', 'video4'];
+      videos = widget.info['projectDetails']['videos'] as List;
+      videos.removeAt(0);
+      videoNames = ['video1', 'video2', 'video3'];
     } else {
       int currentPlot = widget.info['currentPage'];
       videos = widget.info['plotPagesInformation'][currentPlot][0]['videos'];
@@ -79,6 +81,8 @@ class _TourState extends State<Tour> {
                       color: Colors.white.withOpacity(0.87))),
               const SizedBox(height: 20),
               const SizedBox(height: 20),
+              if (res[0]['videos'].length == 0)
+                const CustomTitle(text: 'No videos'),
               Flexible(
                   child: ListView.builder(
                       itemCount: res[0]['videos'].length,

@@ -3,7 +3,7 @@ import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/provider/property_upload_provider.dart';
 import 'package:agent_league/route_generator.dart';
-import 'package:agent_league/ui/project_explorer.dart';
+import 'package:agent_league/ui/project_screen/project_explorer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

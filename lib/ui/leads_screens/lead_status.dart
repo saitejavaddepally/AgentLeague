@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
-import '../components/custom_button.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../theme/colors.dart';
 
 class LeadStatus extends StatefulWidget {
   final String leadId;

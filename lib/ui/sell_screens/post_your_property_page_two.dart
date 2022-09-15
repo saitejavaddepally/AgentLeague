@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
-import '../components/custom_label.dart';
-import '../components/custom_line_under_text.dart';
-import '../components/custom_text_field.dart';
-import '../components/custom_title.dart';
-import '../helper/constants.dart';
-import '../provider/amenities_provider.dart';
-import '../theme/colors.dart';
+import '../../components/custom_label.dart';
+import '../../components/custom_line_under_text.dart';
+import '../../components/custom_text_field.dart';
+import '../../components/custom_title.dart';
+import '../../helper/constants.dart';
+import '../../provider/amenities_provider.dart';
+import '../../theme/colors.dart';
 
 class PostYourPropertyPageTwo extends StatefulWidget {
   final List data;
@@ -513,6 +513,7 @@ class CustomWidget {
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10),
                       hintText: "",
+                      isDense: true,
                       hintStyle: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
@@ -528,6 +529,7 @@ class CustomWidget {
                         hint: const Text('Select'),
                         onChanged: onChanged,
                         chosenValue: chosenValue,
+                        isDense: true,
                         borderRadius: 10,
                         textColor: Colors.white.withOpacity(0.8),
                         dropDownItems: dropDownItems)

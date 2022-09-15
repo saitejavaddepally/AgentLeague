@@ -6,9 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../components/custom_button.dart';
-import '../theme/colors.dart';
-import 'Home/bottom_navigation.dart';
+import '../../components/custom_button.dart';
+import '../../components/custom_line_under_text.dart';
+import '../../theme/colors.dart';
+import '../Home/bottom_navigation.dart';
 
 class UploadsScreen extends StatefulWidget {
   final Map projectInfo;
@@ -52,21 +53,19 @@ class _UploadsScreenState extends State<UploadsScreen> {
             CustomButton(
               text: 'Next',
               onClick: () async {
-                await PropertyUploadProvider().uploadProject(widget.projectInfo as Map<String, dynamic>, _images, _videos, _docs).then((value) {
-                  Navigator
-                      .pushAndRemoveUntil(
+                await PropertyUploadProvider()
+                    .uploadProject(widget.projectInfo as Map<String, dynamic>,
+                        _images, _videos, _docs)
+                    .then((value) {
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder:
-                            (context) =>
-                            BottomBar(
-                              index:
-                              0,
+                        builder: (context) => BottomBar(
+                              index: 0,
                             )),
-                        (route) => false,
+                    (route) => false,
                   );
                 });
-
               },
               color: HexColor('FD7E0E'),
               width: 82,
@@ -86,7 +85,12 @@ class _UploadsScreenState extends State<UploadsScreen> {
                     onTap: () => Navigator.pop(context),
                     child: const Icon(Icons.keyboard_backspace_rounded)),
                 const SizedBox(height: 30),
-                const CustomTitle(text: 'Upload Images'),
+                CustomLineUnderText(
+                        text: 'Upload Images',
+                        height: 3,
+                        width: 95,
+                        color: HexColor('FE7F0E'))
+                    .use(),
                 const SizedBox(height: 15),
                 Consumer<ImageUploadProvider>(
                   builder: (context, value, child) => Column(
@@ -99,12 +103,11 @@ class _UploadsScreenState extends State<UploadsScreen> {
                               image: (value.images[i] != null)
                                   ? Image.file(value.images[i]!)
                                   : Image.asset('assets/picker.png'),
-                              imageName: 'Image $i',
+                              imageName:
+                                  (i == 0) ? 'Cover image' : 'Image ${i + 1}',
                               onTap: () {
                                 value.pickImage(i);
                                 _images = value.images;
-                                print(
-                                    "values are ${value.images}");
                               },
                             ))
                         ],
@@ -115,7 +118,7 @@ class _UploadsScreenState extends State<UploadsScreen> {
                           for (int i = 4; i < 8; i++)
                             Flexible(
                                 child: PickerContainer(
-                              imageName: 'Image $i',
+                              imageName: 'Image ${i + 1}',
                               image: (value.images[i] != null)
                                   ? Image.file(value.images[i]!)
                                   : Image.asset('assets/picker.png'),
@@ -132,7 +135,12 @@ class _UploadsScreenState extends State<UploadsScreen> {
                 const ExceedText(
                     text: '[Each image file should not exceed 1 mb]'),
                 const SizedBox(height: 30),
-                const CustomTitle(text: 'Upload Videos'),
+                CustomLineUnderText(
+                        text: 'Upload Videos',
+                        height: 3,
+                        width: 95,
+                        color: HexColor('FE7F0E'))
+                    .use(),
                 const SizedBox(height: 15),
                 Consumer<VideoUploadProvider>(
                   builder: (context, value, child) => Row(
@@ -140,23 +148,15 @@ class _UploadsScreenState extends State<UploadsScreen> {
                       for (int i = 0; i < 4; i++)
                         Flexible(
                             child: PickerContainer(
-                          imageName: 'Video$i',
+                          imageName:
+                              (i == 0) ? 'Realtor video' : 'Video ${i + 1}',
                           image: (value.videos[i] != null)
-                              ? Stack(children: [
-                                  Image.asset('assets/lead_box_image.png',
-                                      fit: BoxFit.fill),
-                                  Center(
-                                    child: Icon(Icons.play_arrow_rounded,
-                                        size: 35,
-                                        color: Colors.orange.withOpacity(0.7)),
-                                  )
-                                ])
+                              ? Image.asset('assets/lead_box_image.png',
+                                  fit: BoxFit.fill)
                               : Image.asset('assets/picker.png'),
                           onTap: () {
                             value.pickVideo(i);
                             _videos = value.videos;
-                            print(
-                                "values are ${value.videos}");
                           },
                         )),
                     ],
@@ -165,7 +165,12 @@ class _UploadsScreenState extends State<UploadsScreen> {
                 const SizedBox(height: 15),
                 const ExceedText(text: '[Each Video should not exceed 3 mb]'),
                 const SizedBox(height: 30),
-                const CustomTitle(text: 'Upload Docs'),
+                CustomLineUnderText(
+                        text: 'Upload Docs',
+                        height: 3,
+                        width: 85,
+                        color: HexColor('FE7F0E'))
+                    .use(),
                 const SizedBox(height: 15),
                 Consumer<PdfUploadProvider>(
                   builder: (context, value, child) => Row(
@@ -173,23 +178,20 @@ class _UploadsScreenState extends State<UploadsScreen> {
                       for (int i = 0; i < 4; i++)
                         Flexible(
                             child: PickerContainer(
-                          imageName: 'Doc$i',
+                          imageName: (i == 0)
+                              ? 'Logo'
+                              : (i == 1)
+                                  ? 'Broucher'
+                                  : (i == 2)
+                                      ? 'Layout'
+                                      : 'Doc',
                           image: (value.docs[i] != null)
-                              ? Stack(children: [
-                                  Image.asset('assets/lead_box_image.png',
-                                      fit: BoxFit.fill),
-                                  Center(
-                                    child: Icon(Icons.online_prediction_rounded,
-                                        size: 35,
-                                        color: Colors.orange.withOpacity(0.7)),
-                                  )
-                                ])
+                              ? Image.asset('assets/lead_box_image.png',
+                                  fit: BoxFit.fill)
                               : Image.asset('assets/picker.png'),
                           onTap: () {
                             value.pickPdf(i);
                             _docs = value.docs;
-                            print(
-                                "values are ${value.docs}");
                           },
                         )),
                     ],

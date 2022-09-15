@@ -13,15 +13,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:agent_league/location_service.dart';
-import '../components/custom_button.dart';
-import '../components/custom_label.dart';
-import '../components/custom_line_under_text.dart';
-import '../components/custom_map_dialog.dart';
-import '../components/custom_selector.dart';
-import '../components/custom_text_field.dart';
-import '../helper/constants.dart';
-import '../provider/post_your_property_provider_one.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../components/custom_label.dart';
+import '../../components/custom_line_under_text.dart';
+import '../../components/custom_map_dialog.dart';
+import '../../components/custom_selector.dart';
+import '../../components/custom_text_field.dart';
+import '../../helper/constants.dart';
+import '../../provider/post_your_property_provider_one.dart';
+import '../../theme/colors.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);

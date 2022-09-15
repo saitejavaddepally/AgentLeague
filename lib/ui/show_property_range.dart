@@ -1,4 +1,4 @@
-import 'package:agent_league/ui/property_digitalization.dart';
+import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_button.dart';
