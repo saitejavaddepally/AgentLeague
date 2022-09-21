@@ -5,6 +5,7 @@ import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -12,12 +13,13 @@ import '../helper/shared_preferences.dart';
 import 'auth_methods.dart';
 import 'firestore_crud_operations.dart';
 
-class UploadPropertiesToFirestore {
+class UploadPropertiesToFirestore extends ChangeNotifier {
   static const String _IMAGE = 'images';
   static const String _VIDEO = 'videos';
   static const String _DOCS = 'docs';
   String? currentPlot = '';
   String? currentUser = '';
+  int processIndex = 0;
 
   Future getPlotStatus() async {
     String? userId = await SharedPreferencesHelper().getUserId();
@@ -184,16 +186,19 @@ class UploadPropertiesToFirestore {
     // upload the data into storage.
     await UploadPropertiesToFirestore()
         .postPropertyPageOne(dataToBeUploaded, isEdited);
-    await EasyLoading.show(status: "5%");
+
     await uploadToFireStore(_images, _IMAGE, _docNames, _videoNames);
 
-    await EasyLoading.show(status: "25%");
+    processIndex = 1;
+    notifyListeners();
     await uploadToFireStore(_videos, _VIDEO, _docNames, _videoNames);
 
-    await EasyLoading.show(status: "75%");
+    processIndex = 2;
+    notifyListeners();
     await uploadToFireStore(_docs, _DOCS, _docNames, _videoNames);
 
-    await EasyLoading.show(status: "100%");
+    processIndex = 3;
+    notifyListeners();
 
     // get the data as links.
     await SharedPreferencesHelper().getCurrentPlot().then((value) async {
@@ -221,6 +226,8 @@ class UploadPropertiesToFirestore {
         "docNames": FieldValue.arrayUnion([...docs[0]]),
         "plotProfilePicture": images[0]
       }).then((val) {
+        processIndex = 4;
+        notifyListeners();
         EasyLoading.showSuccess('Updated the links in firestore! ');
       }).catchError((err) {
         EasyLoading.dismiss();

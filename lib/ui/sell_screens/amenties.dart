@@ -16,6 +16,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../Services/firestore_crud_operations.dart';
 import '../../components/custom_button.dart';
 import '../../helper/constants.dart';
+import '../../route_generator.dart';
 
 class Amenties extends StatefulWidget {
   final List data;
@@ -338,17 +339,20 @@ class _AmentiesState extends State<Amenties> {
                                                       if (freeCreditCurrent !=
                                                               0 &&
                                                           !ifPaid!) {
-                                                        await EasyLoading.show(
-                                                            status: '0%');
-                                                        await UploadPropertiesToFirestore()
-                                                            .uploadData(
-                                                                _images,
-                                                                _videos,
-                                                                _docs,
-                                                                _docNames,
-                                                                _videoNames,
-                                                                isEdited,
-                                                                widget.data[0]);
+                                                        await Navigator.pushNamed(
+                                                            context,
+                                                            RouteName
+                                                                .uploadingProgress,
+                                                            arguments: [
+                                                              _images,
+                                                              _videos,
+                                                              _docs,
+                                                              _docNames,
+                                                              _videoNames,
+                                                              isEdited,
+                                                              widget.data[0]
+                                                            ]);
+
                                                         await UploadPropertiesToFirestore()
                                                             .updateFreeCredit(
                                                                 freeCreditCurrent -
@@ -393,10 +397,6 @@ class _AmentiesState extends State<Amenties> {
                                                         return;
                                                       }
 
-                                                      await EasyLoading.show(
-                                                          status:
-                                                              'Please wait..');
-
                                                       if (isEdited) {
                                                         String? userId;
                                                         await SharedPreferencesHelper()
@@ -435,15 +435,19 @@ class _AmentiesState extends State<Amenties> {
                                                         });
                                                       }
 
-                                                      await UploadPropertiesToFirestore()
-                                                          .uploadData(
-                                                              _images,
-                                                              _videos,
-                                                              _docs,
-                                                              _docNames,
-                                                              _videoNames,
-                                                              isEdited,
-                                                              widget.data[0]);
+                                                      await Navigator.pushNamed(
+                                                          context,
+                                                          RouteName
+                                                              .uploadingProgress,
+                                                          arguments: [
+                                                            _images,
+                                                            _videos,
+                                                            _docs,
+                                                            _docNames,
+                                                            _videoNames,
+                                                            isEdited,
+                                                            widget.data[0]
+                                                          ]);
                                                       await EasyLoading.showSuccess(
                                                           'Saved your property!');
                                                       Navigator

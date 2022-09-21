@@ -39,6 +39,7 @@ import 'package:agent_league/ui/auth_screens/sign_up.dart';
 
 import 'package:agent_league/ui/tour.dart';
 import 'package:agent_league/ui/project_screen/uploads_screen.dart';
+import 'package:agent_league/ui/sell_screens/uploading_progress_page.dart';
 import 'package:agent_league/ui/vasthu.dart';
 import 'package:agent_league/ui/wallet_history.dart';
 import 'package:agent_league/ui/we_hear.dart';
@@ -93,6 +94,7 @@ class RouteName {
   static const String layout = '/layout';
   static const String realtorVideo = '/realtorVideo';
   static const String broucher = '/broucher';
+  static const String uploadingProgress = 'upload_progress';
 }
 
 class RouteGenerator {
@@ -279,16 +281,6 @@ class RouteGenerator {
         }
         return _errorRoute();
 
-      // case RouteName.success:
-      //   {
-      //     if (args is Map) {
-      //       return PageTransition(
-      //           child: const Success(data: {}),
-      //           type: PageTransitionType.leftToRight);
-      //     }
-      //     return _errorRoute();
-      //   }
-
       case RouteName.paymentRazorpay:
         {
           if (args is Map) {
@@ -299,9 +291,6 @@ class RouteGenerator {
           return _errorRoute();
         }
 
-      // case RouteName.searchBy:
-      //   return PageTransition(
-      //       child: const SeachBy(), type: PageTransitionType.leftToRight);
       case RouteName.chatDetail:
         {
           if (args is List) {
@@ -348,6 +337,16 @@ class RouteGenerator {
           if (args is List) {
             return PageTransition(
                 child: LeadStatus(leadId: args[0], currentStatus: args[1]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+
+      case RouteName.uploadingProgress:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: UploadingProgress(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
