@@ -5,6 +5,7 @@ import 'package:agent_league/ui/Home/home.dart';
 import 'package:agent_league/ui/Home/Chat/people.dart';
 import 'package:agent_league/ui/Home/project.dart';
 import 'package:agent_league/ui/Home/sell_screen.dart';
+import 'package:agent_league/ui/sell_screens/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

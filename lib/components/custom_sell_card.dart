@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-import '../helper/shared_preferences.dart';
-import '../ui/sell_screens/realtor_card.dart';
 import 'custom_container_text.dart';
 
 class CustomSellCard extends StatelessWidget {
@@ -65,14 +63,24 @@ class CustomSellCard extends StatelessWidget {
                             children: [
                               Expanded(
                                   flex: 1,
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 100,
                                     height: 170,
-                                    // decoration:
-                                    //     BoxDecoration(border: Border.all()),
-                                    child: Image.network(
-                                      imageUrl,
-                                      fit: BoxFit.fill,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(17),
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        fit: BoxFit.fill,
+                                        errorWidget: (_, __, ___) {
+                                          return const FittedBox(
+                                            fit: BoxFit.fill,
+                                            child: Icon(
+                                              Icons.broken_image,
+                                              color: Colors.black,
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   )),
                               Expanded(

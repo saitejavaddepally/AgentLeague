@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 class PostYourPropertyProviderOne extends ChangeNotifier {
   String _price = '';
+  double latitude = 0;
+  double longitude = 0;
 
   PostYourPropertyProviderOne(data) {
     if (data != null) {
@@ -41,8 +43,8 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       } else {
         _disableAge = false;
       }
-      print("prince is ${data['price']}");
-      _controller.text = data['price'];
+
+      _controller.text = data['price'].toString();
       _locationController.text = data['location'];
       _ageChosenValue = data['age'];
       _facingChosenValue = data['facing'];
@@ -303,6 +305,8 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       'handOverYear': handOverYearController.text,
       'handOverMonth': handOverMonthController.text,
       'size': _sizeController.text + ' ' + _sizeChosenValue!,
+      'latitude': latitude,
+      'longitude': longitude,
       'box_enabled': 0,
     };
   }
@@ -319,6 +323,8 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
     _facingChosenValue = null;
     _sizeController.clear();
     _sizeChosenValue = null;
+    latitude = 0;
+    longitude = 0;
     notifyListeners();
   }
 }

@@ -1,14 +1,38 @@
+import 'dart:io';
+
+import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:timelines/timelines.dart';
 
-import '../../Services/upload_properties_to_firestore.dart';
+import '../../provider/sell_providers/uploading_progress_provider.dart';
 
 class UploadingProgress extends StatelessWidget {
-  final List data;
-  UploadingProgress({required this.data, Key? key}) : super(key: key);
+  final Map<String, dynamic> previousData;
+  final Map<String, dynamic>? dataToEdit;
+  final bool isFreeListing;
+  final List<File> image;
+  final List<File> videos;
+  final List<File> docs;
+  final List<int> imagesIndex;
+  final List<int> docsIndex;
+  final List<int> videosIndex;
+  UploadingProgress(
+      {required this.previousData,
+      required this.isFreeListing,
+      required this.image,
+      required this.docs,
+      required this.videos,
+      required this.imagesIndex,
+      required this.docsIndex,
+      required this.videosIndex,
+      this.dataToEdit,
+      Key? key})
+      : super(key: key);
 
   static final shadow = [
     BoxShadow(
@@ -23,14 +47,13 @@ class UploadingProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => UploadPropertiesToFirestore(),
+        create: (context) => UploadingProgressProvider(),
         builder: (context, child) {
           final _pr =
-              Provider.of<UploadPropertiesToFirestore>(context, listen: false);
-          _pr
-              .uploadData(
-                  data[0], data[1], data[2], data[3], data[4], data[5], data[6])
-              .then((value) => Navigator.pop(context));
+              Provider.of<UploadingProgressProvider>(context, listen: false);
+
+          checkFunction(_pr, context);
+
           return Scaffold(
             body: SingleChildScrollView(
               child: SafeArea(
@@ -86,7 +109,7 @@ class UploadingProgress extends StatelessWidget {
                                       Row(children: [
                                         Flexible(
                                             child: Consumer<
-                                                UploadPropertiesToFirestore>(
+                                                UploadingProgressProvider>(
                                           builder: (context, value, child) =>
                                               Timeline.tileBuilder(
                                             shrinkWrap: true,
@@ -177,5 +200,44 @@ class UploadingProgress extends StatelessWidget {
             ),
           );
         });
+  }
+
+  void checkFunction(UploadingProgressProvider _pr, BuildContext context) {
+    if (dataToEdit != null) {
+      final id = dataToEdit?['id'];
+      _pr
+          .editProject(previousData, image, videos, docs, imagesIndex,
+              docsIndex, videosIndex, id)
+          .then((value) async {
+        if (dataToEdit?['isPaid'] == true) {
+          EasyLoading.showSuccess('Property Edit Succesfully');
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteName.bottomBar, (route) => false,
+              arguments: 1);
+        } else {
+          final data = await SellScreenMethods.getParticularPropertyDetail(id);
+          Navigator.pushNamed(context, RouteName.propertyDigitalization,
+              arguments: data!);
+        }
+      });
+    } else {
+      _pr
+          .addProject(previousData, image, videos, docs, isFreeListing,
+              imagesIndex, docsIndex, videosIndex)
+          .then((id) async {
+        if (isFreeListing) {
+          await SellScreenMethods.decrementFreeCredit();
+          EasyLoading.showSuccess(
+              'Property Uploaded Succesfully\nYou used your free credit');
+          Navigator.pushNamedAndRemoveUntil(
+              context, RouteName.bottomBar, (route) => false,
+              arguments: 1);
+        } else {
+          final data = await SellScreenMethods.getParticularPropertyDetail(id);
+          Navigator.pushNamed(context, RouteName.propertyDigitalization,
+              arguments: data!);
+        }
+      });
+    }
   }
 }

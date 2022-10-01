@@ -66,14 +66,12 @@ class OtpProvider extends ChangeNotifier {
   Future<String> updateOtp(String verificationId, String phoneNumber) async {
     bool correct = false;
     if (_otp.length == 6) {
-      print("checking otp....");
       var userCode =
           int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
-      print(userCode);
+
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userCode.toString());
       await auth.currentUser?.updatePhoneNumber(credential).whenComplete(() {
-        print("done updating");
         updateUser(FirebaseAuth.instance.currentUser?.uid, phoneNumber);
         correct = true;
       }).catchError((error) {

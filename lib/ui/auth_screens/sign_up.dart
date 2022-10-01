@@ -211,7 +211,7 @@ class _SignUpFormState extends State<SignUpForm> {
         {
           'name': name,
           'uid': userId,
-          'freeCredit': "1",
+          'freeCredit': 1,
           'isSubscribed': false,
           'freeCreditPropertyBox': 1,
           'phone': phoneNumber,

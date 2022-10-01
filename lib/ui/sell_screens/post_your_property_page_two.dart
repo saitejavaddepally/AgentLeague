@@ -1,10 +1,7 @@
-import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_selector.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
-import 'package:agent_league/provider/post_your_property_provider_two.dart';
+import 'package:agent_league/provider/sell_providers/post_your_property_provider_two.dart';
 import 'package:agent_league/route_generator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +11,19 @@ import '../../components/custom_line_under_text.dart';
 import '../../components/custom_text_field.dart';
 import '../../components/custom_title.dart';
 import '../../helper/constants.dart';
-import '../../provider/amenities_provider.dart';
+import '../../provider/sell_providers/amenities_provider.dart';
 import '../../theme/colors.dart';
 
 class PostYourPropertyPageTwo extends StatefulWidget {
-  final List data;
+  final Map<String, dynamic> previousPageData;
+  final Map<String, dynamic>? dataToEdit;
+  final bool isFreeListing;
 
-  const PostYourPropertyPageTwo({required this.data, Key? key})
+  const PostYourPropertyPageTwo(
+      {required this.previousPageData,
+      required this.isFreeListing,
+      this.dataToEdit,
+      Key? key})
       : super(key: key);
 
   @override
@@ -30,36 +33,16 @@ class PostYourPropertyPageTwo extends StatefulWidget {
 
 class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
   final _formKey = GlobalKey<FormState>();
-  String? currentPlot = '';
+
   bool isLoading = false;
-
-  Future postPropertyPageTwo(Map<String, dynamic> data) async {
-    await SharedPreferencesHelper()
-        .getCurrentPlot()
-        .then((value) => currentPlot = value);
-
-    AuthMethods().getUserId().then((value) => {
-          FirebaseFirestore.instance
-              .collection("sell_plots")
-              .doc(value)
-              .collection("standlone")
-              .doc(currentPlot)
-              .collection("page_2")
-              .add(data)
-        });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-              create: (context) => PostYourPropertyProviderTwo(widget.data[1])),
+              create: (context) =>
+                  PostYourPropertyProviderTwo(widget.dataToEdit)),
           ChangeNotifierProvider(create: (context) => AmenitiesProvider()),
         ],
         builder: (context, child) {
@@ -434,19 +417,13 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                         onClick: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            // setState(() => isLoading = true);
-                                            // await postPropertyPageTwo(_propertyTwo
-                                            //     .getMap());
-                                            // await SharedPreferencesHelper()
-                                            //     .savePageTwoInformation(
-                                            //         _propertyTwo.getMap());
-
                                             Navigator.pushNamed(
                                                 context, RouteName.amenities,
                                                 arguments: [
-                                                  _propertyTwo
-                                                      .getMap(widget.data[0]),
-                                                  widget.data[1]
+                                                  _propertyTwo.getMap(
+                                                      widget.previousPageData),
+                                                  widget.dataToEdit,
+                                                  widget.isFreeListing
                                                 ]);
                                           }
                                         }).use(),

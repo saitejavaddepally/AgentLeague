@@ -1,123 +1,166 @@
-import 'dart:developer';
-
-import 'package:agent_league/Services/firestore_crud_operations.dart';
-import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_delete_dialog.dart';
-import 'package:agent_league/components/custom_title.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
-import 'package:agent_league/provider/firestore_data_provider.dart';
-import 'package:agent_league/route_generator.dart';
-import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/emi.dart';
-import 'package:agent_league/ui/gallery.dart';
-import 'package:agent_league/ui/location.dart';
-import 'package:agent_league/ui/tour.dart';
+import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../../theme/colors.dart';
-import '../documents.dart';
 
-String userId = "";
-PageController? controller;
-late List plotPagesInformation = [];
+import '../../components/custom_button.dart';
+import '../../route_generator.dart';
+import '../../theme/colors.dart';
 
 class RealtorCard extends StatefulWidget {
-  final List plotPagesInformation;
-  final int currentPage;
-
-  // final int numberOfProperties;
-
-  const RealtorCard({
-    Key? key,
-    required this.plotPagesInformation,
-    required this.currentPage,
-  }) : super(key: key);
+  final Map<String, dynamic> data;
+  const RealtorCard({required this.data, Key? key}) : super(key: key);
 
   @override
   State<RealtorCard> createState() => _RealtorCardState();
 }
 
 class _RealtorCardState extends State<RealtorCard> {
-  late List pages = [];
+  PageController? _pageController;
   Color color = CustomColors.dark;
 
   @override
   void initState() {
-    setState(() {
-      plotPagesInformation = widget.plotPagesInformation;
-    });
-    Future.delayed(const Duration(seconds: 0), () {
-      SharedPreferencesHelper().getUserId().then((value) {
-        setState(() {
-          userId = value!;
-        });
-      });
-    });
-    // SharedPreferencesHelper().getCurrentPage().then((value) {
-    //   setState(() {
-    //     currentPage = int.parse(value!);
-    //   });
-    controller = PageController(initialPage: widget.currentPage);
-    // });
-
-    for (var i = 0; i < plotPagesInformation.length; i++) {
-      setState(() {
-        pages.add(RealtorPage(
-          plotNumber: plotPagesInformation[i][0]['plotNumber'].toString(),
-          profileImage: plotPagesInformation[i][0]['plotProfilePicture'],
-          currentPage: i,
-        ));
-      });
-    }
+    _pageController = PageController(initialPage: widget.data['index']);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return (numberOfProperties != "0")
-        ? Scaffold(
-            backgroundColor: color,
-            body: SafeArea(
-                child: Stack(children: [
-              PageView.builder(
-                itemCount: plotPagesInformation.length,
-                controller: controller,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) {
-                  return pages[index];
-                },
-              ),
-            ])))
-        : const Center(
-            child: Text("No properties found"),
-          );
+    return Scaffold(
+        backgroundColor: color,
+        body: SafeArea(
+            child: Stack(children: [
+          PageView.builder(
+            itemCount: widget.data['data'].length,
+            controller: _pageController,
+            onPageChanged: (int page) {},
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              final currentData = widget.data['data'][index];
+              return RealtorPage(
+                  image: currentData['images'][0],
+                  onTapDelete: () async {
+                    final id = currentData['id'];
+
+                    showDialog(
+                        context: context,
+                        builder: (context) => CustomDeleteDialog(
+                            content: 'Property',
+                            onCancel: () => Navigator.pop(context),
+                            onDelete: () async {
+                              EasyLoading.show(status: 'Please Wait...');
+                              await SellScreenMethods.deleteProperty(id);
+                              EasyLoading.showSuccess(
+                                  'Property delete successfully');
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  RouteName.bottomBar, (route) => false,
+                                  arguments: 1);
+                            }));
+                  },
+                  onTapEdit: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text(
+                                'Are you sure to edit this property'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('No')),
+                              TextButton(
+                                  onPressed: () async {
+                                    final id = currentData['id'];
+                                    EasyLoading.show(status: 'Please Wait');
+                                    final data = await SellScreenMethods
+                                        .getDataToEditProperty(id);
+                                    await EasyLoading.dismiss();
+                                    Navigator.pushNamed(context,
+                                        RouteName.postYourPropertyPageOne,
+                                        arguments: [data, true]);
+                                  },
+                                  child: const Text('Yes'))
+                            ],
+                          );
+                        });
+                  },
+                  onTapLeadsBox: () {
+                    Navigator.pushNamed(context, RouteName.leadsBox,
+                        arguments: currentData['id']);
+                  },
+                  onTapPropertyBox: () {
+                    final boxEnabled = currentData['box_enabled'];
+                    if (boxEnabled == 0) {
+                      final id = currentData['id'];
+
+                      Navigator.pushNamed(context, RouteName.listingPropertyBox,
+                          arguments: id);
+                    } else {
+                      EasyLoading.showToast(
+                          "Property Already Added to Property Box");
+                    }
+                  },
+                  onTapLocation: () {
+                    final _latitude = currentData['latitude'];
+                    final _longitude = currentData['longitude'];
+
+                    Navigator.pushNamed(context, RouteName.location,
+                        arguments: [_latitude, _longitude]);
+                  },
+                  onTapGallery: () {
+                    Navigator.pushNamed(context, RouteName.gallery,
+                        arguments: currentData['images']);
+                  },
+                  onTapEmi: () {
+                    Navigator.pushNamed(context, RouteName.emi,
+                        arguments: currentData['price']);
+                  },
+                  onTapDocuments: () {
+                    Navigator.pushNamed(
+                      context,
+                      RouteName.documents,
+                      arguments: currentData['docs'],
+                    );
+                  },
+                  onTapTour: () {
+                    Navigator.pushNamed(context, RouteName.tour,
+                        arguments: currentData['videos']);
+                  });
+            },
+          ),
+        ])));
   }
 }
 
-class RealtorPage extends StatefulWidget {
-  final String profileImage;
-  final String plotNumber;
-  final int currentPage;
+class RealtorPage extends StatelessWidget {
+  final String image;
 
-  const RealtorPage(
-      {Key? key,
-      required this.profileImage,
-      required this.currentPage,
-      required this.plotNumber})
+  final void Function() onTapLocation;
+  final void Function() onTapGallery;
+  final void Function() onTapEmi;
+  final void Function() onTapDocuments;
+  final void Function() onTapTour;
+  final void Function() onTapPropertyBox;
+  final void Function() onTapLeadsBox;
+  final void Function() onTapEdit;
+  final void Function() onTapDelete;
+
+  RealtorPage(
+      {required this.image,
+      required this.onTapLocation,
+      required this.onTapGallery,
+      required this.onTapEmi,
+      required this.onTapDocuments,
+      required this.onTapTour,
+      required this.onTapPropertyBox,
+      required this.onTapLeadsBox,
+      required this.onTapEdit,
+      required this.onTapDelete,
+      Key? key})
       : super(key: key);
-
-  @override
-  State<RealtorPage> createState() => _RealtorPageState();
-}
-
-class _RealtorPageState extends State<RealtorPage> {
-  @override
-  void initState() {
-    // print("current page is " + widget.currentPage.toString());
-    super.initState();
-  }
-
-  var textList = [
+  final textList = [
     '20% Construction & 80% space',
     'Total 750 flat in 3 towers',
     'Exclusive club house',
@@ -125,62 +168,8 @@ class _RealtorPageState extends State<RealtorPage> {
     'Golf track and playground'
   ];
 
-  var iconMap = {
-    'location': 'assets/location.png',
-    'gallery': 'assets/img_preview.png',
-    'tour': 'assets/compass.png',
-    'documents': 'assets/documents.png',
-    'eml': 'assets/credit_card.png'
-  };
-
   @override
   Widget build(BuildContext context) {
-    var iconFunctionalities = [
-      () {
-        double latitude =
-            plotPagesInformation[widget.currentPage][0]["latitude"];
-        double longitude =
-            plotPagesInformation[widget.currentPage][0]["longitude"];
-
-        return Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    LocationScreen(latitude: latitude, longitude: longitude)));
-      },
-      () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GalleryScreen(info: {
-                    "currentPage": widget.currentPage,
-                    "plotPagesInformation": plotPagesInformation,
-                    "isProject": false,
-                  }))),
-      () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Tour(info: {
-                    "isProject": false,
-                    "currentPage": widget.currentPage,
-                    "plotPagesInformation": plotPagesInformation
-                  }))),
-      () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Documents(info: {
-                    "isProject": false,
-                    "currentPage": widget.currentPage,
-                    "plotPagesInformation": plotPagesInformation
-                  }))),
-      () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => EMI(info: {
-                    "isProject": false,
-                    "currentPage": widget.currentPage,
-                    "plotPagesInformation": plotPagesInformation
-                  }))),
-    ];
     return Stack(children: [
       Column(children: [
         Padding(
@@ -192,10 +181,12 @@ class _RealtorPageState extends State<RealtorPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(Icons.keyboard_backspace_sharp),
+                icon: const Icon(Icons.keyboard_backspace_sharp,
+                    color: Colors.white),
               ),
               IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.share_outlined)),
+                  onPressed: () {},
+                  icon: const Icon(Icons.share_outlined, color: Colors.white)),
             ],
           ),
         ),
@@ -212,24 +203,21 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 200,
-                        height: 200,
-                        // decoration:
-                        //     BoxDecoration(border: Border.all()),
-                        child: Image.network(
-                          widget.profileImage,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                      SizedBox(
+                          width: (constraints.maxWidth * 0.7) - 50,
+                          height: 210,
+                          child: CachedNetworkImage(
+                              imageUrl: image, fit: BoxFit.fill)),
+                      const SizedBox(height: 60),
+                      const InfoText(text1: 'Type :', text2: 'Shop'),
                       const SizedBox(height: 20),
-                      const CustomTitle(text: 'Property Highlights'),
+                      const InfoText(
+                          text1: 'Price :', text2: '1500000', isIcon: true),
                       const SizedBox(height: 20),
-                      for (final text in textList)
-                        Column(children: [
-                          TextWithIndicator(text: text),
-                          const SizedBox(height: 10)
-                        ]),
+                      const InfoText(
+                          text1: 'Location :', text2: 'LB nagar,Hyd'),
+                      const SizedBox(height: 20),
+                      const InfoText(text1: 'Possession :', text2: '...'),
                     ]),
               ),
               SizedBox(
@@ -237,13 +225,31 @@ class _RealtorPageState extends State<RealtorPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      for (int i = 0; i < iconMap.length; i++)
-                        GestureDetector(
-                          onTap: iconFunctionalities[i],
-                          child: IconWithText(
-                              text: iconMap.keys.toList()[i],
-                              image: iconMap.values.toList()[i]),
-                        )
+                      GestureDetector(
+                        onTap: onTapLocation,
+                        child: const IconWithText(
+                            text: "location", image: 'assets/location.png'),
+                      ),
+                      GestureDetector(
+                        onTap: onTapGallery,
+                        child: const IconWithText(
+                            text: "gallery", image: 'assets/img_preview.png'),
+                      ),
+                      GestureDetector(
+                        onTap: onTapTour,
+                        child: const IconWithText(
+                            text: "tour", image: 'assets/compass.png'),
+                      ),
+                      GestureDetector(
+                        onTap: onTapDocuments,
+                        child: const IconWithText(
+                            text: "documents", image: 'assets/documents.png'),
+                      ),
+                      GestureDetector(
+                        onTap: onTapEmi,
+                        child: const IconWithText(
+                            text: "emi", image: 'assets/credit_card.png'),
+                      ),
                     ]),
               ),
             ],
@@ -257,179 +263,32 @@ class _RealtorPageState extends State<RealtorPage> {
           child: Row(children: [
             CustomButton(
                     text: 'trash',
-                    onClick: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CustomDeleteDialog(
-                              content: 'property',
-                              onCancel: () => Navigator.pop(context),
-                              onDelete: () async {
-                                var currPlot = widget.plotNumber;
-                                await EasyLoading.show(
-                                  status: 'Deleting.. please wait',
-                                  maskType: EasyLoadingMaskType.black,
-                                );
-                                await FirestoreDataProvider()
-                                    .deletePlot(int.parse(currPlot));
-                                await EasyLoading.showSuccess("Deleted");
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BottomBar(
-                                            index: 0,
-                                          )),
-                                  (route) => false,
-                                );
-                              });
-                        },
-                      );
-                    },
+                    onClick: onTapDelete,
                     height: 40,
                     width: 40,
                     isIcon: true,
                     rounded: true,
+                    isNeu: false,
                     color: Colors.white)
                 .use(),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             CustomButton(
-                    text: 'edit',
-                    onClick: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text(
-                                "Are you sure to edit this property"),
-                            actions: [
-                              TextButton(
-                                onPressed: () async {
-                                  List<dynamic> images =
-                                      List.generate(8, (index) => null);
-                                  List<dynamic> videos =
-                                      List.generate(4, (index) => null);
-                                  List<dynamic> videoNames =
-                                      List.generate(4, (index) => null);
-                                  List<dynamic> docs =
-                                      List.generate(4, (index) => null);
-                                  List<dynamic> docNames =
-                                      List.generate(4, (index) => null);
-
-                                  await EasyLoading.show(
-                                    status: 'Loading data....',
-                                    maskType: EasyLoadingMaskType.black,
-                                  );
-                                  var currPlot = widget.plotNumber;
-                                  List plotImages = plotPagesInformation[
-                                          int.parse(currPlot.toString()) - 1][0]
-                                      ['images'];
-                                  for (var i = 0; i < plotImages.length; i++) {
-                                    images[i] = plotImages[i];
-                                  }
-                                  List plotVideos = plotPagesInformation[
-                                          int.parse(currPlot.toString()) - 1][0]
-                                      ['videos'];
-                                  for (var i = 0; i < plotVideos.length; i++) {
-                                    videos[i] = plotVideos[i];
-                                  }
-                                  List plotVideoNames = plotPagesInformation[
-                                          int.parse(currPlot.toString()) - 1][0]
-                                      ['videoNames'];
-                                  for (var i = 0;
-                                      i < plotVideoNames.length;
-                                      i++) {
-                                    videoNames[i] = plotVideoNames[i];
-                                  }
-                                  List plotDocs = plotPagesInformation[
-                                          int.parse(currPlot.toString()) - 1][0]
-                                      ['docs'];
-                                  for (var i = 0; i < plotDocs.length; i++) {
-                                    docs[i] = plotDocs[i];
-                                  }
-                                  List plotDocNames = plotPagesInformation[
-                                          int.parse(currPlot.toString()) - 1][0]
-                                      ['docNames'];
-                                  for (var i = 0;
-                                      i < plotDocNames.length;
-                                      i++) {
-                                    docNames[i] = plotDocNames[i];
-                                  }
-                                  List data =
-                                      plotPagesInformation[widget.currentPage];
-                                  Map<String, dynamic> data1 = data[0];
-
-                                  log("dxdiag" +
-                                      videoNames.toString() +
-                                      docNames.toString());
-
-                                  await SharedPreferencesHelper()
-                                      .savePaidCreditStatus(
-                                          plotPagesInformation[int.parse(
-                                                      currPlot.toString()) -
-                                                  1][0]['isPaid'] ==
-                                              'true');
-
-                                  await EasyLoading.dismiss();
-                                  Navigator.pop(context);
-                                  Navigator.pushReplacementNamed(context,
-                                      RouteName.postYourPropertyPageOne,
-                                      arguments: data1
-                                        ..addAll({
-                                          'images': images,
-                                          'previousDocNames': docNames,
-                                          'previousVideoNames': videoNames,
-                                          'videos': videos,
-                                          'docs': docs,
-                                          'plotNo': currPlot,
-                                          'isEdited': true,
-                                        }));
-                                },
-                                child: const Text("Yes"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("No"),
-                              )
-                            ],
-                          );
-                        },
-                      );
-                    },
+                    text: 'edit_1',
+                    onClick: onTapEdit,
                     height: 40,
                     width: 40,
                     isIcon: true,
                     rounded: true,
+                    isNeu: false,
                     color: Colors.white)
                 .use(),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             GestureDetector(
-                onTap: () {
-                  var data = plotPagesInformation[widget.currentPage][0]
-                      ['box_enabled'];
-                  if (data == 0) {
-                    var currPlot = plotPagesInformation[widget.currentPage][0]
-                            ['plotNumber']
-                        .toString();
-
-                    Navigator.pushNamed(context, RouteName.listingPropertyBox,
-                        arguments: currPlot);
-                  } else {
-                    EasyLoading.showToast(
-                        "Property Already Added to Property Box");
-                  }
-                },
+                onTap: onTapPropertyBox,
                 child: Image.asset('assets/property.png')),
             const Spacer(),
             GestureDetector(
-              onTap: () {
-                var currPlot = widget.plotNumber;
-                final docId = plotPagesInformation[int.parse(currPlot) - 1][0]
-                    ['documentId'];
-                Navigator.pushNamed(context, RouteName.leadsBox,
-                    arguments: docId);
-              },
+              onTap: onTapLeadsBox,
               child: Container(
                 height: 40,
                 width: 40,
@@ -468,7 +327,10 @@ class IconWithText extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: const TextStyle(
-            fontWeight: FontWeight.w500, fontSize: 12, letterSpacing: -0.15),
+            fontWeight: FontWeight.w500,
+            fontSize: 12,
+            letterSpacing: -0.15,
+            color: Colors.white),
       ),
       const SizedBox(height: 15),
     ]);
@@ -491,5 +353,50 @@ class TextWithIndicator extends StatelessWidget {
               fontSize: 14,
               color: Colors.white.withOpacity(0.7))),
     ]);
+  }
+}
+
+class InfoText extends StatelessWidget {
+  final String text1;
+  final String text2;
+  final bool isIcon;
+  const InfoText(
+      {required this.text1, required this.text2, this.isIcon = false, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            text1,
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                letterSpacing: -0.15,
+                color: Colors.white.withOpacity(0.87)),
+          ),
+        ),
+        Expanded(
+          child: Row(children: [
+            if (isIcon)
+              const Icon(
+                Icons.currency_rupee,
+                size: 17,
+                color: Color(0xFF2AB0E4),
+              ),
+            Text(
+              text2,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  letterSpacing: -0.15,
+                  color: Colors.white.withOpacity(0.8)),
+            ),
+          ]),
+        )
+      ],
+    );
   }
 }

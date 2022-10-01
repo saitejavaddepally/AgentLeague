@@ -1,40 +1,31 @@
 import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_selector.dart';
-import 'package:agent_league/components/custom_sell_card.dart';
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/provider/search_by_provider.dart';
 import 'package:agent_league/ui/sell_screens/post_your_property_page_one.dart';
 import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
-import 'package:agent_league/ui/sell_screens/realtor_card.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
-import '../components/custom_button.dart';
-import '../components/custom_title.dart';
-import '../location_service.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../components/custom_title.dart';
+import '../../location_service.dart';
+import '../../theme/colors.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SeachBy extends StatefulWidget {
-  List plotPagesInformation;
+  final List<Map<String, dynamic>> data;
 
-  SeachBy({Key? key, required this.plotPagesInformation}) : super(key: key);
+  const SeachBy({Key? key, required this.data}) : super(key: key);
 
   @override
   State<SeachBy> createState() => _SeachByState();
 }
 
-List plotPageInformation = [];
-
 class _SeachByState extends State<SeachBy> {
   @override
   void initState() {
-    plotPageInformation = widget.plotPagesInformation;
-
     super.initState();
   }
 
@@ -94,8 +85,8 @@ class _SeachByState extends State<SeachBy> {
             ),
             Expanded(
                 child: TabBarView(children: [
-              Price(),
-              SearchLocation(plotPageInformation: plotPageInformation)
+              Price(plotPageInformation: widget.data),
+              SearchLocation(plotPageInformation: widget.data)
             ]))
           ]),
         ),
@@ -105,7 +96,7 @@ class _SeachByState extends State<SeachBy> {
 }
 
 class SearchLocation extends StatefulWidget {
-  final List plotPageInformation;
+  final List<Map<String, dynamic>> plotPageInformation;
 
   const SearchLocation({required this.plotPageInformation, Key? key})
       : super(key: key);
@@ -149,7 +140,7 @@ class _SearchLocationState extends State<SearchLocation> {
                       onClick: () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() => isLoading = true);
-                          await _pr.getAllPlots(plotPageInformation,
+                          await _pr.getAllPlots(widget.plotPageInformation,
                               _pr.latitude!, _pr.longitude!, _pr.chosenKm!);
                           setState(() => isLoading = false);
                         }
@@ -246,7 +237,7 @@ class _SearchLocationState extends State<SearchLocation> {
                             child: ListView.builder(
                           itemCount: value.matchedRecords.length,
                           itemBuilder: (context, index) {
-                            final item = value.matchedRecords[index][0];
+                            final item = value.matchedRecords[index];
                             final picture = item['images'];
                             return Container(
                               margin: const EdgeInsets.only(bottom: 15),
@@ -311,7 +302,8 @@ class _SearchLocationState extends State<SearchLocation> {
 }
 
 class Price extends StatefulWidget {
-  const Price({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> plotPageInformation;
+  const Price({required this.plotPageInformation, Key? key}) : super(key: key);
 
   @override
   State<Price> createState() => _PriceState();
@@ -326,20 +318,17 @@ class _PriceState extends State<Price> {
 
   @override
   void initState() {
-    // TODO: implement initState
     setState(() {
-      info = plotPageInformation;
+      info = widget.plotPageInformation;
     });
     super.initState();
   }
 
   filterCards() {
-    print(minimumValue);
-    print(maximumValue);
-    info = plotPageInformation
+    info = widget.plotPageInformation
         .where((element) =>
-            int.parse(element[0]['price']) > int.parse(minimumValue!) &&
-            int.parse(element[0]['price']) < int.parse(maximumValue!))
+            element['price'] > int.parse(minimumValue!) &&
+            element['price'] < int.parse(maximumValue!))
         .toList();
 
     setState(() {
@@ -357,7 +346,6 @@ class _PriceState extends State<Price> {
           CustomButton(
             text: 'Reset',
             onClick: () {
-              print(plotPageInformation);
               setState(() {});
             },
             color: HexColor('082640'),
@@ -527,28 +515,28 @@ class _PriceState extends State<Price> {
                         // height: 200,
                         child: Column(
                           children: [
-                            for (var i = 0; i < (info.length); i++)
-                              CustomSellCard(
-                                imageUrl: info[i][2]['picture'],
-                                category: info[i][0]['propertyCategory'],
-                                propertyType: info[i][0]['propertyType'],
-                                size: info[i][0]['size'],
-                                location: info[i][0]['location'],
-                                price: info[i][0]['price'],
-                                possession: info[i][0]['possessionStatus'],
-                                propertyId: "PR_" +
-                                    plotPagesInformation[i][0]['plotNumber'],
-                                onClick: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => RealtorCard(
-                                                plotPagesInformation:
-                                                    plotPagesInformation,
-                                                currentPage: i,
-                                              )));
-                                },
-                              ),
+                            // for (var i = 0; i < (info.length); i++)
+                            //   CustomSellCard(
+                            //     imageUrl: info[i][2]['picture'],
+                            //     category: info[i][0]['propertyCategory'],
+                            //     propertyType: info[i][0]['propertyType'],
+                            //     size: info[i][0]['size'],
+                            //     location: info[i][0]['location'],
+                            //     price: info[i][0]['price'],
+                            //     possession: info[i][0]['possessionStatus'],
+                            //     propertyId: "PR_" +
+                            //         plotPagesInformation[i][0]['plotNumber'],
+                            //     onClick: () {
+                            //       Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //               builder: (context) => RealtorCard(
+                            //                     plotPagesInformation:
+                            //                         plotPagesInformation,
+                            //                     currentPage: i,
+                            //                   )));
+                            //     },
+                            //   ),
                           ],
                         ),
                       ),

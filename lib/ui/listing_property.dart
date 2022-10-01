@@ -1,4 +1,5 @@
 import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -9,9 +10,8 @@ import '../route_generator.dart';
 import '../theme/colors.dart';
 
 class ListingPropertyBox extends StatefulWidget {
-  final String plotNumber;
-  const ListingPropertyBox({required this.plotNumber, Key? key})
-      : super(key: key);
+  final String id;
+  const ListingPropertyBox({required this.id, Key? key}) : super(key: key);
 
   @override
   State<ListingPropertyBox> createState() => _ListingPropertyBoxState();
@@ -75,7 +75,7 @@ class _ListingPropertyBoxState extends State<ListingPropertyBox> {
               const SizedBox(height: 25),
               FutureBuilder<num>(
                   initialData: 0,
-                  future: FirestoreDataProvider().getPropertyBoxFreeCredit(),
+                  future: SellScreenMethods.getPropertyBoxFreeCredit(),
                   builder: (context, snapshot) {
                     return HomeContainer(
                         text: '',
@@ -96,13 +96,10 @@ class _ListingPropertyBoxState extends State<ListingPropertyBox> {
                         buttonColor: const Color(0xFF1B1B1B),
                         onButtonClick: () async {
                           await EasyLoading.show(status: "Please wait...");
-                          await FirestoreCrudOperations().updatePlotInformation(
-                              int.parse(widget.plotNumber), {
-                            "box_enabled": 1,
-                          });
-                          await FirestoreDataProvider()
-                              .decrementPropertyBoxFreeCredit(
-                                  snapshot.data ?? 1);
+                          await SellScreenMethods.updatePropertyBoxEnable(
+                              widget.id);
+                          await SellScreenMethods
+                              .decrementPropertyBoxFreeCredit();
                           await EasyLoading.dismiss();
                           EasyLoading.showSuccess(
                               'Property added to property box',

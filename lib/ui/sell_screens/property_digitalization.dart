@@ -1,6 +1,4 @@
 import 'package:agent_league/helper/constants.dart';
-import 'package:agent_league/route_generator.dart';
-import 'package:agent_league/ui/success.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +9,9 @@ import '../../provider/property_digitalization_provider.dart';
 import '../../theme/colors.dart';
 
 class PropertyDigitalization extends StatefulWidget {
-  final Map<String, dynamic> formData;
+  final Map<String, dynamic> previousData;
 
-  const PropertyDigitalization({required this.formData, Key? key})
+  const PropertyDigitalization({required this.previousData, Key? key})
       : super(key: key);
 
   @override
@@ -23,7 +21,6 @@ class PropertyDigitalization extends StatefulWidget {
 class _PropertyDigitalizationState extends State<PropertyDigitalization> {
   @override
   void initState() {
-    print("data is passed ${widget.formData}");
     super.initState();
   }
 
@@ -60,9 +57,9 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                     ),
                     TextButton(
                         onPressed: () {
-                          Map<String, dynamic> data = widget.formData;
+                          Map<String, dynamic> data = widget.previousData;
                           data.addAll({'grandTotal': _pr.grandTotal});
-                          print("data is $data");
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -115,23 +112,16 @@ class _PropertyDigitalizationState extends State<PropertyDigitalization> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12)),
                             width: _size.width * 0.30,
-                            child: (widget.formData['picture'].runtimeType
-                                        .toString() ==
-                                    'String')
-                                ? Image.network(
-                                    widget.formData['media']['picture'],
-                                    fit: BoxFit.fill)
-                                : Image.file(
-                                    widget.formData['media']['picture'],
-                                    fit: BoxFit.fill)),
+                            child: Image.network(
+                                widget.previousData['images'][0],
+                                fit: BoxFit.fill)),
                         Expanded(
                             child: Container(
                           margin: const EdgeInsets.only(left: 10),
                           child: Column(children: [
                             CustomContainerText1(
                                 text1: 'Price',
-                                text2:
-                                    "${widget.formData['propData']['price']} INR"),
+                                text2: "${widget.previousData['price']} INR"),
                             const SizedBox(height: 3),
                             const CustomContainerText1(
                                 text1: 'Status', text2: 'Uploaded'),

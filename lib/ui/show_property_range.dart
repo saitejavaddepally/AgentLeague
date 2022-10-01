@@ -1,3 +1,4 @@
+import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
 import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
 import 'package:flutter/material.dart';
 
@@ -42,15 +43,16 @@ class _ShowPropertyRangeState extends State<ShowPropertyRange> {
             const SizedBox(height: 20),
             Expanded(
               child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: FirestoreDataProvider.showPropertyRange(widget.range),
+                future: SellScreenMethods.getPropertyRange(widget.range),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (snapshot.data!.isNotEmpty) {
+                    final data = snapshot.data!;
+                    if (data.isNotEmpty) {
                       return ListView.builder(
-                        itemCount: snapshot.data?.length,
+                        itemCount: data.length,
                         itemBuilder: (context, index) {
-                          final item = snapshot.data![index];
-                          final picture = item['images'];
+                          final currentItem = data[index];
+                          final picture = currentItem['images'];
                           return Container(
                             margin: const EdgeInsets.only(bottom: 15),
                             padding: const EdgeInsets.only(
@@ -73,26 +75,29 @@ class _ShowPropertyRangeState extends State<ShowPropertyRange> {
                                 child: Column(children: [
                                   CustomContainerText1(
                                       text1: 'Category',
-                                      text2: '${item['propertyCategory']}'),
+                                      text2:
+                                          '${currentItem['propertyCategory']}'),
                                   const SizedBox(height: 3),
                                   CustomContainerText1(
                                       text1: 'Type',
-                                      text2: '${item['propertyType']}'),
+                                      text2: '${currentItem['propertyType']}'),
                                   const SizedBox(height: 3),
                                   CustomContainerText1(
-                                      text1: 'Area', text2: '${item['size']}'),
+                                      text1: 'Area',
+                                      text2: '${currentItem['size']}'),
                                   const SizedBox(height: 3),
                                   CustomContainerText1(
                                       text1: 'Location',
-                                      text2: '${item['location']}'),
+                                      text2: '${currentItem['location']}'),
                                   const SizedBox(height: 3),
                                   CustomContainerText1(
                                       text1: 'Price',
-                                      text2: '${item['price']} INR'),
+                                      text2: '${currentItem['price']} INR'),
                                   const SizedBox(height: 3),
                                   CustomContainerText1(
                                       text1: 'Possession',
-                                      text2: '${item['possessionStatus']}'),
+                                      text2:
+                                          '${currentItem['possessionStatus']}'),
                                   const SizedBox(height: 3),
                                 ]),
                               ))

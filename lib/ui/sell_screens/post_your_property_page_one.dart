@@ -1,31 +1,24 @@
-import 'dart:developer';
-
-import 'package:agent_league/Services/auth_methods.dart';
-import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/location_service.dart';
-import 'package:agent_league/provider/post_your_property_provider_one.dart';
+import 'package:agent_league/provider/sell_providers/post_your_property_provider_one.dart';
 import 'package:agent_league/route_generator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../components/custom_label.dart';
 import '../../components/custom_text_field.dart';
 import '../../theme/colors.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostYourPropertyPageOne extends StatefulWidget {
   final Map<String, dynamic>? dataToEdit;
+  final bool isFreeListing;
 
-  const PostYourPropertyPageOne({this.dataToEdit, Key? key}) : super(key: key);
+  const PostYourPropertyPageOne(
+      {this.dataToEdit, this.isFreeListing = false, Key? key})
+      : super(key: key);
 
   @override
   _PostYourPropertyPageOneState createState() =>
@@ -33,97 +26,14 @@ class PostYourPropertyPageOne extends StatefulWidget {
 }
 
 class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
-  late double _latitude;
-  late double _longitude;
   final _formKey = GlobalKey<FormState>();
-  late var currentPlot = '';
+
   bool isLoading = false;
-
-  Future<String?> getCurrentLocation() async {
-    try {
-      final location = GetUserLocation();
-      final Position position = await location.determinePosition();
-
-      _latitude = position.latitude;
-      _longitude = position.longitude;
-
-      final address = await location.getAddressFromCoordinates(
-          LatLng(position.latitude, position.longitude));
-      return address;
-    } on Exception catch (e) {
-      if (e.toString() == 'Location services are disabled.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Please Turn On Location Service First")));
-      } else if (e.toString() == 'Location permissions are denied') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Please Allow Location Permission otherwise you didn't use this feature.")));
-      } else if (e.toString() ==
-          'Location permissions are permanently denied, we cannot request permissions.') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Sorry You are not allowed to use this feature because you didn't allow permission.")));
-      }
-      return null;
-    }
-  }
-
-  Future<String?> getMapLocation() async {
-    final String? result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FutureBuilder<Position>(
-            future: GetUserLocation().determinePosition(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return PlacePicker(
-                  apiKey: 'AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0',
-                  onPlacePicked: (result) {
-                    _latitude = result.geometry!.location.lat;
-                    _longitude = result.geometry!.location.lng;
-                    Navigator.of(context).pop(result.formattedAddress);
-                  },
-                  hintText: "Search",
-                  enableMapTypeButton: false,
-                  initialPosition:
-                      LatLng(snapshot.data!.latitude, snapshot.data!.longitude),
-                  useCurrentLocation: true,
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            }),
-      ),
-    );
-
-    return result;
-  }
-
-  @override
-  void initState() {
-    _latitude = widget.dataToEdit?['latitude'] ?? 0;
-    _longitude = widget.dataToEdit?['longitude'] ?? 0;
-    // print("Plot to be edited is ? ${widget.dataToEdit!['plotNo']}");
-    (widget.dataToEdit == null)
-        ? getPlotStatus()
-        : SharedPreferencesHelper()
-            .saveCurrentPlot("plot_${widget.dataToEdit!['plotNo']}");
-
-    super.initState();
-  }
-
-  Future getPlotStatus() async {
-    await EasyLoading.show(
-        maskType: EasyLoadingMaskType.black, status: "Please wait !!");
-    await UploadPropertiesToFirestore().getPlotStatus();
-    await EasyLoading.dismiss();
-  }
 
   @override
   Widget build(BuildContext context) {
-    log(widget.dataToEdit.toString());
+    // print(widget.isFreeListing);
+    // print(widget.dataToEdit);
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -318,22 +228,28 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                     setState(
                                                         () => isLoading = true);
                                                     final res =
-                                                        await getCurrentLocation();
+                                                        await GetUserLocation
+                                                            .getCurrentLocation();
                                                     setState(() =>
                                                         isLoading = false);
                                                     if (res != null &&
                                                         res.isNotEmpty) {
                                                       value.locationController
-                                                          .text = res;
+                                                          .text = res[0];
+                                                      value.latitude = res[1];
+                                                      value.longitude = res[2];
                                                     }
                                                   }
                                                   if (result == 2) {
                                                     final res =
-                                                        await getMapLocation();
-                                                    if (res != null &&
-                                                        res.isNotEmpty) {
+                                                        await GetUserLocation
+                                                            .getMapLocation(
+                                                                context);
+                                                    if (res.isNotEmpty) {
                                                       value.locationController
-                                                          .text = res;
+                                                          .text = res[0];
+                                                      value.latitude = res[1];
+                                                      value.longitude = res[2];
                                                     }
                                                   }
                                                 },
@@ -449,53 +365,30 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                 text: 'next',
                                                 color: HexColor('FD7E0E'),
                                                 onClick: () async {
-                                                  // setState(
-                                                  //     () => isLoading = true);
-                                                  // await postProperty(
-                                                  //     propertyOne.getMap());
-
                                                   if (_formKey.currentState!
                                                       .validate()) {
                                                     if (propertyOne
                                                         .isSkipPageTwo) {
-                                                      Map<String, dynamic>
-                                                          data =
-                                                          propertyOne.getMap();
-                                                      data.addAll({
-                                                        "latitude": _latitude,
-                                                        "longitude": _longitude
-                                                      });
-
-                                                      print("data is $data");
-                                                      print(
-                                                          "widget data is  ${widget.dataToEdit}");
                                                       Navigator.pushNamed(
                                                           context,
                                                           RouteName.amenities,
                                                           arguments: [
-                                                            data,
-                                                            widget.dataToEdit
+                                                            propertyOne
+                                                                .getMap(),
+                                                            widget.dataToEdit,
+                                                            widget.isFreeListing
                                                           ]);
                                                     } else {
-                                                      await SharedPreferencesHelper()
-                                                          .savePageOneInformation(
-                                                              propertyOne
-                                                                  .getMap());
-                                                      Map<String, dynamic>
-                                                          data =
-                                                          propertyOne.getMap();
-                                                      data.addAll({
-                                                        "latitude": _latitude,
-                                                        "longitude": _longitude
-                                                      });
                                                       Navigator
                                                           .pushReplacementNamed(
                                                               context,
                                                               RouteName
                                                                   .postYourPropertyPageTwo,
                                                               arguments: [
-                                                            data,
-                                                            widget.dataToEdit
+                                                            propertyOne
+                                                                .getMap(),
+                                                            widget.dataToEdit,
+                                                            widget.isFreeListing
                                                           ]);
                                                     }
                                                   }

@@ -1,4 +1,4 @@
-import 'package:agent_league/Services/upload_properties_to_firestore.dart';
+import 'package:agent_league/provider/sell_providers/uploading_progress_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:share_plus/share_plus.dart';
@@ -21,32 +21,32 @@ class _HomeState extends State<Home> {
   var phone = '';
   String profileUrl = '';
 
-  Future asyncTriggerFunction() async {
-    List data = await getProfileInformation();
-    setState(() {
-      name = data[0];
-      profileUrl = data[1];
-    });
-  }
+  // Future asyncTriggerFunction() async {
+  //   List data = await getProfileInformation();
+  //   setState(() {
+  //     name = data[0];
+  //     profileUrl = data[1];
+  //   });
+  // }
 
-  Future getProfileInformation() async {
-    Map data = await UploadPropertiesToFirestore().getProfileInformation();
-    String? profileUrl =
-        await UploadPropertiesToFirestore().getProfilePicture();
-    return [data['name'], profileUrl];
-  }
+  // Future getProfileInformation() async {
+  //   Map data = await UploadPropertiesToFirestore().getProfileInformation();
+  //   String? profileUrl =
+  //       await UploadPropertiesToFirestore().getProfilePicture();
+  //   return [data['name'], profileUrl];
+  // }
 
-  @override
-  void initState() {
-    setState(() {
-      loading = true;
-    });
-    asyncTriggerFunction();
-    setState(() {
-      loading = false;
-    });
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   asyncTriggerFunction();
+  //   setState(() {
+  //     loading = false;
+  //   });
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

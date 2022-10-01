@@ -1,14 +1,7 @@
-import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
-import 'package:agent_league/components/home_container.dart';
-import 'package:agent_league/helper/constants.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
-import 'package:agent_league/ui/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../Services/upload_properties_to_firestore.dart';
 import '../components/custom_label.dart';
 import '../components/custom_selector.dart';
 import '../components/custom_text_field.dart';
@@ -28,35 +21,6 @@ class _WeHearState extends State<WeHear> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController nameController = TextEditingController();
 
-  Future asyncTriggerFunction() async {
-    List data = await getProfileInformation();
-    setState(() {
-      name = data[0];
-      phone = data[1];
-    });
-  }
-
-  Future getProfileInformation() async {
-    Map data = await UploadPropertiesToFirestore().getProfileInformation();
-    setState(() {
-      nameController.text = data['name'];
-      phoneNumberController.text = data['phone'];
-    });
-    return [data['name'], data['phone']];
-  }
-
-  @override
-  void initState() {
-    setState(() {
-      loading = true;
-    });
-    asyncTriggerFunction();
-    setState(() {
-      loading = false;
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,19 +30,17 @@ class _WeHearState extends State<WeHear> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                    child: Row(children: [
-                  Container(
+                    child: Row(children: const [
+                  SizedBox(
                     height: 54,
                     width: 54,
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                 ])),
                 CustomButton(
                         text: "close_round",

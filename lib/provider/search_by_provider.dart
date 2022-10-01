@@ -1,10 +1,7 @@
 import 'dart:collection';
 
-import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-
-import 'firestore_data_provider.dart';
 
 class LocationSearchProvider extends ChangeNotifier {
   double? latitude;
@@ -43,8 +40,8 @@ class LocationSearchProvider extends ChangeNotifier {
     try {
       _matchedRecords.clear();
       for (int i = 0; i < plotPageInformation.length; i++) {
-        final lat2 = plotPageInformation[i][0]['latitude'];
-        final long2 = plotPageInformation[i][0]['longitude'];
+        final lat2 = plotPageInformation[i]['latitude'];
+        final long2 = plotPageInformation[i]['longitude'];
 
         final distanceInMeter =
             Geolocator.distanceBetween(lat1, long1, lat2, long2);
@@ -54,7 +51,7 @@ class LocationSearchProvider extends ChangeNotifier {
           _matchedRecords.add(plotPageInformation[i]);
         }
       }
-      print(_matchedRecords);
+
       notifyListeners();
     } on Exception catch (e) {
       print(e);

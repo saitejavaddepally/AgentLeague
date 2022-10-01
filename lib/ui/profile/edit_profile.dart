@@ -1,26 +1,19 @@
 import 'dart:io';
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
-import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:provider/provider.dart';
 import 'package:agent_league/location_service.dart';
 import '../../components/custom_button.dart';
 import '../../components/custom_label.dart';
-import '../../components/custom_line_under_text.dart';
 import '../../components/custom_map_dialog.dart';
-import '../../components/custom_selector.dart';
 import '../../components/custom_text_field.dart';
 import '../../helper/constants.dart';
-import '../../provider/post_your_property_provider_one.dart';
 import '../../theme/colors.dart';
 
 class EditProfile extends StatefulWidget {
@@ -93,7 +86,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future getDetails() async {
-    await UploadPropertiesToFirestore().getProfileInformation().then((value) {
+    await FirestoreDataProvider().getProfileInformation().then((value) {
       print(value);
       setState(() {
         phoneNumber =
@@ -455,7 +448,7 @@ class _EditProfileState extends State<EditProfile> {
                                               try {
                                                 final userId = FirebaseAuth
                                                     .instance.currentUser?.uid;
-                                                await UploadPropertiesToFirestore()
+                                                await FirestoreDataProvider()
                                                     .uploadProfilePicture(
                                                         selectedImage);
                                                 await FirebaseFirestore.instance

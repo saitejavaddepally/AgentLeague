@@ -2,13 +2,14 @@ import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/home_container.dart';
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../../Services/upload_properties_to_firestore.dart';
+import '../../provider/sell_providers/uploading_progress_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -33,9 +34,8 @@ class _ProfileState extends State<Profile> {
   }
 
   Future getProfileInformation() async {
-    Map data = await UploadPropertiesToFirestore().getProfileInformation();
-    String? profileUrl =
-        await UploadPropertiesToFirestore().getProfilePicture();
+    Map data = await FirestoreDataProvider().getProfileInformation();
+    String? profileUrl = await FirestoreDataProvider().getProfilePicture();
     return [data['name'], data['phone'], profileUrl];
   }
 

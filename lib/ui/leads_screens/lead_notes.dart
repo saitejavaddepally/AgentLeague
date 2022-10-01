@@ -1,5 +1,5 @@
 import 'package:agent_league/components/custom_text_field.dart';
-import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/provider/lead_screen_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -38,7 +38,7 @@ class _LeadNotesState extends State<LeadNotes> {
               text: 'Save',
               onClick: () async {
                 await EasyLoading.show(status: 'Please wait...');
-                await FirestoreDataProvider.updateLeadNotes(
+                await LeadScreenMethods.updateLeadNotes(
                     widget.leadId, _textController.text);
                 EasyLoading.showSuccess('Notes Updated',
                     duration: const Duration(seconds: 1));
@@ -76,7 +76,7 @@ class _LeadNotesState extends State<LeadNotes> {
             const Text('Important points (if any):'),
             const SizedBox(height: 10),
             FutureBuilder<String>(
-              future: FirestoreDataProvider.getLeadNotes(widget.leadId),
+              future: LeadScreenMethods.getLeadNotes(widget.leadId),
               initialData: '',
               builder: (context, snapshot) => CustomTextField(
                 keyboardType: TextInputType.multiline,

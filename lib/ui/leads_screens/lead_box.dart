@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
+import '../../provider/lead_screen_methods.dart';
 import '../../route_generator.dart';
 
 class LeadBox extends StatefulWidget {
@@ -119,7 +120,7 @@ class _StandloneState extends State<Standlone> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FutureBuilder<List<List<String>>>(
-                future: FirestoreDataProvider().getAllProperty(),
+                future: LeadScreenMethods.getAllProperty(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     List<String> dropDownItems = snapshot.data![0];
@@ -229,9 +230,9 @@ class _StandloneState extends State<Standlone> {
             Expanded(
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: (docId == null)
-                      ? FirestoreDataProvider.getAllLeads(
+                      ? LeadScreenMethods.getAllLeads(
                           _dateChosenValue, _statusChosenValue.toLowerCase())
-                      : FirestoreDataProvider.getParticularLead(docId!,
+                      : LeadScreenMethods.getParticularLead(docId!,
                           _dateChosenValue, _statusChosenValue.toLowerCase()),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -426,7 +427,7 @@ class _StandloneState extends State<Standlone> {
                                                                             onDelete:
                                                                                 () async {
                                                                               EasyLoading.show(status: 'Please Wait...');
-                                                                              await FirestoreDataProvider.deleteLead(leadId!);
+                                                                              await LeadScreenMethods.deleteLead(leadId!);
                                                                               await EasyLoading.showSuccess('Lead Successfully Deleted', duration: const Duration(seconds: 2));
                                                                               Navigator.pop(context);
                                                                             })),

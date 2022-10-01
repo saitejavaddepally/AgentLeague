@@ -3,6 +3,8 @@ import 'package:agent_league/ui/Home/Chat/chat_detail.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/project_screen/add_project.dart';
 import 'package:agent_league/ui/alerts.dart';
+import 'package:agent_league/ui/sell_screens/saved.dart';
+import 'package:agent_league/ui/sell_screens/search_by.dart';
 import 'package:agent_league/ui/sell_screens/amenties.dart';
 import 'package:agent_league/ui/browcher.dart';
 import 'package:agent_league/ui/coinsfly_wallet.dart';
@@ -16,7 +18,7 @@ import 'package:agent_league/ui/layout.dart';
 import 'package:agent_league/ui/leads_screens/lead_box.dart';
 import 'package:agent_league/ui/leads_screens/lead_notes.dart';
 import 'package:agent_league/ui/leads_screens/lead_status.dart';
-import 'package:agent_league/ui/listing.dart';
+import 'package:agent_league/ui/sell_screens/listing.dart';
 import 'package:agent_league/ui/listing_property.dart';
 import 'package:agent_league/ui/location.dart';
 import 'package:agent_league/ui/auth_screens/login.dart';
@@ -33,6 +35,7 @@ import 'package:agent_league/ui/sell_screens/post_your_property_page_two.dart';
 import 'package:agent_league/ui/property_loan.dart';
 import 'package:agent_league/ui/property_range.dart';
 import 'package:agent_league/ui/realtor_video.dart';
+import 'package:agent_league/ui/sell_screens/realtor_card.dart';
 
 import 'package:agent_league/ui/show_property_range.dart';
 import 'package:agent_league/ui/auth_screens/sign_up.dart';
@@ -95,6 +98,7 @@ class RouteName {
   static const String realtorVideo = '/realtorVideo';
   static const String broucher = '/broucher';
   static const String uploadingProgress = 'upload_progress';
+  static const String saveProperty = 'saved_property';
 }
 
 class RouteGenerator {
@@ -171,46 +175,83 @@ class RouteGenerator {
       case RouteName.explore:
         return PageTransition(
             child: const Explore(), type: PageTransitionType.leftToRight);
-      // case RouteName.realtorCard:
-      //   return PageTransition(
-      //       child: const RealtorCard(), type: PageTransitionType.leftToRight);
-      case RouteName.amenities:
+      case RouteName.realtorCard:
         {
-          if (args is List) {
+          if (args is Map<String, dynamic>) {
             return PageTransition(
-                child: Amenties(data: args),
+                child: RealtorCard(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
         }
+
       case RouteName.emi:
-        return PageTransition(
-            child: const EMI(
-              info: {},
-            ),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is int) {
+            return PageTransition(
+                child: EMI(price: args), type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.documents:
-        return PageTransition(
-            child: const Documents(
-              info: {},
-            ),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is List) {
+            return PageTransition(
+                child: Documents(docs: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.tour:
-        return PageTransition(
-            child: const Tour(
-              info: {},
-            ),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is List) {
+            return PageTransition(
+                child: Tour(videos: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
       case RouteName.postYourPropertyPageOne:
-        return PageTransition(
-            child: PostYourPropertyPageOne(
-                dataToEdit: args as Map<String, dynamic>?),
-            type: PageTransitionType.leftToRight);
+        if (args is List) {
+          return PageTransition(
+              child: PostYourPropertyPageOne(
+                  dataToEdit: args[0], isFreeListing: args[1]),
+              type: PageTransitionType.leftToRight);
+        }
+        return _errorRoute();
       case RouteName.postYourPropertyPageTwo:
         {
           if (args is List) {
             return PageTransition(
-                child: PostYourPropertyPageTwo(data: args),
+                child: PostYourPropertyPageTwo(
+                    previousPageData: args[0],
+                    dataToEdit: args[1],
+                    isFreeListing: args[2]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+      case RouteName.amenities:
+        {
+          if (args is List) {
+            return PageTransition(
+                child: Amenties(
+                    previousPageData: args[0],
+                    dataToEdit: args[1],
+                    isFreeListing: args[2]),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
+      case RouteName.saveProperty:
+        return PageTransition(
+            child: const Saved(), type: PageTransitionType.leftToRight);
+
+      case RouteName.searchBy:
+        {
+          if (args is List<Map<String, dynamic>>) {
+            return PageTransition(
+                child: SeachBy(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
@@ -245,9 +286,14 @@ class RouteGenerator {
         }
 
       case RouteName.gallery:
-        return PageTransition(
-            child: const GalleryScreen(info: {}),
-            type: PageTransitionType.leftToRight);
+        {
+          if (args is List) {
+            return PageTransition(
+                child: GalleryScreen(images: args),
+                type: PageTransitionType.leftToRight);
+          }
+          return _errorRoute();
+        }
 
       case RouteName.addProject:
         return PageTransition(
@@ -276,7 +322,7 @@ class RouteGenerator {
       case RouteName.propertyDigitalization:
         if (args is Map<String, dynamic>) {
           return PageTransition(
-              child: PropertyDigitalization(formData: args),
+              child: PropertyDigitalization(previousData: args),
               type: PageTransitionType.leftToRight);
         }
         return _errorRoute();
@@ -346,7 +392,17 @@ class RouteGenerator {
         {
           if (args is List) {
             return PageTransition(
-                child: UploadingProgress(data: args),
+                child: UploadingProgress(
+                  previousData: args[0],
+                  dataToEdit: args[1],
+                  isFreeListing: args[2],
+                  image: args[3],
+                  docs: args[4],
+                  videos: args[5],
+                  imagesIndex: args[6],
+                  docsIndex: args[7],
+                  videosIndex: args[8],
+                ),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
@@ -376,7 +432,7 @@ class RouteGenerator {
         {
           if (args is String) {
             return PageTransition(
-                child: ListingPropertyBox(plotNumber: args),
+                child: ListingPropertyBox(id: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();

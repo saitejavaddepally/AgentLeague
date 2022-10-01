@@ -97,7 +97,7 @@ getFileSize(File file) {
 }
 
 class PropertyPhotosProvider extends ChangeNotifier {
-  PropertyPhotosProvider(List? images) {
+  PropertyPhotosProvider(List<dynamic>? images) {
     if (images != null) {
       _images = images;
     }
@@ -114,37 +114,34 @@ class PropertyPhotosProvider extends ChangeNotifier {
 
     final imageTemporary = File(image.path);
 
-    print("size is " + getFileSize(imageTemporary).toString());
     if (getFileSize(imageTemporary) < .5) {
       _images[index] = imageTemporary;
+      notifyListeners();
     } else {
       EasyLoading.showInfo("Image size is greater than 500 kb",
           duration: const Duration(seconds: 2));
     }
-
-    notifyListeners();
   }
 
   void reset() {
     _images = List.generate(8, (index) => null);
     notifyListeners();
   }
+
+  Map<String, List<dynamic>> getImage() =>
+      <String, List<dynamic>>{'images': _images};
 }
 
 class PropertyDocumentsProvider extends ChangeNotifier {
-  PropertyDocumentsProvider(List? data, List? dataNames) {
-    if (data != null && dataNames != null) {
-      _docs = data;
-      _docNames = dataNames;
+  PropertyDocumentsProvider(List<dynamic>? docs) {
+    if (docs != null) {
+      _docs = docs;
     }
   }
 
   List<dynamic> _docs = List.generate(4, (index) => null);
-  List<dynamic> _docNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<dynamic> get docs => UnmodifiableListView(_docs);
-
-  UnmodifiableListView<dynamic> get docNames => UnmodifiableListView(_docNames);
 
   void pickDocuments(int index) async {
     final path = await FlutterDocumentPicker.openDocument(
@@ -153,38 +150,33 @@ class PropertyDocumentsProvider extends ChangeNotifier {
     if (path == null) return;
     final docTemp = File(path);
     if (getFileSize(docTemp) < 1) {
-      List splitPath = docTemp.path.split('/');
-      _docNames[index] = splitPath[splitPath.length - 1];
       _docs[index] = docTemp;
+      notifyListeners();
     } else {
       EasyLoading.showInfo("Doc size is greater than 1 mb",
           duration: const Duration(seconds: 2));
     }
-
-    notifyListeners();
   }
 
   void reset() {
     _docs = List.generate(4, (index) => null);
     notifyListeners();
   }
+
+  Map<String, List<dynamic>> getDocs() =>
+      <String, List<dynamic>>{'docs': _docs};
 }
 
 class PropertyVideoProvider extends ChangeNotifier {
-  PropertyVideoProvider(List? data, List? dataNames) {
-    if (data != null && dataNames != null) {
+  PropertyVideoProvider(List<dynamic>? data) {
+    if (data != null) {
       _videos = data;
-      _videoNames = dataNames;
     }
   }
 
   List<dynamic> _videos = List.generate(4, (index) => null);
-  List<dynamic> _videoNames = List.generate(4, (index) => null);
 
   UnmodifiableListView<dynamic> get videos => UnmodifiableListView(_videos);
-
-  UnmodifiableListView<dynamic> get videoNames =>
-      UnmodifiableListView(_videoNames);
 
   void pickVideo(int index) async {
     final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
@@ -193,8 +185,6 @@ class PropertyVideoProvider extends ChangeNotifier {
     final videoTemporary = File(video.path);
 
     if (getFileSize(videoTemporary) < 2) {
-      List splitPath = videoTemporary.path.split('/');
-      _videoNames[index] = splitPath[splitPath.length - 1];
       _videos[index] = videoTemporary;
     } else {
       EasyLoading.showInfo("Video size is greater than 2 mb",
@@ -208,4 +198,7 @@ class PropertyVideoProvider extends ChangeNotifier {
     _videos = List.generate(4, (index) => null);
     notifyListeners();
   }
+
+  Map<String, List<dynamic>> getVideos() =>
+      <String, List<dynamic>>{'videos': _videos};
 }

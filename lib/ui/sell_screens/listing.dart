@@ -1,11 +1,12 @@
-import 'package:agent_league/Services/upload_properties_to_firestore.dart';
+import 'package:agent_league/provider/sell_providers/uploading_progress_provider.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
+import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../components/custom_button.dart';
-import '../components/home_container.dart';
-import '../theme/colors.dart';
+import '../../components/custom_button.dart';
+import '../../components/home_container.dart';
+import '../../theme/colors.dart';
 
 class Listing extends StatefulWidget {
   const Listing({Key? key}) : super(key: key);
@@ -15,27 +16,6 @@ class Listing extends StatefulWidget {
 }
 
 class _ListingState extends State<Listing> {
-  bool freeListingDisabled = false;
-
-  @override
-  void initState() {
-    asyncTrigger();
-    super.initState();
-  }
-
-  Future asyncTrigger() async {
-    EasyLoading.show(status: "Please wait..");
-    String data = await UploadPropertiesToFirestore().plotCreditChecker();
-    print("credits are $data");
-    if (data == "0") {
-      setState(() {
-        freeListingDisabled = true;
-      });
-    }
-
-    EasyLoading.dismiss();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,28 +40,32 @@ class _ListingState extends State<Listing> {
               const SizedBox(
                 height: 30,
               ),
-              HomeContainer(
-                  text: "Free listing",
-                  isSecondText: true,
-                  text2:
-                      'You are eligible for one free \ndigitalization as part of company \npromotion.',
-                  image: "assets/listing_1.png",
-                  isGradient: true,
-                  gradient: LinearGradient(colors: [
-                    HexColor('5BE4CC'),
-                    HexColor('5BE4CC').withOpacity(0.2),
-                  ]),
-                  textColor: Colors.black,
-                  buttonWidth: 109,
-                  buttonText: "Free Listing",
-                  buttonTextColor: const Color(0xFF21293A),
-                  isButtonDisabled: freeListingDisabled,
-                  buttonColor: const Color(0xFFF3F4F6),
-                  onButtonClick: () async {
-                    await SharedPreferencesHelper().savePaidCreditStatus(false);
-                    Navigator.pushNamed(
-                        context, RouteName.postYourPropertyPageOne);
-                  }),
+              FutureBuilder<num>(
+                initialData: 0,
+                future: SellScreenMethods.plotCreditChecker(),
+                builder: (context, snapshot) => HomeContainer(
+                    text: "Free listing",
+                    isSecondText: true,
+                    text2:
+                        'You are eligible for one free \ndigitalization as part of company \npromotion.',
+                    image: "assets/listing_1.png",
+                    isGradient: true,
+                    gradient: LinearGradient(colors: [
+                      HexColor('5BE4CC'),
+                      HexColor('5BE4CC').withOpacity(0.2),
+                    ]),
+                    textColor: Colors.black,
+                    buttonWidth: 109,
+                    buttonText: "Free Listing",
+                    buttonTextColor: const Color(0xFF21293A),
+                    isButtonDisabled: (snapshot.data! > 0) ? false : true,
+                    buttonColor: const Color(0xFFF3F4F6),
+                    onButtonClick: () async {
+                      Navigator.pushNamed(
+                          context, RouteName.postYourPropertyPageOne,
+                          arguments: [null, true]);
+                    }),
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -102,11 +86,9 @@ class _ListingState extends State<Listing> {
                   buttonTextColor: const Color(0xFF21293A),
                   buttonColor: const Color(0xFFF3F4F6),
                   onButtonClick: () async {
-                    await SharedPreferencesHelper().savePaidCreditStatus(true);
                     Navigator.pushNamed(
-                      context,
-                      RouteName.postYourPropertyPageOne,
-                    );
+                        context, RouteName.postYourPropertyPageOne,
+                        arguments: [null, false]);
                   }),
             ],
           ),

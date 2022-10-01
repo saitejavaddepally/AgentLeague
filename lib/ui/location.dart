@@ -182,7 +182,7 @@ class _LocationScreenState extends State<LocationScreen> {
                           padding: 8,
                           onTap: () async {
                             await getNearbyLocations(
-                                "transit_station", BitmapDescriptor.hueViolet);
+                                "subway_station", BitmapDescriptor.hueViolet);
                           }).use(),
                     ),
                     Expanded(
@@ -194,7 +194,7 @@ class _LocationScreenState extends State<LocationScreen> {
                           padding: 8,
                           onTap: () async {
                             await getNearbyLocations(
-                                "shopping_mall", BitmapDescriptor.hueGreen);
+                                "store", BitmapDescriptor.hueGreen);
                           }).use(),
                     ),
                   ],

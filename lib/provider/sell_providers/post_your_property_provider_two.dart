@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../ui/sell_screens/post_your_property_page_two.dart';
+import '../../ui/sell_screens/post_your_property_page_two.dart';
 
 class PostYourPropertyProviderTwo extends ChangeNotifier {
   PostYourPropertyProviderTwo(data) {

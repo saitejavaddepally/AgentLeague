@@ -39,6 +39,7 @@ class CustomDeleteDialog extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             'Deleting this $content will place it in the trash',
+            textAlign: TextAlign.center,
             style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,

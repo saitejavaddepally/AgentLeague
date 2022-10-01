@@ -1,58 +1,36 @@
 import 'dart:io';
-import 'package:agent_league/ui/Home/bottom_navigation.dart';
-import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:agent_league/Services/upload_properties_to_firestore.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_title.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
-import 'package:agent_league/provider/amenities_provider.dart';
+import 'package:agent_league/provider/sell_providers/amenities_provider.dart';
+import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/project_screen/uploads_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../../Services/firestore_crud_operations.dart';
 import '../../components/custom_button.dart';
 import '../../helper/constants.dart';
-import '../../route_generator.dart';
+import 'dart:collection';
 
 class Amenties extends StatefulWidget {
-  final List data;
+  final Map<String, dynamic> previousPageData;
+  final Map<String, dynamic>? dataToEdit;
+  final bool isFreeListing;
 
-  const Amenties({required this.data, Key? key}) : super(key: key);
+  const Amenties(
+      {required this.previousPageData,
+      required this.isFreeListing,
+      this.dataToEdit,
+      Key? key})
+      : super(key: key);
 
   @override
   State<Amenties> createState() => _AmentiesState();
 }
 
 class _AmentiesState extends State<Amenties> {
-  late List<dynamic> _images = [];
-  late List<dynamic> _docs = [];
-  late List<dynamic> _videos = [];
-  late List<dynamic> _docNames;
-  late List<dynamic> _videoNames;
-  static const String _IMAGE = 'images';
-  static const String _VIDEO = 'videos';
-  static const String _DOCS = 'docs';
-  String? currentPlot = '';
-  String? currentUser = '';
   bool isLoading = false;
-  bool isEdited = false;
-
-  @override
-  void initState() {
-    if (widget.data[1] != null) {
-      _images = widget.data[1]['images'];
-      _videos = widget.data[1]['videos'];
-      _videoNames = widget.data[1]['previousVideoNames'];
-      _docs = widget.data[1]['docs'];
-      _docNames = widget.data[1]['previousDocNames'];
-      isEdited = widget.data[1]['isEdited'];
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,19 +38,22 @@ class _AmentiesState extends State<Amenties> {
         providers: [
           ChangeNotifierProvider(
               create: (context) =>
-                  PropertyPhotosProvider(widget.data[1]?['images'])),
+                  PropertyPhotosProvider(widget.dataToEdit?['images'])),
           ChangeNotifierProvider(
-              create: (context) => PropertyDocumentsProvider(
-                  widget.data[1]?['docs'],
-                  widget.data[1]?['previousDocNames'])),
+              create: (context) =>
+                  PropertyDocumentsProvider(widget.dataToEdit?['docs'])),
           ChangeNotifierProvider(
-              create: (context) => PropertyVideoProvider(
-                  widget.data[1]?['videos'],
-                  widget.data[1]?['previousVideoNames'])),
+              create: (context) =>
+                  PropertyVideoProvider(widget.dataToEdit?['videos'])),
         ],
         builder: (context, child) {
-          final _photoProvider =
+          final _imageProvider =
               Provider.of<PropertyPhotosProvider>(context, listen: false);
+          final _docProvider =
+              Provider.of<PropertyDocumentsProvider>(context, listen: false);
+          final _videoProvider =
+              Provider.of<PropertyVideoProvider>(context, listen: false);
+
           return (!isLoading)
               ? Scaffold(
                   body: SafeArea(
@@ -131,9 +112,6 @@ class _AmentiesState extends State<Amenties> {
                                                 imageName: 'Image ${i + 1}',
                                                 onTap: () {
                                                   value.pickImage(i);
-                                                  _images = value.images;
-                                                  print(
-                                                      "values are ${value.images}");
                                                 },
                                               ))
                                           ],
@@ -160,11 +138,6 @@ class _AmentiesState extends State<Amenties> {
                                                 imageName: 'Image ${i + 1}',
                                                 onTap: () {
                                                   value.pickImage(i);
-
-                                                  _images = value.images;
-
-                                                  print(
-                                                      "values are ${value.images}");
                                                 },
                                               ))
                                           ],
@@ -217,13 +190,6 @@ class _AmentiesState extends State<Amenties> {
                                                 imageName: 'Doc ${i + 1}',
                                                 onTap: () {
                                                   value.pickDocuments(i);
-
-                                                  _docs = value.docs;
-                                                  _docNames = value.docNames;
-
-                                                  print("docs are " +
-                                                      _docs.toString() +
-                                                      _docNames.toString());
                                                 },
                                               ))
                                           ],
@@ -276,11 +242,6 @@ class _AmentiesState extends State<Amenties> {
                                                 imageName: 'Video ${i + 1}',
                                                 onTap: () {
                                                   value.pickVideo(i);
-                                                  setState(() {
-                                                    _videos = value.videos;
-                                                    _videoNames =
-                                                        value.videoNames;
-                                                  });
                                                 },
                                               ))
                                           ],
@@ -315,7 +276,6 @@ class _AmentiesState extends State<Amenties> {
                                                     width: 102,
                                                     height: 40,
                                                     onClick: () {
-                                                      print('back');
                                                       Navigator.pop(context);
                                                     },
                                                     color: CustomColors.dark)
@@ -323,152 +283,23 @@ class _AmentiesState extends State<Amenties> {
                                             const SizedBox(width: 15),
                                             CustomButton(
                                                     text: 'Next',
-                                                    onClick: () async {
-                                                      EasyLoading.show();
-                                                      String credits =
-                                                          await UploadPropertiesToFirestore()
-                                                              .plotCreditChecker();
-                                                      bool? ifPaid =
-                                                          await SharedPreferencesHelper()
-                                                              .getPaidCreditStatus();
-                                                      EasyLoading.dismiss();
+                                                    onClick: () {
+                                                      final images =
+                                                          _imageProvider
+                                                                  .getImage()[
+                                                              'images'];
 
-                                                      print(credits);
-                                                      int freeCreditCurrent =
-                                                          int.parse(credits);
-                                                      if (freeCreditCurrent !=
-                                                              0 &&
-                                                          !ifPaid!) {
-                                                        await Navigator.pushNamed(
-                                                            context,
-                                                            RouteName
-                                                                .uploadingProgress,
-                                                            arguments: [
-                                                              _images,
-                                                              _videos,
-                                                              _docs,
-                                                              _docNames,
-                                                              _videoNames,
-                                                              isEdited,
-                                                              widget.data[0]
-                                                            ]);
+                                                      final docs = _docProvider
+                                                          .getDocs()['docs'];
 
-                                                        await UploadPropertiesToFirestore()
-                                                            .updateFreeCredit(
-                                                                freeCreditCurrent -
-                                                                    1);
-                                                        SharedPreferencesHelper()
-                                                            .getCurrentPlot()
-                                                            .then(
-                                                                (value) async {
-                                                          String number = value
-                                                              .toString()
-                                                              .substring(5);
-                                                          await FirestoreCrudOperations()
-                                                              .updatePlotInformation(
-                                                                  int.parse(
-                                                                      number),
-                                                                  {
-                                                                "isPaid": "true"
-                                                              });
-                                                        });
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                                const SnackBar(
-                                                                    content: Text(
-                                                                        '"You have used your free credit.."')));
-
-                                                        Navigator
-                                                            .pushAndRemoveUntil(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      BottomBar(
-                                                                        index:
-                                                                            0,
-                                                                      )),
-                                                          (route) => false,
-                                                        );
-                                                        await EasyLoading
-                                                            .showSuccess(
-                                                                'Thank you');
-                                                        return;
-                                                      }
-
-                                                      if (isEdited) {
-                                                        String? userId;
-                                                        await SharedPreferencesHelper()
-                                                            .getUserId()
-                                                            .then(
-                                                                (value) async {
-                                                          userId = value;
-                                                          await SharedPreferencesHelper()
-                                                              .getCurrentPlot()
-                                                              .then(
-                                                                  (value) async {
-                                                            int number =
-                                                                int.parse(value
-                                                                    .toString()
-                                                                    .substring(
-                                                                        5));
-                                                            await FirestoreCrudOperations()
-                                                                .updatePlotInformation(
-                                                                    number, {
-                                                              "images":
-                                                                  FieldValue
-                                                                      .delete(),
-                                                              "videos":
-                                                                  FieldValue
-                                                                      .delete(),
-                                                              "docs": FieldValue
-                                                                  .delete(),
-                                                              "docNames":
-                                                                  FieldValue
-                                                                      .delete(),
-                                                              "videoNames":
-                                                                  FieldValue
-                                                                      .delete(),
-                                                            });
-                                                          });
-                                                        });
-                                                      }
-
-                                                      await Navigator.pushNamed(
-                                                          context,
-                                                          RouteName
-                                                              .uploadingProgress,
-                                                          arguments: [
-                                                            _images,
-                                                            _videos,
-                                                            _docs,
-                                                            _docNames,
-                                                            _videoNames,
-                                                            isEdited,
-                                                            widget.data[0]
-                                                          ]);
-                                                      await EasyLoading.showSuccess(
-                                                          'Saved your property!');
-                                                      Navigator
-                                                          .pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                PropertyDigitalization(
-                                                                  formData: {
-                                                                    "propData":
-                                                                        widget.data[
-                                                                            0],
-                                                                    "media": {
-                                                                      "picture":
-                                                                          _images[
-                                                                              0]
-                                                                    }
-                                                                  },
-                                                                )),
-                                                        (route) => false,
-                                                      );
+                                                      final videos =
+                                                          _videoProvider
+                                                                  .getVideos()[
+                                                              'videos'];
+                                                      checkAndUploadProperty(
+                                                          images!,
+                                                          docs!,
+                                                          videos!);
                                                     },
                                                     width: 102,
                                                     height: 40,
@@ -493,6 +324,61 @@ class _AmentiesState extends State<Amenties> {
                   child: CircularProgressIndicator(),
                 );
         });
+  }
+
+  void checkAndUploadProperty(
+      List<dynamic> images, List<dynamic> docs, List<dynamic> videos) {
+    List<File> fileImages = [];
+    List<int> fileImagesIndex = [];
+
+    for (int i = 0; i < images.length; i++) {
+      if (images[i] != null && images[i] is File) {
+        fileImages.add(images[i] as File);
+        fileImagesIndex.add(i);
+      }
+    }
+
+    List<File> fileDocs = [];
+    List<int> fileDocsIndex = [];
+
+    for (int i = 0; i < docs.length; i++) {
+      if (docs[i] != null && docs[i] is File) {
+        fileDocs.add(docs[i] as File);
+        fileDocsIndex.add(i);
+      }
+    }
+
+    List<File> fileVideos = [];
+    List<int> fileVideosIndex = [];
+
+    for (int i = 0; i < videos.length; i++) {
+      if (videos[i] != null && videos[i] is File) {
+        fileVideos.add(videos[i] as File);
+        fileVideosIndex.add(i);
+      }
+    }
+
+    if (images[0] != null && docs[0] != null && videos[0] != null) {
+      // print(fileImages);
+      // print(fileImagesIndex);
+      // print(fileVideos);
+      // print(fileVideosIndex);
+      // print(fileDocs);
+      // print(fileDocsIndex);
+      Navigator.pushNamed(context, RouteName.uploadingProgress, arguments: [
+        widget.previousPageData,
+        widget.dataToEdit,
+        widget.isFreeListing,
+        fileImages,
+        fileDocs,
+        fileVideos,
+        fileImagesIndex,
+        fileDocsIndex,
+        fileVideosIndex
+      ]);
+    } else {
+      EasyLoading.showToast('First Item in each block should be uploaded');
+    }
   }
 }
 

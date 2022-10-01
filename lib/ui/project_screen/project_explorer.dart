@@ -288,29 +288,19 @@ class Page extends StatelessWidget {
                 onTap: () {
                   print(i);
                   if (i.toString() == "Gallery") {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return GalleryScreen(info: {
-                        "projectDetails": projectDetails,
-                        "isProject": true
-                      });
-                    }));
+                    Navigator.pushNamed(context, RouteName.gallery,
+                        arguments: projectDetails['images']);
                   } else if (i.toString() == "Tour") {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return Tour(info: {
-                        "projectDetails": projectDetails,
-                        "isProject": true
-                      });
-                    }));
+                    Navigator.pushNamed(context, RouteName.tour,
+                        arguments: projectDetails['videos']);
                   } else if (i.toString() == "emi") {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return EMI(info: {
-                        "projectDetails": projectDetails,
-                        "isProject": true
-                      });
-                    }));
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) {
+                    //   return EMI(info: {
+                    //     "projectDetails": projectDetails,
+                    //     "isProject": true
+                    //   });
+                    // }));
                   } else if (i.toString() == 'location') {
                     double latitude = projectDetails["latitude"];
                     double longitude = projectDetails["longitude"];

@@ -1,4 +1,4 @@
-import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:agent_league/provider/lead_screen_methods.dart';
 import 'package:agent_league/provider/lead_status_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -40,7 +40,7 @@ class _LeadStatusState extends State<LeadStatus> {
                 text: 'Change Status',
                 onClick: () async {
                   await EasyLoading.show(status: 'Please Wait...');
-                  await FirestoreDataProvider.changeLeadStatus(
+                  await LeadScreenMethods.changeLeadStatus(
                       widget.leadId, status);
                   EasyLoading.showSuccess('Status Change',
                       duration: const Duration(seconds: 1));
