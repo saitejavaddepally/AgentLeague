@@ -152,9 +152,9 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                 height: 110,
                 padding: const EdgeInsets.only(top: 25),
                 decoration: BoxDecoration(
-                    boxShadow: shadow1,
-                    borderRadius: BorderRadius.circular(12),
-                    color: HexColor('082640')),
+                  boxShadow: shadow1,
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: CarouselSlider(
                   carouselController: buttonCarouselController,
                   options: CarouselOptions(
@@ -364,11 +364,11 @@ class CustomText extends StatelessWidget {
         const SizedBox(width: 10),
         Flexible(
           child: Text(text2,
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  letterSpacing: -0.15,
-                  color: Colors.white.withOpacity(0.8))),
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                letterSpacing: -0.15,
+              )),
         )
       ],
     );

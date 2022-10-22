@@ -113,20 +113,6 @@ class _BottomBarState extends State<BottomBar> {
                               widget.index = index;
                             });
                           },
-                          type: BottomNavigationBarType.fixed,
-                          selectedLabelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            letterSpacing: -0.15,
-                          ),
-                          unselectedLabelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            letterSpacing: -0.15,
-                          ),
-                          selectedItemColor: Colors.white,
-                          unselectedItemColor: Colors.white.withOpacity(0.3),
-                          backgroundColor: const Color(0xFF082640),
                           items: [
                             BottomNavigationBarItem(
                                 icon: Image.asset("assets/home.png",

@@ -8,6 +8,7 @@ import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/onboarding.dart';
+import 'package:agent_league/ui/project_layout.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -65,17 +66,18 @@ class _MyAppState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return NeumorphicApp(
+    return MaterialApp(
       supportedLocales: locale,
+
       localizationsDelegates: const [
         CountryLocalizations.delegate,
       ],
       title: 'Agent League',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
-      theme: CustomTheme.lightTheme,
+      theme: CustomTheme.lightTheme(context),
       //3
-      darkTheme: CustomTheme.darkTheme,
+      darkTheme: CustomTheme.darkTheme(context),
       //4
       themeMode: currentTheme.currentTheme,
       //5

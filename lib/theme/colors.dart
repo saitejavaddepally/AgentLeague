@@ -16,4 +16,5 @@ class CustomColors {
   static Color dark = HexColor('#082640');
   static Color orange = HexColor('FE7F0E');
   static Color light = Colors.white;
+  static Color shadowColor1 = const Color(0xFF113B5F);
 }

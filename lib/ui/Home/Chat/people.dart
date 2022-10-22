@@ -22,26 +22,12 @@ class _PeopleState extends State<People> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: CustomColors.dark,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: CustomColors.dark,
-          elevation: 0,
-          flexibleSpace: Column(
+        body: SafeArea(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TabBar(
-                unselectedLabelColor: HexColor("#b48484"),
-                indicatorSize: TabBarIndicatorSize.label,
-                labelStyle: const TextStyle(fontSize: 27),
-                indicator: MaterialIndicator(
-                  height: 4,
-                  bottomLeftRadius: 5,
-                  bottomRightRadius: 5,
-                  horizontalPadding: 5,
-                  color: HexColor('FE7F0E'),
-                ),
-                tabs: const [
+              const TabBar(
+                tabs: [
                   Tab(
                     child: Text(
                       "Customers",
@@ -55,15 +41,18 @@ class _PeopleState extends State<People> {
                     ),
                   ),
                 ],
-              )
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    const Customers(),
+                    Container(),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            const Customers(),
-            Container(),
-          ],
         ),
       ),
     );
@@ -128,9 +117,8 @@ class _CustomersState extends State<Customers> {
                                             borderRadius:
                                                 BorderRadius.circular(30)),
                                         child: Text(snapshot1.data.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12))),
+                                            style:
+                                                const TextStyle(fontSize: 12))),
                                 ]),
                             onTap: () => callChatScreen(context,
                                 currentItem?['name'], currentItem?['uid']),
@@ -155,9 +143,8 @@ class _CustomersState extends State<Customers> {
                                   ),
                                   Text(formatTimestamp(snapshot2.data?[0]),
                                       style: TextStyle(
-                                          fontSize: 12,
-                                          color:
-                                              Colors.white.withOpacity(0.7))),
+                                        fontSize: 12,
+                                      )),
                                 ]),
                           ),
                         );

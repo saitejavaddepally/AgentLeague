@@ -1,29 +1,37 @@
 import 'package:flutter/material.dart';
 
-const shadow1 = [
+import '../theme/custom_theme.dart';
+
+final lightShadowColor = Colors.grey.withOpacity(0.5);
+
+final shadow1 = [
   BoxShadow(
-      offset: Offset(-6, -6),
+      offset: const Offset(-6, -6),
       blurRadius: 12,
       spreadRadius: 0,
-      color: Color(0xFF113B5F)),
+      color:
+          CustomTheme.isDarkTheme ? const Color(0xFF113B5F) : lightShadowColor),
   BoxShadow(
-      offset: Offset(0, 6),
+      offset: const Offset(0, 6),
       blurRadius: 12,
       spreadRadius: 0,
-      color: Color(0xFF031E35)),
+      color:
+          CustomTheme.isDarkTheme ? const Color(0xFF031E35) : lightShadowColor),
 ];
 
-const shadow2 = [
+final shadow2 = [
   BoxShadow(
-      offset: Offset(-6, -6),
+      offset: const Offset(-6, -6),
       blurRadius: 12,
       spreadRadius: 0,
-      color: Color(0xFF113B5F)),
+      color:
+          CustomTheme.isDarkTheme ? const Color(0xFF113B5F) : lightShadowColor),
   BoxShadow(
-      offset: Offset(6, 6),
+      offset: const Offset(6, 6),
       blurRadius: 12,
       spreadRadius: 0,
-      color: Color(0xFF031E35)),
+      color:
+          CustomTheme.isDarkTheme ? const Color(0xFF031E35) : lightShadowColor),
 ];
 
 const locale = [

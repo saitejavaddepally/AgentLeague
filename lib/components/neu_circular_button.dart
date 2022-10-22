@@ -57,11 +57,11 @@ class CircularNeumorphicButton {
                   ? Center(
                       child: Text(
                         text,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            letterSpacing: -0.15,
-                            color: Colors.white.withOpacity(0.8)),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          letterSpacing: -0.15,
+                        ),
                       ),
                     )
                   : const Text('')

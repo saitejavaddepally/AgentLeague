@@ -288,7 +288,7 @@ class CustomImage extends StatelessWidget {
                   ? BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.blue))
-                  : const BoxDecoration(boxShadow: shadow1),
+                  : BoxDecoration(boxShadow: shadow1),
               child: Stack(children: [
                 (type == 'url')
                     ? ClipRRect(

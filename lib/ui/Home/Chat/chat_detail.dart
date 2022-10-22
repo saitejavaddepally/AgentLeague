@@ -25,6 +25,7 @@ import '../../../provider/firestore_data_provider.dart';
 import '../../../route_generator.dart';
 
 import '../../../theme/colors.dart';
+import '../../../utility_methods.dart';
 
 class ChatDetail extends StatefulWidget {
   final String friendUid;
@@ -263,10 +264,9 @@ class _ChatDetailState extends State<ChatDetail> {
                         return true;
                       },
                       child: Scaffold(
-                        backgroundColor: CustomColors.dark,
                         appBar: AppBar(
-                            title: Text(widget.friendName),
-                            backgroundColor: CustomColors.dark),
+                          title: Text(widget.friendName),
+                        ),
                         key: _scaffoldKey,
                         body: SafeArea(
                             child: SizedBox(
@@ -278,7 +278,8 @@ class _ChatDetailState extends State<ChatDetail> {
                                     itemCount: list.length,
                                     reverse: true,
                                     itemBuilder: (context, index) {
-                                      Map data = list[index].data();
+                                      Map<String, dynamic> data =
+                                          list[index].data();
 
                                       return SizedBox(
                                         width: double.maxFinite,
@@ -339,7 +340,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                                                     .end,
                                                             children: [
                                                               Text(
-                                                                formatTimestamp(
+                                                                Utils.formatTimestamp(
                                                                     data[
                                                                         'createdOn']),
                                                                 style: TextStyle(
@@ -467,12 +468,6 @@ class _ChatDetailState extends State<ChatDetail> {
             return const Center(child: Text("Something Went Wrong"));
           }
         });
-  }
-
-  String formatTimestamp(Timestamp timestamp) {
-    // return DateFormat().add_yMd().add_jm().format(timestamp.toDate());
-    var format = DateFormat('d-MM-y h:mm:a'); // <- use skeleton here
-    return format.format(timestamp.toDate());
   }
 
   Widget customBottomSheet(String chatDocId) {

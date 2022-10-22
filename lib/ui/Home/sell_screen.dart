@@ -24,52 +24,43 @@ class _SellScreenState extends State<SellScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: CustomColors.dark,
-            elevation: 0,
-            flexibleSpace: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TabBar(
-                  unselectedLabelColor: HexColor("#b48484"),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  labelStyle: const TextStyle(fontSize: 27),
-                  indicator: MaterialIndicator(
-                    height: 4,
-                    bottomLeftRadius: 5,
-                    bottomRightRadius: 5,
-                    horizontalPadding: 5,
-                    color: HexColor('FE7F0E'),
+      length: 2,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: const [
+              TabBar(
+                tabs: [
+                  Tab(
+                    child: Text(
+                      "Standlone",
+                      style: TextStyle(fontSize: 16.0),
+                    ),
                   ),
-                  tabs: const [
-                    Tab(
-                      child: Text(
-                        "Standlone",
-                        style: TextStyle(fontSize: 16.0),
-                      ),
+                  Tab(
+                    child: Text(
+                      "Ventures",
+                      style: TextStyle(fontSize: 16.0),
                     ),
-                    Tab(
-                      child: Text(
-                        "Ventures",
-                        style: TextStyle(fontSize: 16.0),
-                      ),
-                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    Standlone(),
+                    Ventures(),
+                    // Icon(Icons.directions_transit),
                   ],
-                )
-              ],
-            ),
-          ),
-          body: const TabBarView(
-            children: [
-              Standlone(),
-              Ventures(),
-              // Icon(Icons.directions_transit),
+                ),
+              ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 

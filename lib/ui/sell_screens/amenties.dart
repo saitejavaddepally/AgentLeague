@@ -359,12 +359,6 @@ class _AmentiesState extends State<Amenties> {
     }
 
     if (images[0] != null && docs[0] != null && videos[0] != null) {
-      // print(fileImages);
-      // print(fileImagesIndex);
-      // print(fileVideos);
-      // print(fileVideosIndex);
-      // print(fileDocs);
-      // print(fileDocsIndex);
       Navigator.pushNamed(context, RouteName.uploadingProgress, arguments: [
         widget.previousPageData,
         widget.dataToEdit,
