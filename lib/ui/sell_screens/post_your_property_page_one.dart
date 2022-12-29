@@ -1,13 +1,14 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_selector.dart';
-import 'package:agent_league/location_service.dart';
+
 import 'package:agent_league/provider/sell_providers/post_your_property_provider_one.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
+import '../../Services/location_service.dart';
 import '../../components/custom_label.dart';
 import '../../components/custom_text_field.dart';
 import '../../theme/colors.dart';
@@ -84,15 +85,14 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         'Property Category :')),
                                             Flexible(
                                               child: CustomSelector(
-                                                      isDense: true,
-                                                      borderRadius: 10,
-                                                      dropDownItems: value
-                                                          .propertyCategoryDropDown,
-                                                      chosenValue: value
-                                                          .propertyCategoryChosenValue,
-                                                      onChanged: value
-                                                          .onChangedPropertyCategory)
-                                                  .use(),
+                                                  isDense: true,
+                                                  borderRadius: 10,
+                                                  dropDownItems: value
+                                                      .propertyCategoryDropDown,
+                                                  chosenValue: value
+                                                      .propertyCategoryChosenValue,
+                                                  onChanged: value
+                                                      .onChangedPropertyCategory),
                                             ),
                                           ],
                                         ),
@@ -104,15 +104,14 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                     text: 'Property Type :')),
                                             Flexible(
                                               child: CustomSelector(
-                                                      isDense: true,
-                                                      borderRadius: 10,
-                                                      dropDownItems: value
-                                                          .propertyTypeDropDown,
-                                                      chosenValue: value
-                                                          .propertyTypeChosenValue,
-                                                      onChanged: value
-                                                          .onChangedPropertyType)
-                                                  .use(),
+                                                  isDense: true,
+                                                  borderRadius: 10,
+                                                  dropDownItems: value
+                                                      .propertyTypeDropDown,
+                                                  chosenValue: value
+                                                      .propertyTypeChosenValue,
+                                                  onChanged: value
+                                                      .onChangedPropertyType),
                                             ),
                                           ],
                                         ),
@@ -125,15 +124,14 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         'Possession Status :')),
                                             Flexible(
                                               child: CustomSelector(
-                                                      isDense: true,
-                                                      borderRadius: 10,
-                                                      dropDownItems: value
-                                                          .possessionStatusDropDown,
-                                                      chosenValue: value
-                                                          .possessionStatusChosenValue,
-                                                      onChanged: value
-                                                          .onChangedPossessionStatus)
-                                                  .use(),
+                                                  isDense: true,
+                                                  borderRadius: 10,
+                                                  dropDownItems: value
+                                                      .possessionStatusDropDown,
+                                                  chosenValue: value
+                                                      .possessionStatusChosenValue,
+                                                  onChanged: value
+                                                      .onChangedPossessionStatus),
                                             ),
                                           ],
                                         ),
@@ -159,8 +157,6 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                                 .handOverYearController,
                                                             validator: value
                                                                 .validateHandOverYear,
-                                                            onChanged: value
-                                                                .onSubmittedHandOverYear,
                                                             isDense: true,
                                                             hint: 'year')),
                                                     const SizedBox(width: 5),
@@ -174,8 +170,6 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                               .handOverMonthController,
                                                           validator: value
                                                               .validateHandOverMonth,
-                                                          onChanged: value
-                                                              .onSubmittedHandOverMonth,
                                                           isDense: true,
                                                           hint: 'month'),
                                                     )
@@ -194,9 +188,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                             Expanded(
                                                 child: CustomTextField(
                                               isDense: true,
-                                              controller: value.controller,
+                                              controller: value.priceController,
                                               validator: value.validatePrice,
-                                              onChanged: value.onPriceSubmitted,
                                               keyboardType:
                                                   TextInputType.number,
                                             )),
@@ -245,7 +238,8 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         await GetUserLocation
                                                             .getMapLocation(
                                                                 context);
-                                                    if (res.isNotEmpty) {
+                                                    if (res != null &&
+                                                        res.isNotEmpty) {
                                                       value.locationController
                                                           .text = res[0];
                                                       value.latitude = res[1];
@@ -265,17 +259,15 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                     CustomLabel(text: 'Age :')),
                                             Flexible(
                                               child: CustomSelector(
-                                                      isDense: true,
-                                                      borderRadius: 10,
-                                                      dropDownItems:
-                                                          value.ageDropDown,
-                                                      chosenValue:
-                                                          value.ageChosenValue,
-                                                      onChanged: (value
-                                                              .disableAge)
-                                                          ? null
-                                                          : value.onChangedAge)
-                                                  .use(),
+                                                  isDense: true,
+                                                  borderRadius: 10,
+                                                  dropDownItems:
+                                                      value.ageDropDown,
+                                                  chosenValue:
+                                                      value.ageChosenValue,
+                                                  onChanged: (value.disableAge)
+                                                      ? null
+                                                      : value.onChangedAge),
                                             ),
                                           ],
                                         ),
@@ -287,15 +279,14 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                     text: 'Facing :')),
                                             Flexible(
                                               child: CustomSelector(
-                                                      isDense: true,
-                                                      borderRadius: 10,
-                                                      dropDownItems:
-                                                          value.facingDropDown,
-                                                      chosenValue: value
-                                                          .facingChosenValue,
-                                                      onChanged:
-                                                          value.onChangedFacing)
-                                                  .use(),
+                                                  isDense: true,
+                                                  borderRadius: 10,
+                                                  dropDownItems:
+                                                      value.facingDropDown,
+                                                  chosenValue:
+                                                      value.facingChosenValue,
+                                                  onChanged:
+                                                      value.onChangedFacing),
                                             ),
                                           ],
                                         ),
@@ -317,21 +308,18 @@ class _PostYourPropertyPageOneState extends State<PostYourPropertyPageOne> {
                                                         TextInputType.number,
                                                     validator:
                                                         value.validateSize,
-                                                    onChanged:
-                                                        value.onSubmittedSize,
                                                   )),
                                                   const SizedBox(width: 5),
                                                   Flexible(
                                                     child: CustomSelector(
-                                                            isDense: true,
-                                                            borderRadius: 10,
-                                                            dropDownItems: value
-                                                                .sizeDropDown,
-                                                            chosenValue: value
-                                                                .sizeChosenValue,
-                                                            onChanged: value
-                                                                .onChangedSize)
-                                                        .use(),
+                                                        isDense: true,
+                                                        borderRadius: 10,
+                                                        dropDownItems:
+                                                            value.sizeDropDown,
+                                                        chosenValue: value
+                                                            .sizeChosenValue,
+                                                        onChanged: value
+                                                            .onChangedSize),
                                                   ),
                                                 ],
                                               ),
@@ -437,18 +425,20 @@ class CustomMapDialog extends StatelessWidget {
 }
 
 class CommonWidget {
+  final BuildContext context;
   final void Function(dynamic)? onChanged;
   final String text;
   final List dropDownItems;
   final dynamic selectedValue;
-  late Widget? hint;
+  final String hint;
 
   CommonWidget({
     required this.onChanged,
     required this.dropDownItems,
     required this.selectedValue,
     required this.text,
-    this.hint,
+    required this.context,
+    this.hint = "",
   });
 
   use() {
@@ -470,12 +460,11 @@ class CommonWidget {
             children: [
               Expanded(
                 child: CustomSelector(
-                        textColor: Colors.white.withOpacity(0.7),
-                        dropDownItems: dropDownItems,
-                        chosenValue: selectedValue,
-                        hint: hint,
-                        onChanged: onChanged)
-                    .use(),
+                    textColor: Colors.white.withOpacity(0.7),
+                    dropDownItems: dropDownItems,
+                    chosenValue: selectedValue,
+                    hint: hint,
+                    onChanged: onChanged),
               ),
             ],
           ),

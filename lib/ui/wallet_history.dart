@@ -1,10 +1,11 @@
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
-import 'package:agent_league/utility_methods.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../components/custom_button.dart';
+import '../helper/utility_methods.dart';
 import '../theme/colors.dart';
 
 class WalletHistory extends StatefulWidget {

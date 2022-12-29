@@ -8,7 +8,6 @@ import '../components/custom_button.dart';
 import '../components/custom_label.dart';
 import '../components/custom_text_field.dart';
 import '../components/custom_title.dart';
-import '../helper/constants.dart';
 import '../theme/colors.dart';
 
 class MonthlyEmi extends StatefulWidget {
@@ -123,85 +122,103 @@ class _MonthlyEmiState extends State<MonthlyEmi> {
                               child: Padding(
                                   padding: const EdgeInsets.all(9),
                                   child: CustomButton(
-                                          text: 'Calculate',
-                                          color: HexColor('FD7E0E'),
-                                          onClick: () async {
-                                            int amount = int.parse(homeLoanAmount.text);
-                                            int years = int.parse(loanTenure.text);
-                                            double roi = double.parse(rateOfInterest.text);
+                                      text: 'Calculate',
+                                      color: HexColor('FD7E0E'),
+                                      onClick: () async {
+                                        int amount =
+                                            int.parse(homeLoanAmount.text);
+                                        int years = int.parse(loanTenure.text);
+                                        double roi =
+                                            double.parse(rateOfInterest.text);
 
-                                            int val = emi(amount, years, roi);
+                                        int val = emi(amount, years, roi);
 
-                                            setState(() {
-                                              hasClicked = true;
-                                              totalEmi = val;
-                                              dataMap = {
-                                                "Total principle" : amount.toDouble(),
-                                                "Total Interest" : val * 12
-                                              };
-                                            });
-                                          })
-                                      .use())),
+                                        setState(() {
+                                          hasClicked = true;
+                                          totalEmi = val;
+                                          dataMap = {
+                                            "Total principle":
+                                                amount.toDouble(),
+                                            "Total Interest": val * 12
+                                          };
+                                        });
+                                      }).use())),
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     CustomLineUnderText(
                             width: MediaQuery.of(context).size.width, height: 5)
                         .use(),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    (hasClicked) ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                     CustomContainer(
-                       child: PieChart(
-                         dataMap: dataMap,
-                         animationDuration: const Duration(milliseconds: 800),
-                         chartLegendSpacing: 32,
-                         chartRadius: MediaQuery.of(context).size.width / 2.2,
-                         colorList: colorList,
-                         initialAngleInDegree: 0,
-                         chartType: ChartType.disc,
-                         ringStrokeWidth: 32,
-                         legendOptions: const LegendOptions(
-                           showLegendsInRow: true,
-                           legendPosition: LegendPosition.bottom,
-                           showLegends: true,
-                           legendShape: BoxShape.circle,
-                           legendTextStyle: TextStyle(
-                             fontWeight: FontWeight.bold,
-                             color: Colors.black,
-                           ),
-                         ),
-                         chartValuesOptions: const ChartValuesOptions(
-                           showChartValueBackground: true,
-                           showChartValues: true,
-                           showChartValuesInPercentage: false,
-                           showChartValuesOutside: false,
-                           decimalPlaces: 1,
-                         ),
-                         // gradientList: ---To add gradient colors---
-                         // emptyColorGradient: ---Empty Color gradient---
-                       ),
-                       width: MediaQuery.of(context).size.width,
-                       color: Colors.white,
-                     ).use(),
-                     const SizedBox(height: 20,),
-                     const Text("Emi Per month: ", style: TextStyle(fontWeight: FontWeight.bold),),
-                     Text(totalEmi.toString()),
-                     const SizedBox(height: 20,),
-
-                     const Text("Total Interest Payable", style: TextStyle(fontWeight: FontWeight.bold)),
-                     Text((totalEmi*12).toString()),
-                     const SizedBox(height: 20,),
-
-                     const Text("Total principle Payable", style: TextStyle(fontWeight: FontWeight.bold)),
-                     Text(homeLoanAmount.text.toString()),
-                   ],) : Container()
+                    (hasClicked)
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomContainer(
+                                child: PieChart(
+                                  dataMap: dataMap,
+                                  animationDuration:
+                                      const Duration(milliseconds: 800),
+                                  chartLegendSpacing: 32,
+                                  chartRadius:
+                                      MediaQuery.of(context).size.width / 2.2,
+                                  colorList: colorList,
+                                  initialAngleInDegree: 0,
+                                  chartType: ChartType.disc,
+                                  ringStrokeWidth: 32,
+                                  legendOptions: const LegendOptions(
+                                    showLegendsInRow: true,
+                                    legendPosition: LegendPosition.bottom,
+                                    showLegends: true,
+                                    legendShape: BoxShape.circle,
+                                    legendTextStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  chartValuesOptions: const ChartValuesOptions(
+                                    showChartValueBackground: true,
+                                    showChartValues: true,
+                                    showChartValuesInPercentage: false,
+                                    showChartValuesOutside: false,
+                                    decimalPlaces: 1,
+                                  ),
+                                  // gradientList: ---To add gradient colors---
+                                  // emptyColorGradient: ---Empty Color gradient---
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.white,
+                              ).use(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "Emi Per month: ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(totalEmi.toString()),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text("Total Interest Payable",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text((totalEmi * 12).toString()),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text("Total principle Payable",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(homeLoanAmount.text.toString()),
+                            ],
+                          )
+                        : Container()
                   ]),
             ),
           ),

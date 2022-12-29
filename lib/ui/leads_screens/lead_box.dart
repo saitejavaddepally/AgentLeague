@@ -131,50 +131,25 @@ class _StandloneState extends State<Standlone> {
                           .indexWhere((element) => element == docId);
                       _chosenValue = snapshot.data?[0][index!];
                     }
-                    return DropdownButtonHideUnderline(
-                      child: ButtonTheme(
-                        alignedDropdown: true,
-                        child: DropdownButtonFormField<String>(
-                            icon: const Icon(Icons.keyboard_arrow_down_outlined,
-                                color: Colors.red),
-                            dropdownColor: const Color(0xFF213C53),
-                            decoration: InputDecoration(
-                              isDense: true,
-                              fillColor: const Color(0xFF213C53),
-                              filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 7, horizontal: 5),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none),
-                            ),
-                            items: dropDownItems
-                                .map((String e) => DropdownMenuItem<String>(
-                                    value: e,
-                                    child: FittedBox(
-                                        child: Text(e.split('/')[0]))))
-                                .toList(),
-                            validator: (value) =>
-                                value == null ? 'Field Required' : null,
-                            value: _chosenValue,
-                            isExpanded: true,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                _chosenValue = value;
-                                final index = value?.split('/')[1];
-                                final id = snapshot.data?[1][int.parse(index!)];
-                                if (id!.isNotEmpty) {
-                                  docId = id;
-                                } else {
-                                  docId = null;
-                                }
-                              });
-                            }),
-                      ),
+                    return ButtonTheme(
+                      alignedDropdown: true,
+                      child: CustomSelector(
+                          borderRadius: 10,
+                          dropDownItems: dropDownItems,
+                          isLead: true,
+                          chosenValue: _chosenValue,
+                          onChanged: (value) {
+                            setState(() {
+                              _chosenValue = value;
+                              final index = value?.split('/')[1];
+                              final id = snapshot.data?[1][int.parse(index!)];
+                              if (id!.isNotEmpty) {
+                                docId = id;
+                              } else {
+                                docId = null;
+                              }
+                            });
+                          }),
                     );
                   }
                   return const SizedBox();
@@ -198,7 +173,7 @@ class _StandloneState extends State<Standlone> {
                         });
                       },
                       chosenValue: _dateChosenValue,
-                    ).use())
+                    ))
                   ],
                 ),
               ),
@@ -209,18 +184,17 @@ class _StandloneState extends State<Standlone> {
                     const Text('Status : '),
                     Flexible(
                       child: CustomSelector(
-                              isDense: true,
-                              borderRadius: 10,
-                              color: Colors.white,
-                              textColor: Colors.black,
-                              dropDownItems: _statusDropDown,
-                              onChanged: (value) {
-                                setState(() {
-                                  _statusChosenValue = value;
-                                });
-                              },
-                              chosenValue: _statusChosenValue)
-                          .use(),
+                          isDense: true,
+                          borderRadius: 10,
+                          color: Colors.white,
+                          textColor: Colors.black,
+                          dropDownItems: _statusDropDown,
+                          onChanged: (value) {
+                            setState(() {
+                              _statusChosenValue = value;
+                            });
+                          },
+                          chosenValue: _statusChosenValue),
                     ),
                   ],
                 ),

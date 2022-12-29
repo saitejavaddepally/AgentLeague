@@ -219,6 +219,10 @@ class UploadingProgress extends StatelessWidget {
           Navigator.pushNamed(context, RouteName.propertyDigitalization,
               arguments: data!);
         }
+      }).catchError((error) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, RouteName.bottomBar, (route) => false,
+            arguments: 1);
       });
     } else {
       _pr
@@ -237,6 +241,10 @@ class UploadingProgress extends StatelessWidget {
           Navigator.pushNamed(context, RouteName.propertyDigitalization,
               arguments: data!);
         }
+      }).catchError((error) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, RouteName.bottomBar, (route) => false,
+            arguments: 1);
       });
     }
   }

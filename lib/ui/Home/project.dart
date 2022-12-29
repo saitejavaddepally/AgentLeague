@@ -1,11 +1,11 @@
 import 'package:agent_league/components/custom_container.dart';
+import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/helper/constants.dart';
-import 'package:agent_league/provider/property_upload_provider.dart';
+import 'package:agent_league/helper/string_manager.dart';
+import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
-import 'package:agent_league/ui/project_screen/project_explorer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../theme/colors.dart';
 
@@ -17,36 +17,6 @@ class Project extends StatefulWidget {
 }
 
 class _ProjectState extends State<Project> {
-  bool isProjectsLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<Map<String, dynamic>> getAndReturnProjects() async {
-    List allProjects = await PropertyUploadProvider().getAllProjects();
-    List<dynamic> villas = [];
-    List<dynamic> hiRise = [];
-    List<dynamic> hmda = [];
-
-    for (int i = 0; i < allProjects.length; i++) {
-      if (allProjects[i]['projectCategory'] == 'hmda') {
-        hmda.add(allProjects[i]);
-      } else if (allProjects[i]['projectCategory'] == 'villas') {
-        villas.add(allProjects[i]);
-      } else {
-        hiRise.add(allProjects[i]);
-      }
-    }
-
-    return {
-      "hmda": hmda,
-      "villas": villas,
-      "hiRise": hiRise,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,82 +51,134 @@ class _ProjectState extends State<Project> {
                   ])),
             )
           ]),
-          FutureBuilder(
-              future: getAndReturnProjects(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const SpinKitCircle(
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  );
-                }
-                Map<String, dynamic> data =
-                    snapshot.data as Map<String, dynamic>;
-
-                List hmdaProjects = data['hmda'];
-                List villaProjects = data['villas'];
-                List hiRiseProjects = data['hiRise'];
-
-                return Column(
-                  children: [
-                    const SizedBox(height: 25),
-                    TextField(
-                      cursorColor: Colors.white.withOpacity(0.1),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(10),
-                        hintText: "Search by company, project or location",
-                        hintStyle: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: Colors.white.withOpacity(0.3)),
-                        fillColor: Colors.white.withOpacity(0.1),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(15)),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTitle(text: 'hmda'.toUpperCase()),
-                        MoreButton(onTap: () {})
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomGridView(projects: hmdaProjects),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTitle(text: 'hiRise'.toUpperCase()),
-                        MoreButton(onTap: () {})
-                      ],
-                    ),
-                    CustomGridView(projects: hiRiseProjects),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTitle(text: 'Villas'.toUpperCase()),
-                        MoreButton(onTap: () {})
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomGridView(projects: villaProjects),
-                  ],
-                );
-              }),
+          Column(
+            children: [
+              const SizedBox(height: 25),
+              TextField(
+                cursorColor: Colors.white.withOpacity(0.1),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(10),
+                  hintText: "Search by company, project or location",
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.white.withOpacity(0.3)),
+                  fillColor: Colors.white.withOpacity(0.1),
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(15)),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTitle(text: 'hmda'.toUpperCase()),
+                  MoreButton(onTap: () {})
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                  initialData: const [],
+                  future: FirestoreDataProvider.getAllHmdaProjects(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CustomLabel(text: snapshot.error.toString()),
+                        ),
+                      );
+                    }
+                    if (snapshot.data!.isEmpty) {
+                      return const SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CustomLabel(text: "No projects Found"),
+                        ),
+                      );
+                    }
+                    return CustomGridView(projects: snapshot.data!);
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTitle(text: 'hiRise'.toUpperCase()),
+                  MoreButton(onTap: () {})
+                ],
+              ),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                  initialData: const [],
+                  future: FirestoreDataProvider.getAllHiRiseProjects(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CustomLabel(text: snapshot.error.toString()),
+                        ),
+                      );
+                    }
+                    if (snapshot.data!.isEmpty) {
+                      return const SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CustomLabel(text: "No projects Found"),
+                        ),
+                      );
+                    }
+                    return CustomGridView(projects: snapshot.data!);
+                  }),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTitle(text: 'Villas'.toUpperCase()),
+                  MoreButton(onTap: () {})
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                  initialData: const [],
+                  future: FirestoreDataProvider.getAllVillasProjects(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CustomLabel(text: snapshot.error.toString()),
+                        ),
+                      );
+                    }
+                    if (snapshot.data!.isEmpty) {
+                      return const SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CustomLabel(text: "No projects Found"),
+                        ),
+                      );
+                    }
+                    return CustomGridView(projects: snapshot.data!);
+                  }),
+            ],
+          ),
         ]),
       )),
     ));
@@ -208,32 +230,26 @@ class MoreButton extends StatelessWidget {
 }
 
 class CustomGridView extends StatelessWidget {
-  final List projects;
+  final List<Map<String, dynamic>> projects;
 
   const CustomGridView({Key? key, required this.projects}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      primary: false,
-      shrinkWrap: true,
-      childAspectRatio: 3 / 2.2,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 10,
-      crossAxisCount: 2,
-      children: <Widget>[
-        for (int i = 0; i < projects.length; i++)
-          CustomImage(
-            image: projects[i]['images'][0],
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProjectExplorer(projectDetails: projects[i])));
-            },
-          ),
-      ],
-    );
+    return GridView.builder(
+        itemCount: (projects.length > 2) ? 2 : projects.length,
+        primary: false,
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisSpacing: 10, crossAxisCount: 2),
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return CustomImage(
+              onTap: () {
+                Navigator.pushNamed(context, RouteName.projectExplorer,
+                    arguments: projects[index]);
+              },
+              image: projects[index][StringManager.imagesKey][0]);
+        });
   }
 }

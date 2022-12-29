@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +21,9 @@ class SellScreenProvider extends ChangeNotifier {
   String? _sortByChosenValue = 'Price Low - High';
   String? get sortByChosenValue => _sortByChosenValue;
 
+  bool _isSearchOn = false;
+  bool get isSearchOn => _isSearchOn;
+
   void onChangeSortBy(value) {
     if (value == _sortByDropDown[0]) {
       _orderBy = 'price';
@@ -35,18 +39,16 @@ class SellScreenProvider extends ChangeNotifier {
       _desc = false;
     }
     _sortByChosenValue = value;
-    notifyListeners();
+    getAllPaidProperty();
   }
 
-  bool _isSearchOn = false;
   List<Map<String, dynamic>> _data = [];
 
   UnmodifiableListView<Map<String, dynamic>> get data =>
       UnmodifiableListView(_data);
 
-  bool get isSearchOn => _isSearchOn;
-
   Future<List<Map<String, dynamic>>> getAllPaidProperty() async {
+    log('1');
     final userId = FirebaseAuth.instance.currentUser?.uid;
     final _querySnap = await FirebaseFirestore.instance
         .collection('sell_plots')
@@ -55,9 +57,8 @@ class SellScreenProvider extends ChangeNotifier {
         .where('isPaid', isEqualTo: true)
         .orderBy(_orderBy, descending: _desc)
         .get();
-
+    log("2");
     _data = _querySnap.docs.map((e) => e.data()..addAll({'id': e.id})).toList();
-    _isSearchOn = true;
     notifyListeners();
     return _data;
   }

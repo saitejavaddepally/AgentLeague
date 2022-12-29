@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_place/google_place.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ProjectLayout extends StatefulWidget {

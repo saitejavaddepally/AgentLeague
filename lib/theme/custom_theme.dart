@@ -4,7 +4,7 @@ import 'colors.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class CustomTheme with ChangeNotifier {
-  static bool _isDarkTheme = false;
+  static bool _isDarkTheme = true;
 
   static bool get isDarkTheme => _isDarkTheme;
 
@@ -17,6 +17,7 @@ class CustomTheme with ChangeNotifier {
 
   static ThemeData lightTheme(context) {
     return ThemeData(
+      canvasColor: Colors.white,
       scaffoldBackgroundColor: Colors.white,
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         selectedLabelStyle: const TextStyle(
@@ -58,7 +59,10 @@ class CustomTheme with ChangeNotifier {
 
   static ThemeData darkTheme(context) {
     return ThemeData(
+      canvasColor: CustomColors.dark,
       scaffoldBackgroundColor: CustomColors.dark,
+      appBarTheme: AppBarTheme(backgroundColor: CustomColors.dark),
+      dialogBackgroundColor: CustomColors.dark,
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         selectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.w500,
@@ -89,10 +93,29 @@ class CustomTheme with ChangeNotifier {
           color: HexColor('FE7F0E'),
         ),
       ),
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: Colors.white.withOpacity(0.3)),
+        fillColor: Colors.white.withOpacity(0.1),
+        filled: true,
+      ),
+      colorScheme:
+          Theme.of(context).colorScheme.copyWith(primary: Colors.white),
       textTheme: Theme.of(context)
           .textTheme
           .apply(bodyColor: Colors.white, displayColor: Colors.white),
-      iconTheme: const IconThemeData(color: Colors.black),
+      primaryTextTheme: TextTheme(
+        headline6: TextStyle(
+            color: Colors.white.withOpacity(0.7),
+            fontSize: 16,
+            fontWeight: FontWeight.normal),
+        //for dropDown chosen value
+        headline5: const TextStyle(
+            color: Colors.white, fontSize: 16, fontWeight: FontWeight.normal),
+      ),
+      iconTheme: const IconThemeData(color: Colors.white),
     );
   }
 

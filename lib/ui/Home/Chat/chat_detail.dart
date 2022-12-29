@@ -5,10 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,14 +16,15 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 
+import '../../../Services/location_service.dart';
 import '../../../components/custom_text_field.dart';
 import '../../../components/neu_circular_button.dart';
-import '../../../location_service.dart';
+
+import '../../../helper/utility_methods.dart';
 import '../../../provider/firestore_data_provider.dart';
 import '../../../route_generator.dart';
 
 import '../../../theme/colors.dart';
-import '../../../utility_methods.dart';
 
 class ChatDetail extends StatefulWidget {
   final String friendUid;
@@ -93,35 +92,8 @@ class _ChatDetailState extends State<ChatDetail> {
     }
   }
 
-  // @override
-  // void initState() {
-  //   chats
-  //       .where('users',
-  //           isEqualTo: {widget.friendUid: null, currentUserId: null})
-  //       .limit(1)
-  //       .get()
-  //       .then((QuerySnapshot<Object?> snapshot) {
-  //         if (snapshot.docs.isNotEmpty) {
-  //           chatDocId = snapshot.docs.single.id;
-  //           setState(() {});
-  //         } else {
-  //           chats.add({
-  //             'users': {currentUserId: null, widget.friendUid: null}
-  //           }).then((value) {
-  //             // print(value);
-
-  //             chatDocId = value.toString();
-  //             //setState(() {});
-  //           });
-  //         }
-  //       })
-  //       .catchError((error) {});
-  //   super.initState();
-  // }
-
   @override
   void initState() {
-    print(widget.friendName);
     FirestoreDataProvider()
         .clearParticularChatCounter(widget.friendUid)
         .then((value) => null);
@@ -198,32 +170,15 @@ class _ChatDetailState extends State<ChatDetail> {
       'type': "loc",
     }).then((value) async {
       await incrementCounter();
-    }).catchError((error) {
-      print(error);
-    });
+    }).catchError((error) {});
   }
 
-  void getLocation(String chatDocId) {
-    GetUserLocation().determinePosition().then((value) {
-      sendLocation(chatDocId, value.latitude, value.longitude);
-    }).catchError((error) {
-      if (error == 'Location services are disabled.') {
-        Fluttertoast.showToast(
-            msg: "Please open location first.", toastLength: Toast.LENGTH_LONG);
-      } else if (error == 'Location permissions are denied') {
-        Fluttertoast.showToast(
-            msg: "You Don't send location without allow location permission",
-            toastLength: Toast.LENGTH_LONG);
-      } else if (error ==
-          'Location permissions are permanently denied, we cannot request permissions.') {
-        Fluttertoast.showToast(
-            msg:
-                "Sorry We can't help you because you didn't allow location permission",
-            toastLength: Toast.LENGTH_LONG);
-      } else {
-        print(error);
-      }
-    });
+  Future<void> getLocation(String chatDocId) async {
+    final list = await GetUserLocation.getCurrentLocation();
+    if (list != null) {
+      sendLocation(chatDocId, list[1], list[2]);
+    }
+    return;
   }
 
   bool isSender(String friend) {

@@ -121,8 +121,9 @@ class _LoginState extends State<Login> {
                             if (_formKey.currentState!.validate()) {
                               Navigator.pushNamed(context, RouteName.otp,
                                   arguments: [
+                                    _dialCode,
                                     _phoneNumberController.text,
-                                    _dialCode
+                                    false
                                   ]);
                             }
                           },

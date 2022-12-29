@@ -161,7 +161,7 @@ class ChangeLeadStatus extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         alignment: Alignment.centerLeft,
-        primary: buttonColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.only(left: 10),
         fixedSize: const Size(double.maxFinite, 48),

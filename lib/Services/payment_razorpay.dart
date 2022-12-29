@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:agent_league/Services/auth_methods.dart';
-import 'package:agent_league/Services/key_id.dart';
+//import 'package:agent_league/Services/key_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +28,7 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
     http.Response response = await http.post(
         Uri.parse(
             'https://us-central1-agent-fly-updated.cloudfunctions.net/sendOrder'),
-        headers: <String, String>{'username': key_id},
+        //headers: <String, String>{'username': key_id},
         body: jsonEncode(<String, dynamic>{
           // "amount": widget.data['grandTotal'] * 100,
           "amount": 1 * 100,
@@ -42,7 +42,7 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
       orderId = data['id'];
       print(orderId);
       var options = {
-        'key': key_id,
+        // 'key': key_id,
         // 'amount': widget.data['grandTotal']* 100,
         'amount': 0.1,
         'currency': 'INR',

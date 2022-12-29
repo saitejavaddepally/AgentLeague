@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
 
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -26,7 +28,8 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> checkOtp(String verificationId) async {
+  Future<bool> checkOtp(String verificationId, bool isUpdate,
+      String countryCode, String phoneNumber) async {
     final auth = FirebaseAuth.instance;
     if (_otp.length == 6) {
       var userCode =
@@ -34,90 +37,42 @@ class OtpProvider extends ChangeNotifier {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: userCode.toString());
 
-      // await auth
-      //     .signInWithCredential(credential)
-      //     .then((UserCredential userCredential) async {
-      //   correct = true;
-      //   if (userCredential.user != null &&
-      //       userCredential.additionalUserInfo!.isNewUser) {
-      //     var userId = userCredential.user!.uid;
-      //     registerUser(userId, name, phoneNumber);
-      //   }
-      // }).catchError((error) {
-      //   print(error);
-      // });
-
       try {
-        UserCredential _userCredential =
-            await auth.signInWithCredential(credential);
-        if (_userCredential.additionalUserInfo!.isNewUser) {
-          return true;
+        if (isUpdate) {
+          await auth.currentUser!.updatePhoneNumber(credential);
+          await updateUser(auth.currentUser!.uid, countryCode, phoneNumber);
+        } else {
+          UserCredential _userCredential =
+              await auth.signInWithCredential(credential);
+          if (_userCredential.additionalUserInfo!.isNewUser) {
+            return true;
+          }
         }
+
         return false;
       } catch (e) {
+        log(e.toString());
         return Future.error("Enter Correct Otp");
       }
     } else {
       return Future.error("Please Enter Otp");
     }
-    // return "enterotp";
   }
 
-  Future<String> updateOtp(String verificationId, String phoneNumber) async {
-    bool correct = false;
-    if (_otp.length == 6) {
-      var userCode =
-          int.parse("${otp[0]}${otp[1]}${otp[2]}${otp[3]}${otp[4]}${otp[5]}");
-
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: userCode.toString());
-      await auth.currentUser?.updatePhoneNumber(credential).whenComplete(() {
-        updateUser(FirebaseAuth.instance.currentUser?.uid, phoneNumber);
-        correct = true;
-      }).catchError((error) {
-        print(error);
-      });
-
-      if (correct) {
-        return "updated";
-      } else {
-        return "incorrect";
-      }
-    }
-    return "enterotp";
-  }
-
-  static Future<void> registerUser(
-      String userId, String name, String phoneNumber) async {
+  static Future<void> updateUser(
+      String? userId, String countryCode, String phoneNumber) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set(
+      await FirebaseFirestore.instance
+          .collection(StringManager.usersCollectionKey)
+          .doc(userId)
+          .update(
         {
-          'name': name,
-          'uid': userId,
-          'freeCredit': "1",
-          'phone': phoneNumber,
-          'counter': 0,
-          'location': '',
-          'ref_code': '',
-          'email': '',
-          'agent_exp': '',
-          'profile_pic': '',
+          StringManager.phoneNumberKey: phoneNumber,
+          StringManager.countryCodeKey: countryCode
         },
       );
-    } on Exception catch (e) {
-      print(e);
-    }
-  }
-
-  static Future<void> updateUser(String? userId, String phoneNumber) async {
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(userId).update(
-        {
-          'phone': phoneNumber,
-        },
-      );
-    } on Exception catch (e) {
-      print(e);
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

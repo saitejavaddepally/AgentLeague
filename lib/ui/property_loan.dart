@@ -112,7 +112,7 @@ class _PropertyLoanState extends State<PropertyLoan> {
                                 borderRadius: 10,
                                 chosenValue: value.loanTypeChosenValue,
                                 dropDownItems: value.loanTypeDropDown,
-                              ).use()),
+                              )),
                           const SizedBox(height: 10),
                           CustomRow(
                               label: 'Req. amount :',

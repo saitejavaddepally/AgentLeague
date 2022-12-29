@@ -1,9 +1,6 @@
-import 'package:agent_league/provider/sell_providers/uploading_progress_provider.dart';
-import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../components/custom_button.dart';
 import '../../components/home_container.dart';
 import '../../theme/colors.dart';

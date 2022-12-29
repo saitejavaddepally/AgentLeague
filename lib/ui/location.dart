@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:agent_league/Services/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
 
 import '../components/neu_circular_button.dart';
+import '../helper/string_manager.dart';
 import '../theme/colors.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -21,8 +23,7 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   List<Marker> _markers = [];
-  final GooglePlace _searchPlaces =
-      GooglePlace("AIzaSyCBMs8s8SbqSXLzoygoqc20EvzqBY5wBX0");
+  final GooglePlace _searchPlaces = GooglePlace(mapKey);
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
@@ -73,12 +74,12 @@ class _LocationScreenState extends State<LocationScreen> {
             content: Text("No $type found"),
             duration: const Duration(seconds: 1)));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Somethig Went Wrong Please Try Later")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text(StringManager.somethingWentWrong)));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Somethig Went Wrong Please Try Later")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(StringManager.somethingWentWrong)));
     }
     setState(() {});
   }

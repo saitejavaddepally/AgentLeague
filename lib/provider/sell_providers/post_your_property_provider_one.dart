@@ -1,14 +1,14 @@
 import 'dart:collection';
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:flutter/material.dart';
 
 class PostYourPropertyProviderOne extends ChangeNotifier {
-  String _price = '';
   double latitude = 0;
   double longitude = 0;
 
   PostYourPropertyProviderOne(data) {
     if (data != null) {
-      final propertyCategory = data['propertyCategory'];
+      final propertyCategory = data[StringManager.propertyCategory];
       if (propertyCategory == 'Residential') {
         _propertyTypeDropDown = _residential;
       }
@@ -18,7 +18,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       if (propertyCategory == 'Farm') {
         _propertyTypeDropDown = _farm;
       }
-      _propertyCategoryChosenValue = data['propertyCategory'];
+      _propertyCategoryChosenValue = data[StringManager.propertyCategory];
       final propertyType = data['propertyType'];
       _propertyTypeChosenValue = propertyType;
       if (_skipList.contains(propertyType)) {
@@ -26,7 +26,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       } else {
         isSkipPageTwo = true;
       }
-      final possessionStatus = data['possessionStatus'];
+      final possessionStatus = data[StringManager.possessionStatus];
 
       _possessionStatusChosenValue = possessionStatus;
 
@@ -44,14 +44,14 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
         _disableAge = false;
       }
 
-      _controller.text = data['price'].toString();
-      _locationController.text = data['location'];
-      _ageChosenValue = data['age'];
-      _facingChosenValue = data['facing'];
-      handOverYearController.text = data['handOverYear'];
-      handOverMonthController.text = data['handOverMonth'];
-      _sizeController.text = data['size'].toString().split(' ')[0];
-      _sizeChosenValue = data['size'].toString().split(' ')[1];
+      _priceController.text = data[StringManager.price].toString();
+      _locationController.text = data[StringManager.location];
+      _ageChosenValue = data[StringManager.age];
+      _facingChosenValue = data[StringManager.facing];
+      handOverYearController.text = data[StringManager.handOverYear];
+      handOverMonthController.text = data[StringManager.handOverMonth];
+      _sizeController.text = data[StringManager.size].toString().split(' ')[0];
+      _sizeChosenValue = data[StringManager.size].toString().split(' ')[1];
     }
   }
 
@@ -173,13 +173,9 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
 
   // for priceTextField
 
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
-  TextEditingController get controller => _controller;
-
-  onPriceSubmitted(String price) {
-    _price = price;
-  }
+  TextEditingController get priceController => _priceController;
 
   String? validatePrice(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -244,13 +240,8 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
 
   // for sizeTextField
   final TextEditingController _sizeController = TextEditingController();
-  String _size = '';
 
   TextEditingController get sizeController => _sizeController;
-
-  onSubmittedSize(value) {
-    _size = value;
-  }
 
   String? validateSize(String? size) {
     if (size == null || size.trim().isEmpty) {
@@ -262,11 +253,6 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
 
   // for handOverYearTextField
   final TextEditingController handOverYearController = TextEditingController();
-  String _handOverYear = '';
-
-  onSubmittedHandOverYear(value) {
-    _handOverYear = value;
-  }
 
   String? validateHandOverYear(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -278,11 +264,6 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
 
   // for handOverYearTextField
   final TextEditingController handOverMonthController = TextEditingController();
-  String _handOverMonth = '';
-
-  onSubmittedHandOverMonth(value) {
-    _handOverMonth = value;
-  }
 
   String? validateHandOverMonth(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -295,19 +276,19 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
   // retreive all data
   Map<String, dynamic> getMap() {
     return {
-      'propertyCategory': _propertyCategoryChosenValue,
-      'propertyType': _propertyTypeChosenValue,
-      'possessionStatus': _possessionStatusChosenValue,
-      'location': _locationController.text,
-      'age': _ageChosenValue,
-      'price': int.parse(_controller.text),
-      'facing': _facingChosenValue,
-      'handOverYear': handOverYearController.text,
-      'handOverMonth': handOverMonthController.text,
-      'size': _sizeController.text + ' ' + _sizeChosenValue!,
-      'latitude': latitude,
-      'longitude': longitude,
-      'box_enabled': 0,
+      StringManager.propertyCategory: _propertyCategoryChosenValue,
+      StringManager.propertyType: _propertyTypeChosenValue,
+      StringManager.possessionStatus: _possessionStatusChosenValue,
+      StringManager.location: _locationController.text,
+      StringManager.age: _ageChosenValue,
+      StringManager.price: int.parse(_priceController.text),
+      StringManager.facing: _facingChosenValue,
+      StringManager.handOverYear: handOverYearController.text,
+      StringManager.handOverMonth: handOverMonthController.text,
+      StringManager.size: _sizeController.text + ' ' + _sizeChosenValue!,
+      StringManager.latitudeKey: latitude,
+      StringManager.longitudeKey: longitude,
+      StringManager.boxEnabled: 0,
     };
   }
 
@@ -319,7 +300,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
     handOverYearController.clear();
     _locationController.clear();
     _ageChosenValue = null;
-    _controller.clear();
+    _priceController.clear();
     _facingChosenValue = null;
     _sizeController.clear();
     _sizeChosenValue = null;

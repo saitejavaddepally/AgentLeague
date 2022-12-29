@@ -32,6 +32,7 @@ class CircularNeumorphicButton {
             children: [
               Neumorphic(
                 style: NeumorphicStyle(
+                  shadowLightColor: Colors.white.withOpacity(0.7),
                   color: color,
                   shape: NeumorphicShape.flat,
                   boxShape: const NeumorphicBoxShape.circle(),

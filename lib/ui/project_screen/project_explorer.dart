@@ -1,8 +1,8 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:agent_league/ui/Home/project.dart';
-import 'package:agent_league/ui/gallery.dart';
-import 'package:agent_league/ui/tour.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -12,14 +12,12 @@ import '../../route_generator.dart';
 import '../../theme/colors.dart';
 import 'package:readmore/readmore.dart';
 
-import '../emi.dart';
 import '../location.dart';
 
 class ProjectExplorer extends StatefulWidget {
-  final Map projectDetails;
+  final Map<String, dynamic> data;
 
-  const ProjectExplorer({Key? key, required this.projectDetails})
-      : super(key: key);
+  const ProjectExplorer({Key? key, required this.data}) : super(key: key);
 
   @override
   State<ProjectExplorer> createState() => _ProjectExplorerState();
@@ -28,11 +26,8 @@ class ProjectExplorer extends StatefulWidget {
 class _ProjectExplorerState extends State<ProjectExplorer> {
   CarouselController buttonCarouselController = CarouselController();
 
-  late Map data;
-
   @override
   void initState() {
-    data = widget.projectDetails;
     super.initState();
   }
 
@@ -56,7 +51,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                   child: CustomImage(
                     height: 220,
                     onTap: () {},
-                    image: data['images'][0],
+                    image: widget.data[StringManager.imagesKey][0],
                   ),
                 ),
               ]),
@@ -72,12 +67,13 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                       Container(
                           height: 30,
                           width: 60,
-                          child: Image.network(widget.projectDetails['docs'][0],
+                          child: CachedNetworkImage(
+                              imageUrl: widget.data[StringManager.docsKey][0],
                               fit: BoxFit.fill),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4))),
                       const SizedBox(height: 5),
-                      Text("${widget.projectDetails['ventureName']}",
+                      Text("${widget.data[StringManager.ventureName]}",
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
@@ -98,7 +94,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                               const TextSpan(text: 'Price'),
                               TextSpan(
                                   text:
-                                      ' : ${widget.projectDetails["pricePerUnitText"]} ${widget.projectDetails["pricePerUnitDropDow"]}',
+                                      ' : ${widget.data[StringManager.pricePerUnitText]} ${widget.data[StringManager.pricePerUnitDropDown]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.white.withOpacity(0.7)))
@@ -114,7 +110,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                               const TextSpan(text: 'Plot sale'),
                               TextSpan(
                                   text:
-                                      ' : ${widget.projectDetails["unitSizeOne"]} - ${widget.projectDetails["unitSizeTwo"]} ${widget.projectDetails["unitSizeDropDown"]}',
+                                      ' : ${widget.data[StringManager.unitSizeOne]} - ${widget.data[StringManager.unitSizeTwo]} ${widget.data[StringManager.unitSizeDropDown]}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.white.withOpacity(0.7)))
@@ -152,6 +148,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                 height: 110,
                 padding: const EdgeInsets.only(top: 25),
                 decoration: BoxDecoration(
+                  color: const Color(0xFF082640),
                   boxShadow: shadow1,
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -167,13 +164,13 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                     Page(
                       controller: buttonCarouselController,
                       pageNumber: 1,
-                      projectDetails: data,
+                      projectDetails: widget.data,
                       nameList: const ['location', 'Gallery', 'Tour', 'Layout'],
                     ),
                     Page(
                       controller: buttonCarouselController,
                       pageNumber: 2,
-                      projectDetails: data,
+                      projectDetails: widget.data,
                       nameList: const ['Layout', 'emi', 'Realtor', 'Broucher'],
                     )
                   ].map((page) {
@@ -191,7 +188,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (!widget.projectDetails['isExport'])
+                  if (!widget.data[StringManager.isExportKey])
                     CustomButton(
                             width: 123,
                             height: 41,
@@ -199,12 +196,12 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                             onClick: () async {
                               await EasyLoading.show(status: 'Please wait...');
                               await PropertyUploadProvider.updateProject(
-                                  widget.projectDetails['docId']);
+                                  widget.data['docId']);
                               await EasyLoading.dismiss();
                               await EasyLoading.showSuccess('Export Complete',
                                   duration: const Duration(seconds: 1));
                               setState(() {
-                                widget.projectDetails['isExport'] = true;
+                                widget.data[StringManager.isExportKey] = true;
                               });
                             },
                             color: HexColor('082640'),
@@ -216,7 +213,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
                           height: 41,
                           text: 'Subscribe',
                           onClick: () async {
-                            final docId = widget.projectDetails['docId'];
+                            final docId = widget.data['docId'];
 
                             EasyLoading.show(status: 'Please Wait...');
                             final res =
@@ -246,7 +243,7 @@ class _ProjectExplorerState extends State<ProjectExplorer> {
 class Page extends StatelessWidget {
   final CarouselController controller;
   final int pageNumber;
-  final Map projectDetails;
+  final Map<String, dynamic> projectDetails;
 
   final List nameList;
 
@@ -286,13 +283,12 @@ class Page extends StatelessWidget {
                 text: i,
                 isTextUnder: true,
                 onTap: () {
-                  print(i);
                   if (i.toString() == "Gallery") {
                     Navigator.pushNamed(context, RouteName.gallery,
-                        arguments: projectDetails['images']);
+                        arguments: projectDetails[StringManager.imagesKey]);
                   } else if (i.toString() == "Tour") {
                     Navigator.pushNamed(context, RouteName.tour,
-                        arguments: projectDetails['videos']);
+                        arguments: projectDetails[StringManager.videosKey]);
                   } else if (i.toString() == "emi") {
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (context) {
@@ -302,8 +298,9 @@ class Page extends StatelessWidget {
                     //   });
                     // }));
                   } else if (i.toString() == 'location') {
-                    double latitude = projectDetails["latitude"];
-                    double longitude = projectDetails["longitude"];
+                    double latitude = projectDetails[StringManager.latitudeKey];
+                    double longitude =
+                        projectDetails[StringManager.longitudeKey];
 
                     Navigator.push(
                         context,
@@ -311,14 +308,15 @@ class Page extends StatelessWidget {
                             builder: (context) => LocationScreen(
                                 latitude: latitude, longitude: longitude)));
                   } else if (i.toString() == 'Layout') {
-                    Navigator.pushNamed(context, RouteName.layout,
-                        arguments: [projectDetails['docs'][2]]);
+                    Navigator.pushNamed(context, RouteName.layout);
                   } else if (i.toString() == 'Realtor') {
                     Navigator.pushNamed(context, RouteName.realtorVideo,
-                        arguments: [projectDetails['videos'][0]]);
+                        arguments: [
+                          projectDetails[StringManager.videosKey][0]
+                        ]);
                   } else if (i.toString() == 'Broucher') {
                     Navigator.pushNamed(context, RouteName.broucher,
-                        arguments: [projectDetails['docs'][1]]);
+                        arguments: [projectDetails[StringManager.docsKey][1]]);
                   }
                 }).use(),
           ),

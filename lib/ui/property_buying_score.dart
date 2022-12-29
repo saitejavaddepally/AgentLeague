@@ -37,7 +37,6 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                     onClick: () {
                       if (_formKey.currentState!.validate()) {
                         final range = _pr.calculateRange();
-                        print(range);
                         Navigator.pushNamed(context, RouteName.propertyRange,
                             arguments: range);
                       }

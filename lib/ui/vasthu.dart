@@ -114,7 +114,7 @@ class _VasthuScreenState extends State<VasthuScreen> {
                                 borderRadius: 10,
                                 chosenValue: value.addressChosenValue,
                                 dropDownItems: value.addressDropDown,
-                              ).use()),
+                              )),
                           const SizedBox(height: 10),
                           CustomRow(
                             label: 'Schedule :',
@@ -137,7 +137,7 @@ class _VasthuScreenState extends State<VasthuScreen> {
                                 isDense: true,
                                 chosenValue: value.propertyTypeChosenValue,
                                 dropDownItems: value.propertyTypeDropDown,
-                              ).use()),
+                              )),
                         ],
                       ),
                     ),

@@ -1,14 +1,13 @@
-import 'package:agent_league/Services/auth_methods.dart';
-import 'package:agent_league/Services/local_notification_service.dart';
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/helper/shared_preferences.dart';
 
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/config.dart';
 import 'package:agent_league/theme/custom_theme.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/Home/bottom_navigation.dart';
+import 'package:agent_league/ui/auth_screens/login.dart';
 import 'package:agent_league/ui/onboarding.dart';
-import 'package:agent_league/ui/project_layout.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,42 +24,35 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  await LocalNotificationService.initialize();
+  //await LocalNotificationService.initialize();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await initialization();
-  runApp(const MyApp());
-}
 
-Future initialization() async {
-  await Future.delayed(
-    const Duration(seconds: 3),
-    () {
-      FlutterNativeSplash.remove();
-    },
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State {
+class MyAppState extends State {
   @override
   void initState() {
-    final style = SystemUiOverlayStyle(
-      systemNavigationBarColor: CustomColors.dark,
-      systemNavigationBarIconBrightness: Brightness.light,
-    );
-    SystemChrome.setSystemUIOverlayStyle(style);
+    if (CustomTheme.isDarkTheme) {
+      final style = SystemUiOverlayStyle(
+        systemNavigationBarColor: CustomColors.dark,
+        systemNavigationBarIconBrightness: Brightness.light,
+      );
+      SystemChrome.setSystemUIOverlayStyle(style);
+    }
 
-    currentTheme.addListener(() {
-      setState(() {});
-    });
+    // currentTheme.addListener(() {
+    //   setState(() {});
+    // });
     super.initState();
   }
 
@@ -73,6 +65,7 @@ class _MyAppState extends State {
         CountryLocalizations.delegate,
       ],
       title: 'Agent League',
+
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.generateRoute,
       theme: CustomTheme.lightTheme(context),
@@ -82,13 +75,35 @@ class _MyAppState extends State {
       themeMode: currentTheme.currentTheme,
       //5
       builder: EasyLoading.init(),
-      home: FutureBuilder<User?>(
-        future: AuthMethods().getCurrentUser(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        initialData: FirebaseAuth.instance.currentUser,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return BottomBar(index: 0);
+          SharedPreferencesHelper.isOnboardingSeen()
+              .then((value) => print("onboarding $value"));
+          if (snapshot.data == null) {
+            return FutureBuilder<bool?>(
+              future: SharedPreferencesHelper.isOnboardingSeen(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData &&
+                    snapshot.data != null &&
+                    snapshot.data == true) {
+                  FlutterNativeSplash.remove();
+                  return const Login();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const SizedBox();
+                } else {
+                  FlutterNativeSplash.remove();
+                  return const Onboarding();
+                }
+              },
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox();
           } else {
-            return const Onboarding();
+            FlutterNativeSplash.remove();
+            return BottomBar(index: 0);
           }
         },
       ),

@@ -171,6 +171,5 @@ class _EscrowState extends State<Escrow> {
         ),
       ),
     );
-    ;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/theme/colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Help extends StatefulWidget {
@@ -48,7 +47,9 @@ class _HelpState extends State<Help> {
                     const Text("name*",
                         style: TextStyle(
                             fontWeight: FontWeight.w500, fontSize: 14)),
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     TextField(
                       cursorColor: Colors.white.withOpacity(0.1),
                       decoration: InputDecoration(
@@ -71,7 +72,9 @@ class _HelpState extends State<Help> {
                     const Text("mobile number*",
                         style: TextStyle(
                             fontWeight: FontWeight.w500, fontSize: 14)),
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Row(children: [
                       const SizedBox(width: 5),
                       Image.asset("assets/flag-india.png"),
@@ -109,7 +112,9 @@ class _HelpState extends State<Help> {
                         const Text("Issue type*  ",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500, fontSize: 14)),
-                        const SizedBox(height: 20,),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 5),

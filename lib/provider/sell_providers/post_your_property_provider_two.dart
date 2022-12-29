@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../../ui/sell_screens/post_your_property_page_two.dart';
@@ -7,15 +8,15 @@ import '../../ui/sell_screens/post_your_property_page_two.dart';
 class PostYourPropertyProviderTwo extends ChangeNotifier {
   PostYourPropertyProviderTwo(data) {
     if (data != null) {
-      _furnishedChosenValue = data['furnished'] ?? null;
-      _floorsChosenValue = data['floors'] ?? null;
-      _bedRoomChosenValue = data['bed_room'] ?? null;
-      _bathRoomChosenValue = data['bath_room'] ?? null;
-      _extraRoomChosenValue = data['extra_room'] ?? null;
-      _carParkChosenValue = data['car_park'] ?? null;
-      _totalPortion = data['total_portion'] ?? '';
-      _totalIncome = data['total_income'] ?? '';
-      _rentalIncome = data['rental_income'] ?? false;
+      _furnishedChosenValue = data[StringManager.furnished];
+      _floorsChosenValue = data[StringManager.floors];
+      _bedRoomChosenValue = data[StringManager.bedRoom];
+      _bathRoomChosenValue = data[StringManager.bathRoom];
+      _extraRoomChosenValue = data[StringManager.extraRoom];
+      _carParkChosenValue = data[StringManager.carPark];
+      _totalPortion = data[StringManager.totalPortion] ?? '';
+      _totalIncome = data[StringManager.totalIncome] ?? '';
+      _rentalIncome = data[StringManager.rentalIncome] ?? false;
     }
   }
 
@@ -165,15 +166,15 @@ class PostYourPropertyProviderTwo extends ChangeNotifier {
   Map<String, dynamic> getMap(Map data) {
     return {
       ...data,
-      'furnished': _furnishedChosenValue,
-      'floors': _floorsChosenValue,
-      'bed_room': _bedRoomChosenValue,
-      'bath_room': _bathRoomChosenValue,
-      'car_park': _carParkChosenValue,
-      'extra_room': _extraRoomChosenValue,
-      'total_portion': _totalPortion,
-      'total_income': _totalIncome,
-      'rental_income': _rentalIncome,
+      StringManager.furnished: _furnishedChosenValue,
+      StringManager.floors: _floorsChosenValue,
+      StringManager.bedRoom: _bedRoomChosenValue,
+      StringManager.bathRoom: _bathRoomChosenValue,
+      StringManager.carPark: _carParkChosenValue,
+      StringManager.extraRoom: _extraRoomChosenValue,
+      StringManager.totalPortion: _totalPortion,
+      StringManager.totalIncome: _totalIncome,
+      StringManager.rentalIncome: _rentalIncome,
     };
   }
 }

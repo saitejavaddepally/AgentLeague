@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../components/custom_button.dart';
 import '../components/custom_title.dart';
-import '../provider/firestore_data_provider.dart';
 import '../theme/colors.dart';
 
 class ShowPropertyRange extends StatefulWidget {

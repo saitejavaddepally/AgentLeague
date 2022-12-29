@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/Services/local_notification_service.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
@@ -5,7 +7,6 @@ import 'package:agent_league/ui/Home/home.dart';
 import 'package:agent_league/ui/Home/Chat/people.dart';
 import 'package:agent_league/ui/Home/project.dart';
 import 'package:agent_league/ui/Home/sell_screen.dart';
-import 'package:agent_league/ui/sell_screens/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -41,32 +42,20 @@ class _BottomBarState extends State<BottomBar> {
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
-      print("get initial message");
+      log("get initial message");
       if (message != null) {
-        print(message.notification!.body);
-        print(message.notification!.title);
+        log(message.notification!.body.toString());
+        log(message.notification!.title.toString());
       }
     });
 
     //work when the app is in foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      // print("OnMessage");
-      // if (message.notification != null) {
-      //   print(message.notification!.body);
-      //   print(message.notification!.title);
-      // }
-      await LocalNotificationService.display(message);
+      //await LocalNotificationService.display(message);
     });
 
     //when the app is in the background but not terminated and user taps on the notification
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("OnMessageOpenedApp");
-      if (message.notification != null) {
-        print(message.notification!.body);
-        print(message.notification!.title);
-        print(message.data);
-      }
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
   }
 
   Future<void> saveTokenToDatabase(String token) async {
@@ -91,118 +80,100 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: AuthMethods().getUserId(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            SharedPreferencesHelper().saveUserId(snapshot.data.toString());
-          }
-
-          return Scaffold(
-              bottomNavigationBar: FutureBuilder<num>(
-                  future: FirestoreDataProvider().getAllChatCounter(),
-                  initialData: 0,
-                  builder: (context, snap) {
-                    print(snap.data);
-                    return SizedBox(
-                      height: 72,
-                      child: BottomNavigationBar(
-                          currentIndex: widget.index,
-                          onTap: (index) {
-                            setState(() {
-                              widget.index = index;
-                            });
-                          },
-                          items: [
-                            BottomNavigationBarItem(
-                                icon: Image.asset("assets/home.png",
-                                    height: 24, width: 24),
-                                activeIcon: Image.asset(
-                                    "assets/home_active.png",
-                                    height: 24,
-                                    width: 24),
-                                label: "HOME"),
-                            BottomNavigationBarItem(
-                              icon: Image.asset("assets/leads.png",
-                                  height: 24, width: 24),
-                              activeIcon: Image.asset("assets/leads_active.png",
-                                  height: 24, width: 24),
-                              label: "SELL",
-                            ),
-                            BottomNavigationBarItem(
-                                icon: Stack(children: [
-                                  Image.asset("assets/social.png",
-                                      height: 24, width: 24),
-                                  if (snap.data != 0)
-                                    Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(30)),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 2),
-                                          child: Text(
-                                            snap.data.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10),
-                                          )),
-                                    ),
-                                ]),
-                                activeIcon: Stack(children: [
-                                  Image.asset("assets/social_active.png",
-                                      height: 24, width: 24),
-                                  if (snap.data != 0)
-                                    Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(30)),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 2),
-                                          child: Text(
-                                            snap.data.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10),
-                                          )),
-                                    ),
-                                ]),
-                                label: "CHATS"),
-                            BottomNavigationBarItem(
-                                icon: Image.asset("assets/teams.png",
-                                    height: 24, width: 24),
-                                activeIcon: Image.asset(
-                                    "assets/teams_active.png",
-                                    height: 24,
-                                    width: 24),
-                                label: "PROJECTS"),
-                            BottomNavigationBarItem(
-                                icon: Image.asset("assets/sell.png",
-                                    height: 24, width: 24),
-                                activeIcon: Image.asset(
-                                    "assets/sell_active.png",
-                                    height: 24,
-                                    width: 24),
-                                label: "PBTV"),
+    return Scaffold(
+        bottomNavigationBar: FutureBuilder<num>(
+            future: FirestoreDataProvider().getAllChatCounter(),
+            initialData: 0,
+            builder: (context, snap) {
+              return SizedBox(
+                height: 72,
+                child: BottomNavigationBar(
+                    currentIndex: widget.index,
+                    onTap: (index) {
+                      setState(() {
+                        widget.index = index;
+                      });
+                    },
+                    items: [
+                      BottomNavigationBarItem(
+                          icon: Image.asset("assets/home.png",
+                              height: 24, width: 24),
+                          activeIcon: Image.asset("assets/home_active.png",
+                              height: 24, width: 24),
+                          label: "HOME"),
+                      BottomNavigationBarItem(
+                        icon: Image.asset("assets/leads.png",
+                            height: 24, width: 24),
+                        activeIcon: Image.asset("assets/leads_active.png",
+                            height: 24, width: 24),
+                        label: "SELL",
+                      ),
+                      BottomNavigationBarItem(
+                          icon: Stack(children: [
+                            Image.asset("assets/social.png",
+                                height: 24, width: 24),
+                            if (snap.data != 0)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 2),
+                                    child: Text(
+                                      snap.data.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 10),
+                                    )),
+                              ),
                           ]),
-                    );
-                  }),
-              body: PageTransitionSwitcher(
-                transitionBuilder:
-                    (child, primaryAnimation, secondaryAnimation) =>
-                        FadeThroughTransition(
-                            animation: primaryAnimation,
-                            secondaryAnimation: secondaryAnimation,
-                            child: child),
-                child: screens[widget.index],
-              ));
-        });
+                          activeIcon: Stack(children: [
+                            Image.asset("assets/social_active.png",
+                                height: 24, width: 24),
+                            if (snap.data != 0)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 2),
+                                    child: Text(
+                                      snap.data.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 10),
+                                    )),
+                              ),
+                          ]),
+                          label: "CHATS"),
+                      BottomNavigationBarItem(
+                          icon: Image.asset("assets/teams.png",
+                              height: 24, width: 24),
+                          activeIcon: Image.asset("assets/teams_active.png",
+                              height: 24, width: 24),
+                          label: "PROJECTS"),
+                      BottomNavigationBarItem(
+                          icon: Image.asset("assets/sell.png",
+                              height: 24, width: 24),
+                          activeIcon: Image.asset("assets/sell_active.png",
+                              height: 24, width: 24),
+                          label: "PBTV"),
+                    ]),
+              );
+            }),
+        body: PageTransitionSwitcher(
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+              FadeThroughTransition(
+                  animation: primaryAnimation,
+                  secondaryAnimation: secondaryAnimation,
+                  child: child),
+          child: screens[widget.index],
+        ));
   }
 }

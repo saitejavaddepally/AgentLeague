@@ -3,6 +3,7 @@ import 'package:agent_league/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:agent_league/helper/constants.dart';
 
+import '../helper/shared_preferences.dart';
 import '../route_generator.dart';
 
 class Onboarding extends StatefulWidget {
@@ -120,7 +121,8 @@ class _OnboardingState extends State<Onboarding> {
             (_currentPage == 5)
                 ? CustomButton(
                         text: "Get Started",
-                        onClick: () {
+                        onClick: () async {
+                          await SharedPreferencesHelper.setOnboardingSeen(true);
                           Navigator.pushNamed(context, RouteName.login);
                         },
                         radius: 30,

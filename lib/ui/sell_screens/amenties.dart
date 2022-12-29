@@ -11,7 +11,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import '../../components/custom_button.dart';
 import '../../helper/constants.dart';
-import 'dart:collection';
 
 class Amenties extends StatefulWidget {
   final Map<String, dynamic> previousPageData;

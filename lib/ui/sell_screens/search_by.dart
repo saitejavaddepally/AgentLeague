@@ -1,16 +1,18 @@
 import 'package:agent_league/components/custom_label.dart';
 import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/custom_text_field.dart';
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:agent_league/provider/search_by_provider.dart';
 import 'package:agent_league/ui/sell_screens/post_your_property_page_one.dart';
-import 'package:agent_league/ui/sell_screens/property_digitalization.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
+import '../../Services/location_service.dart';
 import '../../components/custom_button.dart';
+import '../../components/custom_sell_card.dart';
 import '../../components/custom_title.dart';
-import '../../location_service.dart';
+
 import '../../theme/colors.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -187,10 +189,10 @@ class _SearchLocationState extends State<SearchLocation> {
                                   }
                                 }
                                 if (result == 2) {
-                                  final List res =
+                                  final List? res =
                                       await GetUserLocation.getMapLocation(
                                           context);
-                                  if (res.isNotEmpty) {
+                                  if (res != null && res.isNotEmpty) {
                                     _pr.locationController.text = res[0];
                                     _pr.latitude = res[1];
                                     _pr.longitude = res[2];
@@ -209,13 +211,11 @@ class _SearchLocationState extends State<SearchLocation> {
                                 Consumer<LocationSearchProvider>(
                                   builder: (context, value, child) => Flexible(
                                     child: CustomSelector(
-                                            dropDownItems:
-                                                value.kmDropDownItems,
-                                            onChanged: value.onChangedKm,
-                                            isDense: true,
-                                            borderRadius: 4,
-                                            chosenValue: value.chosenKm)
-                                        .use(),
+                                        dropDownItems: value.kmDropDownItems,
+                                        onChanged: value.onChangedKm,
+                                        isDense: true,
+                                        borderRadius: 4,
+                                        chosenValue: value.chosenKm),
                                   ),
                                 ),
                                 Container(
@@ -237,56 +237,25 @@ class _SearchLocationState extends State<SearchLocation> {
                             child: ListView.builder(
                           itemCount: value.matchedRecords.length,
                           itemBuilder: (context, index) {
-                            final item = value.matchedRecords[index];
-                            final picture = item['images'];
-                            return Container(
-                              margin: const EdgeInsets.only(bottom: 15),
-                              padding: const EdgeInsets.only(
-                                  left: 15, top: 15, right: 5, bottom: 15),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.white),
-                              child: Row(children: [
-                                Container(
-                                    height: 135,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.30,
-                                    child: Image.network(picture[0],
-                                        fit: BoxFit.fill)),
-                                Expanded(
-                                    child: Container(
-                                  margin: const EdgeInsets.only(left: 10),
-                                  child: Column(children: [
-                                    CustomContainerText1(
-                                        text1: 'Category',
-                                        text2: '${item['propertyCategory']}'),
-                                    const SizedBox(height: 3),
-                                    CustomContainerText1(
-                                        text1: 'Type',
-                                        text2: '${item['propertyType']}'),
-                                    const SizedBox(height: 3),
-                                    CustomContainerText1(
-                                        text1: 'Area',
-                                        text2: '${item['size']}'),
-                                    const SizedBox(height: 3),
-                                    CustomContainerText1(
-                                        text1: 'Location',
-                                        text2: '${item['location']}'),
-                                    const SizedBox(height: 3),
-                                    CustomContainerText1(
-                                        text1: 'Price',
-                                        text2: '${item['price']} INR'),
-                                    const SizedBox(height: 3),
-                                    CustomContainerText1(
-                                        text1: 'Possession',
-                                        text2: '${item['possessionStatus']}'),
-                                    const SizedBox(height: 3),
-                                  ]),
-                                ))
-                              ]),
+                            final currentItem = value.matchedRecords[index];
+                            return CustomSellCard(
+                              imageUrl:
+                                  currentItem[StringManager.profileImage] ?? '',
+                              category:
+                                  currentItem[StringManager.propertyCategory],
+                              propertyType:
+                                  currentItem[StringManager.propertyType],
+                              size: currentItem[StringManager.size],
+                              location: currentItem[StringManager.location],
+                              price:
+                                  currentItem[StringManager.price].toString(),
+                              possession:
+                                  currentItem[StringManager.possessionStatus],
+                              propertyId: currentItem['id']
+                                  .toString()
+                                  .substring(0, 4)
+                                  .toUpperCase(),
+                              onClick: () {},
                             );
                           },
                         )),
@@ -310,242 +279,195 @@ class Price extends StatefulWidget {
 }
 
 class _PriceState extends State<Price> {
-  String? minimumValue;
-  String? maximumValue;
-  bool isSearched = false;
-  late List info = [];
-  late List searchResults = [];
-
   @override
   void initState() {
-    setState(() {
-      info = widget.plotPageInformation;
-    });
     super.initState();
-  }
-
-  filterCards() {
-    info = widget.plotPageInformation
-        .where((element) =>
-            element['price'] > int.parse(minimumValue!) &&
-            element['price'] < int.parse(maximumValue!))
-        .toList();
-
-    setState(() {
-      info;
-    });
-    // searchResults.clear();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0, right: 25),
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          CustomButton(
-            text: 'Reset',
-            onClick: () {
-              setState(() {});
-            },
-            color: HexColor('082640'),
-            width: 89,
-            height: 41,
-          ).use(),
-          const SizedBox(width: 20),
-          CustomButton(
-            text: 'Submit',
-            onClick: () {
-              filterCards();
-              setState(() {
-                isSearched = true;
-              });
-            },
-            color: HexColor('FD7E0E'),
-            width: 102,
-            height: 41,
-          ).use(),
-        ]),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 15),
-            const CustomLabel(text: 'Minimum Price'),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: CustomSelector(
-                                dropDownItems: [
-                              '1',
-                              '100',
-                              '200',
-                              '300',
-                              '5000000'
-                            ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    minimumValue = value;
-                                  });
-                                },
-                                isDense: true,
-                                borderRadius: 4,
-                                chosenValue: minimumValue)
-                            .use(),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 7, right: 7),
-                        decoration: BoxDecoration(
-                            color: HexColor('FE7F0E'),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: const Text('Cr'),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: CustomSelector(
-                                dropDownItems: ['100', '200'],
-                                onChanged: (value) {},
-                                isDense: true,
-                                borderRadius: 4,
-                                chosenValue: '100')
-                            .use(),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 7, right: 7),
-                        decoration: BoxDecoration(
-                            color: HexColor('FE7F0E'),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: const Text('Lakhs'),
-                      )
-                    ],
-                  ),
-                )
-              ],
+    return ChangeNotifierProvider(
+        create: (context) => PriceSearchProvider(),
+        builder: (context, child) {
+          final _pr = Provider.of<PriceSearchProvider>(context, listen: false);
+          return Scaffold(
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(bottom: 10.0, right: 25),
+              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                CustomButton(
+                  text: 'Reset',
+                  onClick: () {
+                    _pr.reset();
+                  },
+                  color: HexColor('082640'),
+                  width: 89,
+                  height: 41,
+                ).use(),
+                const SizedBox(width: 20),
+                CustomButton(
+                  text: 'Submit',
+                  onClick: () {
+                    _pr.search(widget.plotPageInformation);
+                  },
+                  color: HexColor('FD7E0E'),
+                  width: 102,
+                  height: 41,
+                ).use(),
+              ]),
             ),
-            const SizedBox(height: 15),
-            const CustomLabel(text: 'Maximum Price'),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: CustomSelector(
-                                dropDownItems: [
-                              '100',
-                              '200',
-                              '300',
-                              '5000',
-                              '6000000'
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Consumer<PriceSearchProvider>(
+                builder: (context, value, child) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 15),
+                    const CustomLabel(text: 'Minimum Price'),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: CustomSelector(
+                                    dropDownItems: value.minimumPriceCrItems,
+                                    onChanged: value.onChangedMinimumPriceCr,
+                                    isDense: true,
+                                    borderRadius: 4,
+                                    chosenValue:
+                                        value.minimumPriceCrChosenValue),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    top: 10, bottom: 10, left: 7, right: 7),
+                                decoration: BoxDecoration(
+                                    color: HexColor('FE7F0E'),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: const Text('Cr'),
+                              )
                             ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    maximumValue = value.toString();
-                                  });
-                                },
-                                isDense: true,
-                                borderRadius: 4,
-                                chosenValue: maximumValue)
-                            .use(),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 7, right: 7),
-                        decoration: BoxDecoration(
-                            color: HexColor('FE7F0E'),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: const Text('Cr'),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: CustomSelector(
-                                dropDownItems: [],
-                                onChanged: (value) {},
-                                isDense: true,
-                                borderRadius: 4,
-                                chosenValue: '')
-                            .use(),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 7, right: 7),
-                        decoration: BoxDecoration(
-                            color: HexColor('FE7F0E'),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: const Text('Lakhs'),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            (isSearched)
-                ? Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 2,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        // height: 200,
-                        child: Column(
-                          children: [
-                            // for (var i = 0; i < (info.length); i++)
-                            //   CustomSellCard(
-                            //     imageUrl: info[i][2]['picture'],
-                            //     category: info[i][0]['propertyCategory'],
-                            //     propertyType: info[i][0]['propertyType'],
-                            //     size: info[i][0]['size'],
-                            //     location: info[i][0]['location'],
-                            //     price: info[i][0]['price'],
-                            //     possession: info[i][0]['possessionStatus'],
-                            //     propertyId: "PR_" +
-                            //         plotPagesInformation[i][0]['plotNumber'],
-                            //     onClick: () {
-                            //       Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) => RealtorCard(
-                            //                     plotPagesInformation:
-                            //                         plotPagesInformation,
-                            //                     currentPage: i,
-                            //                   )));
-                            //     },
-                            //   ),
-                          ],
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: CustomSelector(
+                                    dropDownItems: value.minimumPriceLakhItems,
+                                    onChanged: value.onChangedMinimumPriceLakh,
+                                    isDense: true,
+                                    borderRadius: 4,
+                                    chosenValue:
+                                        value.minimumPriceLakhChosenValue),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    top: 10, bottom: 10, left: 7, right: 7),
+                                decoration: BoxDecoration(
+                                    color: HexColor('FE7F0E'),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: const Text('Lakhs'),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                : Text("Please enter values"),
-          ],
-        ),
-      ),
-    );
+                    const SizedBox(height: 15),
+                    const CustomLabel(text: 'Maximum Price'),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: CustomSelector(
+                                    dropDownItems: value.maximumPriceCrItems,
+                                    onChanged: value.onChangedMaximumPriceCr,
+                                    isDense: true,
+                                    borderRadius: 4,
+                                    chosenValue:
+                                        value.maximumPriceCrChosenValue),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    top: 10, bottom: 10, left: 7, right: 7),
+                                decoration: BoxDecoration(
+                                    color: HexColor('FE7F0E'),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: const Text('Cr'),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: CustomSelector(
+                                    dropDownItems: value.maximumPriceLakhItems,
+                                    onChanged: value.onChangedMaximumPriceLakh,
+                                    isDense: true,
+                                    borderRadius: 4,
+                                    chosenValue:
+                                        value.maximumPriceLakhChosenValue),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    top: 10, bottom: 10, left: 7, right: 7),
+                                decoration: BoxDecoration(
+                                    color: HexColor('FE7F0E'),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: const Text('Lakhs'),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                        child: (value.searchResult.isEmpty)
+                            ? const Center(
+                                child: CustomLabel(
+                                    text: StringManager.noPlotsFoundError))
+                            : ListView.builder(
+                                itemCount: value.searchResult.length,
+                                itemBuilder: (context, index) {
+                                  final currentItem = value.searchResult[index];
+                                  return CustomSellCard(
+                                    imageUrl: currentItem[
+                                            StringManager.profileImage] ??
+                                        '',
+                                    category: currentItem[
+                                        StringManager.propertyCategory],
+                                    propertyType:
+                                        currentItem[StringManager.propertyType],
+                                    size: currentItem[StringManager.size],
+                                    location:
+                                        currentItem[StringManager.location],
+                                    price: currentItem[StringManager.price]
+                                        .toString(),
+                                    possession: currentItem[
+                                        StringManager.possessionStatus],
+                                    propertyId: currentItem['id']
+                                        .toString()
+                                        .substring(0, 4)
+                                        .toUpperCase(),
+                                    onClick: () {},
+                                  );
+                                },
+                              ))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

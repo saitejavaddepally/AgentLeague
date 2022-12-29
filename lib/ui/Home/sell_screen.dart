@@ -2,14 +2,13 @@ import 'package:agent_league/components/custom_selector.dart';
 import 'package:agent_league/components/neu_circular_button.dart';
 import 'package:agent_league/provider/property_upload_provider.dart';
 import 'package:agent_league/provider/sell_providers/sell_provider.dart';
-import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/Home/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import '../../components/custom_sell_card.dart';
+import '../../components/custom_text_field.dart';
 import '../../components/custom_title.dart';
 import '../../theme/colors.dart';
 
@@ -89,220 +88,214 @@ class _StandloneState extends State<Standlone> {
     return ChangeNotifierProvider(
         create: (context) => SellScreenProvider(),
         builder: (context, child) {
-          final _pr = Provider.of<SellScreenProvider>(context, listen: false);
-          return SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-              child: Column(
-                children: [
-                  SizedBox(
-                      height: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            child: CircularNeumorphicButton(
-                                    imageName: 'img_2',
-                                    padding: 0,
-                                    color: HexColor('082640'),
-                                    size: 50,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, RouteName.listing);
-                                    },
-                                    isNeu: true,
-                                    isTextUnder: true,
-                                    text: 'Add')
-                                .use(),
-                          ),
-                          const SizedBox(width: 20),
-                          Container(
-                            child: CircularNeumorphicButton(
-                                    imageName: 'save',
-                                    size: 50,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, RouteName.saveProperty);
-                                    },
-                                    color: HexColor('082640'),
-                                    isNeu: true,
-                                    isTextUnder: true,
-                                    text: 'Saved')
-                                .use(),
-                          ),
-                        ],
-                      )),
-                  Container(
-                    width: double.infinity,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: HexColor('#213c53'),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Center(
-                      child: Consumer<SellScreenProvider>(
-                        builder: (context, value, child) => TextField(
+          return Builder(builder: (context) {
+            final _pr = Provider.of<SellScreenProvider>(context, listen: false);
+            return SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    SizedBox(
+                        height: 100,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              child: CircularNeumorphicButton(
+                                      imageName: 'img_2',
+                                      padding: 0,
+                                      color: HexColor('082640'),
+                                      size: 50,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, RouteName.listing);
+                                      },
+                                      isNeu: true,
+                                      isTextUnder: true,
+                                      text: 'Add')
+                                  .use(),
+                            ),
+                            const SizedBox(width: 20),
+                            Container(
+                              child: CircularNeumorphicButton(
+                                      imageName: 'save',
+                                      size: 50,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, RouteName.saveProperty);
+                                      },
+                                      color: HexColor('082640'),
+                                      isNeu: true,
+                                      isTextUnder: true,
+                                      text: 'Saved')
+                                  .use(),
+                            ),
+                          ],
+                        )),
+                    Consumer<SellScreenProvider>(
+                      builder: (context, value, child) => SizedBox(
+                        height: 40,
+                        child: CustomTextField(
                           readOnly: true,
-                          onTap: (!value.isSearchOn)
+                          borderRadius: 10,
+                          hint: (value.data.isEmpty)
+                              ? 'No properties to search'
+                              : 'Search by location, Name or ID',
+                          icon: Image.asset('assets/search_settings_icon.png'),
+                          onTap: (value.data.isEmpty)
                               ? null
                               : () => Navigator.pushNamed(
                                   context, RouteName.searchBy,
                                   arguments: value.data),
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(8),
-                              hintText: (!value.isSearchOn)
-                                  ? 'Loading your properties.. Please wait...'
-                                  : 'Search by location, Name or ID',
-                              suffixIcon: Image.asset(
-                                  'assets/search_settings_icon.png')),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16),
-                    child: const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Choose property category",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            letterSpacing: -0.15,
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16),
+                      child: const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Choose property category",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              letterSpacing: -0.15,
+                            ),
+                          )),
+                    ),
+                    Row(
+                      children: [
+                        for (var element in data1)
+                          Expanded(
+                            child: SizedBox(
+                              height: 100,
+                              child: CircularNeumorphicButton(
+                                      imageName: element['img'].toString(),
+                                      size: 55,
+                                      onTap: () {},
+                                      // onTap: () {
+                                      //   String name =
+                                      //       element['name'].toString();
+                                      //   var length = name.length;
+                                      //   filterPlotsBasedOnTypes(
+                                      //       name.substring(0, length - 1));
+                                      // },
+                                      isTextUnder: true,
+                                      text: element['name'].toString())
+                                  .use(),
+                            ),
                           ),
-                        )),
-                  ),
-                  Row(
-                    children: [
-                      for (var element in data1)
-                        Expanded(
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        for (var element in data2)
+                          Expanded(
+                            child: SizedBox(
+                              height: 100,
+                              child: CircularNeumorphicButton(
+                                      imageName: element['img'].toString(),
+                                      size: 55,
+                                      onTap: () {},
+                                      // onTap: () {
+                                      //   String name =
+                                      //       element['name'].toString();
+                                      //   var length = name.length;
+                                      //   filterPlotsBasedOnTypes(
+                                      //       name.substring(0, length - 1));
+                                      // },
+                                      isTextUnder: true,
+                                      text: element['name'].toString())
+                                  .use(),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      children: [
+                        const Spacer(),
+                        const SizedBox(width: 40),
+                        const Text('Sort by',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                letterSpacing: -0.15)),
+                        const SizedBox(width: 10),
+                        Flexible(
                           child: SizedBox(
-                            height: 100,
-                            child: CircularNeumorphicButton(
-                                    imageName: element['img'].toString(),
-                                    size: 55,
-                                    onTap: () {},
-                                    // onTap: () {
-                                    //   String name =
-                                    //       element['name'].toString();
-                                    //   var length = name.length;
-                                    //   filterPlotsBasedOnTypes(
-                                    //       name.substring(0, length - 1));
-                                    // },
-                                    isTextUnder: true,
-                                    text: element['name'].toString())
-                                .use(),
+                            height: 40,
+                            child: Consumer<SellScreenProvider>(
+                              builder: (context, value, child) =>
+                                  CustomSelector(
+                                chosenValue: value.sortByChosenValue,
+                                onChanged: value.onChangeSortBy,
+                                dropDownItems: value.sortByDropDown,
+                                borderRadius: 10,
+                                color: Colors.white,
+                                textColor: Colors.black,
+                              ),
+                            ),
                           ),
                         ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      for (var element in data2)
-                        Expanded(
-                          child: SizedBox(
-                            height: 100,
-                            child: CircularNeumorphicButton(
-                                    imageName: element['img'].toString(),
-                                    size: 55,
-                                    onTap: () {},
-                                    // onTap: () {
-                                    //   String name =
-                                    //       element['name'].toString();
-                                    //   var length = name.length;
-                                    //   filterPlotsBasedOnTypes(
-                                    //       name.substring(0, length - 1));
-                                    // },
-                                    isTextUnder: true,
-                                    text: element['name'].toString())
-                                .use(),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    children: [
-                      const Spacer(),
-                      const SizedBox(width: 40),
-                      const Text('Sort by',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              letterSpacing: -0.15)),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: SizedBox(
-                          height: 40,
-                          child: Consumer<SellScreenProvider>(
-                            builder: (context, value, child) => CustomSelector(
-                              chosenValue: value.sortByChosenValue,
-                              onChanged: value.onChangeSortBy,
-                              dropDownItems: value.sortByDropDown,
-                              borderRadius: 10,
-                              color: Colors.white,
-                              textColor: Colors.black,
-                            ).use(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Consumer<SellScreenProvider>(
-                    builder: (context, value, child) =>
-                        FutureBuilder<List<Map<String, dynamic>>>(
-                      future: value.getAllPaidProperty(),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    FutureBuilder<List<Map<String, dynamic>>>(
+                      future: _pr.getAllPaidProperty(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final data = snapshot.data!;
                           if (data.isNotEmpty) {
-                            final data = snapshot.data!;
-                            return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomTitle(
-                                      text: '${data.length} properties found'),
-                                  const SizedBox(height: 10),
-                                  ListView.builder(
-                                      itemCount: data.length,
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        final currentItem = data[index];
+                            return Consumer<SellScreenProvider>(
+                              builder: (context, value, child) => Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomTitle(
+                                        text:
+                                            '${value.data.length} properties found'),
+                                    const SizedBox(height: 10),
+                                    ListView.builder(
+                                        itemCount: value.data.length,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          final currentItem = value.data[index];
 
-                                        return CustomSellCard(
-                                          imageUrl:
-                                              currentItem['profile_image'] ??
-                                                  '',
-                                          category:
-                                              currentItem['propertyCategory'],
-                                          propertyType:
-                                              currentItem['propertyType'],
-                                          size: currentItem['size'],
-                                          location: currentItem['location'],
-                                          price:
-                                              currentItem['price'].toString(),
-                                          possession:
-                                              currentItem['possessionStatus'],
-                                          propertyId: currentItem['id']
-                                              .toString()
-                                              .substring(0, 4)
-                                              .toUpperCase(),
-                                          onClick: () {
-                                            Navigator.pushNamed(
-                                                context, RouteName.realtorCard,
-                                                arguments: {
-                                                  'data': data,
-                                                  'index': index
-                                                });
-                                          },
-                                        );
-                                      })
-                                ]);
+                                          return CustomSellCard(
+                                            imageUrl:
+                                                currentItem['profile_image'] ??
+                                                    '',
+                                            category:
+                                                currentItem['propertyCategory'],
+                                            propertyType:
+                                                currentItem['propertyType'],
+                                            size: currentItem['size'],
+                                            location: currentItem['location'],
+                                            price:
+                                                currentItem['price'].toString(),
+                                            possession:
+                                                currentItem['possessionStatus'],
+                                            propertyId: currentItem['id']
+                                                .toString()
+                                                .substring(0, 4)
+                                                .toUpperCase(),
+                                            onClick: () {
+                                              Navigator.pushNamed(context,
+                                                  RouteName.realtorCard,
+                                                  arguments: {
+                                                    'data': value.data,
+                                                    'index': index
+                                                  });
+                                            },
+                                          );
+                                        })
+                                  ]),
+                            );
                           } else {
                             return const Center(
                                 child:
@@ -317,11 +310,11 @@ class _StandloneState extends State<Standlone> {
                         }
                       },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          });
         });
   }
 }

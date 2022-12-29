@@ -2,17 +2,17 @@ import 'package:agent_league/components/custom_line_under_text.dart';
 import 'package:agent_league/components/custom_text_field.dart';
 import 'package:agent_league/components/custom_title.dart';
 import 'package:agent_league/provider/property_provider.dart';
-import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/ui/sell_screens/post_your_property_page_two.dart';
 import 'package:agent_league/ui/project_screen/uploads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
+import '../../Services/location_service.dart';
 import '../../components/custom_button.dart';
 import '../../components/custom_map_dialog.dart';
 import '../../components/custom_selector.dart';
-import '../../location_service.dart';
+
 import '../../theme/colors.dart';
 
 class Property extends StatefulWidget {
@@ -103,6 +103,7 @@ class _PropertyState extends State<Property> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomWidget(
+                                  context: context,
                                   text: 'Company Name :',
                                   isText: true,
                                   flex: 2,
@@ -111,6 +112,7 @@ class _PropertyState extends State<Property> {
                                   submitted: value.onSubmittedCompanyName,
                                 ).use(),
                                 CustomWidget(
+                                  context: context,
                                   text: 'Venture Name :',
                                   isText: true,
                                   flex: 2,
@@ -119,6 +121,7 @@ class _PropertyState extends State<Property> {
                                   submitted: value.onSubmittedVentureName,
                                 ).use(),
                                 CustomWidget(
+                                  context: context,
                                   text: 'Project category :',
                                   flex: 2,
                                   chosenValue: value.projectCategoryChosenValue,
@@ -126,6 +129,7 @@ class _PropertyState extends State<Property> {
                                   onChanged: value.onChangedProjectCategory,
                                 ).use(),
                                 CustomWidget(
+                                  context: context,
                                   text: 'Project location :',
                                   isText: true,
                                   flex: 2,
@@ -142,12 +146,11 @@ class _PropertyState extends State<Property> {
                                       final res = await GetUserLocation
                                           .getCurrentLocation();
 
-                                      print(res![0]);
-                                      _latitude = (res[1]);
-                                      _longitude = (res[2]);
-
                                       setState(() => isLoading = false);
+
                                       if (res != null && res.isNotEmpty) {
+                                        _latitude = (res[1]);
+                                        _longitude = (res[2]);
                                         value.projectLocationController.text =
                                             res[0];
                                       }
@@ -156,7 +159,7 @@ class _PropertyState extends State<Property> {
                                       final res =
                                           await GetUserLocation.getMapLocation(
                                               context);
-                                      if (res.isNotEmpty) {
+                                      if (res != null && res.isNotEmpty) {
                                         value.projectLocationController.text =
                                             res[0];
                                       }
@@ -200,6 +203,7 @@ class _PropertyState extends State<Property> {
                                   ],
                                 ),
                                 CustomWidget(
+                                  context: context,
                                   text: 'Total units/plots :',
                                   isText: true,
                                   flex: 2,
@@ -208,6 +212,7 @@ class _PropertyState extends State<Property> {
                                   submitted: value.onSubmittedTotalUnits,
                                 ).use(),
                                 CustomWidget(
+                                  context: context,
                                   text: 'Possession states :',
                                   flex: 2,
                                   chosenValue: value.possessionStateChosenValue,
@@ -252,12 +257,12 @@ class _PropertyState extends State<Property> {
                                         child: CustomSelector(
                                           borderRadius: 10,
                                           isDense: true,
-                                          hint: const Text('Select'),
+                                          hint: 'Select',
                                           dropDownItems: value.unitSizeDropDown,
                                           onChanged: value.onChangedUnitSize,
                                           chosenValue:
                                               value.unitSizeChosenValue,
-                                        ).use()),
+                                        )),
                                   ],
                                 ),
                                 const SizedBox(height: 15),
@@ -283,16 +288,17 @@ class _PropertyState extends State<Property> {
                                         child: CustomSelector(
                                       isDense: true,
                                       borderRadius: 10,
-                                      hint: const Text('Select'),
+                                      hint: 'Select',
                                       dropDownItems: value.pricePerUnitDropDown,
                                       chosenValue:
                                           value.pricePerUnitChosenValue,
                                       onChanged: value.onChangedPricePerUnit,
-                                    ).use()),
+                                    )),
                                   ],
                                 ),
                                 const SizedBox(height: 5),
                                 CustomWidget(
+                                  context: context,
                                   text: 'Approved by :',
                                   flex: 2,
                                   chosenValue: value.approvedByChosenValue,

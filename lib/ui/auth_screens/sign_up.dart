@@ -2,23 +2,26 @@
 
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/custom_text_field.dart';
-import 'package:agent_league/ui/Home/bottom_navigation.dart';
 import 'package:agent_league/ui/sell_screens/post_your_property_page_one.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../location_service.dart';
+import '../../Services/location_service.dart';
+import '../../helper/string_manager.dart';
 import '../../provider/firestore_data_provider.dart';
 import '../../route_generator.dart';
 import '../../theme/colors.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({Key? key}) : super(key: key);
+  final String countryCode;
+  final String phoneNumber;
+  const SignUpForm(
+      {required this.countryCode, required this.phoneNumber, Key? key})
+      : super(key: key);
 
   @override
   _SignUpFormState createState() => _SignUpFormState();
@@ -114,7 +117,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             if (result == 2) {
                               final res =
                                   await GetUserLocation.getMapLocation(context);
-                              if (res.isNotEmpty) {
+                              if (res != null && res.isNotEmpty) {
                                 _locationController.text = res[0];
                               }
                             }
@@ -172,8 +175,11 @@ class _SignUpFormState extends State<SignUpForm> {
                                               }
                                             }
                                             await registerUser(
-                                                _nameController.text,
-                                                _locationController.text);
+                                              _nameController.text,
+                                              _locationController.text,
+                                              widget.countryCode,
+                                              widget.phoneNumber,
+                                            );
                                             setState(() => isLoading = false);
 
                                             Navigator.pushNamed(
@@ -201,27 +207,28 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  Future<void> registerUser(String name, String location) async {
+  Future<void> registerUser(String name, String location, String countryCode,
+      String phoneNumber) async {
     try {
       User? _user = FirebaseAuth.instance.currentUser;
       String? userId = _user?.uid;
-      String? phoneNumber = _user?.phoneNumber;
 
       await FirebaseFirestore.instance.collection('users').doc(userId).set(
         {
-          'name': name,
-          'uid': userId,
-          'freeCredit': 1,
-          'isSubscribed': false,
-          'freeCreditPropertyBox': 1,
-          'phone': phoneNumber,
-          'counter': 0,
-          'wallet_amount': 0,
-          'location': location,
-          'ref_code': userId?.substring(0, 6).toUpperCase(),
-          'email': '',
-          'agent_exp': '',
-          'profile_pic': '',
+          StringManager.userNameKey: name,
+          StringManager.userIdKey: userId,
+          StringManager.freeCreditKey: 1,
+          StringManager.isSubscribedKey: false,
+          StringManager.freeCreditPropertyBoxKey: 1,
+          StringManager.countryCodeKey: countryCode,
+          StringManager.phoneNumberKey: phoneNumber,
+          StringManager.counterKey: 0,
+          StringManager.walletAmountKey: 0,
+          StringManager.locationKey: location,
+          StringManager.referralCodeKey: userId?.substring(0, 6).toUpperCase(),
+          StringManager.emailKey: '',
+          StringManager.agentExpKey: '',
+          StringManager.profilePicKey: '',
         },
       );
     } catch (e) {

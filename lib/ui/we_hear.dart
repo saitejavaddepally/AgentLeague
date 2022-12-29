@@ -127,15 +127,14 @@ class _WeHearState extends State<WeHear> {
                 const Expanded(child: CustomLabel(text: 'Category: ')),
                 Flexible(
                   child: CustomSelector(
-                          isDense: true,
-                          borderRadius: 10,
-                          dropDownItems: [
-                            'cat_1',
-                            'cat_2',
-                          ],
-                          chosenValue: 'cat_1',
-                          onChanged: (value) {})
-                      .use(),
+                      isDense: true,
+                      borderRadius: 10,
+                      dropDownItems: const [
+                        'cat_1',
+                        'cat_2',
+                      ],
+                      chosenValue: 'cat_1',
+                      onChanged: (value) {}),
                 ),
               ],
             ),

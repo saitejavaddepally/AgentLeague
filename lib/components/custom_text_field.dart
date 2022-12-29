@@ -10,13 +10,13 @@ class CustomTextField extends StatelessWidget {
   final bool readOnly;
   final double borderRadius;
   final String? hint;
-  final double height;
+
   final bool? isDense;
   final int? maxLength;
   final int maxLines;
   final EdgeInsets? contentPadding;
   final TextStyle? style;
-  final Color fillColor;
+  final Color? fillColor;
   const CustomTextField(
       {this.validator,
       this.onChanged,
@@ -26,13 +26,12 @@ class CustomTextField extends StatelessWidget {
       this.readOnly = false,
       this.borderRadius = 10,
       this.icon,
-      this.height = 40,
       this.maxLines = 1,
       this.hint,
-      this.isDense,
+      this.isDense = false,
       this.maxLength,
       this.style,
-      this.fillColor = const Color(0x0DFFFFFF),
+      this.fillColor,
       this.contentPadding =
           const EdgeInsets.only(left: 20, top: 10, bottom: 10),
       Key? key})
@@ -40,34 +39,34 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      maxLength: maxLength,
-      maxLines: maxLines,
-      validator: validator,
-      onChanged: onChanged,
-      controller: controller,
-      onTap: onTap,
-      readOnly: readOnly,
-      keyboardType: keyboardType,
-      style: style,
-      cursorColor: Colors.white.withOpacity(0.1),
-      decoration: InputDecoration(
-        isDense: isDense,
-        suffixIcon: icon,
-        suffixIconConstraints:
-            const BoxConstraints(minHeight: 40, minWidth: 40),
-        counterText: '',
-        contentPadding: contentPadding,
-        hintText: hint,
-        hintStyle: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            color: Colors.white.withOpacity(0.3)),
-        fillColor: fillColor,
-        filled: true,
-        border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(borderRadius)),
+    return Theme(
+      data: ThemeData(
+          inputDecorationTheme: Theme.of(context)
+              .inputDecorationTheme
+              .copyWith(fillColor: fillColor)),
+      child: TextFormField(
+        maxLength: maxLength,
+        maxLines: maxLines,
+        validator: validator,
+        onChanged: onChanged,
+        controller: controller,
+        onTap: onTap,
+        readOnly: readOnly,
+        keyboardType: keyboardType,
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        cursorColor: Colors.white.withOpacity(0.1),
+        decoration: InputDecoration(
+          suffixIcon: icon,
+          isDense: isDense,
+          contentPadding: contentPadding,
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(borderRadius)),
+          suffixIconConstraints:
+              const BoxConstraints(minHeight: 40, minWidth: 40),
+          counterText: '',
+          hintText: hint,
+        ),
       ),
     );
   }

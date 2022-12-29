@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../provider/firestore_data_provider.dart';
 import '../../../route_generator.dart';
-import '../../../theme/colors.dart';
 import 'package:intl/intl.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class People extends StatefulWidget {
   const People({Key? key}) : super(key: key);
@@ -122,13 +120,13 @@ class _CustomersState extends State<Customers> {
                                 ]),
                             onTap: () => callChatScreen(context,
                                 currentItem?['name'], currentItem?['uid']),
-                            leading: CircleAvatar(
-                              radius: 25,
-                              child: CachedNetworkImage(
-                                  imageUrl: currentItem?['profile_pic'],
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.perm_identity)),
-                            ),
+                            leading: (currentItem!['profile_pic'].isEmpty)
+                                ? const CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage("assets/profile.png"))
+                                : CircleAvatar(
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        currentItem['profile_pic'])),
                             title: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -136,13 +134,13 @@ class _CustomersState extends State<Customers> {
                                   FittedBox(
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.centerLeft,
-                                    child: Text("${currentItem?['name']}",
+                                    child: Text("${currentItem['name']}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18)),
                                   ),
                                   Text(formatTimestamp(snapshot2.data?[0]),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 12,
                                       )),
                                 ]),

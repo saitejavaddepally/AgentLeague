@@ -4,19 +4,17 @@ import '../theme/custom_theme.dart';
 
 final lightShadowColor = Colors.grey.withOpacity(0.5);
 
-final shadow1 = [
+const shadow1 = [
   BoxShadow(
-      offset: const Offset(-6, -6),
+      offset: Offset(-6, -6),
       blurRadius: 12,
       spreadRadius: 0,
-      color:
-          CustomTheme.isDarkTheme ? const Color(0xFF113B5F) : lightShadowColor),
+      color: Color(0xFF113B5F)),
   BoxShadow(
-      offset: const Offset(0, 6),
+      offset: Offset(0, 6),
       blurRadius: 12,
       spreadRadius: 0,
-      color:
-          CustomTheme.isDarkTheme ? const Color(0xFF031E35) : lightShadowColor),
+      color: Color(0xFF031E35)),
 ];
 
 final shadow2 = [

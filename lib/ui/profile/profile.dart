@@ -2,14 +2,14 @@ import 'package:agent_league/Services/auth_methods.dart';
 import 'package:agent_league/components/custom_button.dart';
 import 'package:agent_league/components/home_container.dart';
 import 'package:agent_league/helper/constants.dart';
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:agent_league/route_generator.dart';
 import 'package:agent_league/theme/colors.dart';
 import 'package:agent_league/ui/profile/edit_profile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../../provider/sell_providers/uploading_progress_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -34,9 +34,14 @@ class _ProfileState extends State<Profile> {
   }
 
   Future getProfileInformation() async {
-    Map data = await FirestoreDataProvider().getProfileInformation();
-    String? profileUrl = await FirestoreDataProvider().getProfilePicture();
-    return [data['name'], data['phone'], profileUrl];
+    Map<String, dynamic> data = await FirestoreDataProvider.getUserInformation(
+        FirebaseAuth.instance.currentUser!.uid);
+
+    return [
+      data[StringManager.userNameKey],
+      data[StringManager.phoneNumberKey],
+      data[StringManager.profilePicKey]
+    ];
   }
 
   @override
@@ -75,8 +80,8 @@ class _ProfileState extends State<Profile> {
                       child: (profileUrl != '')
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(50.0),
-                              child: Image.network(
-                                profileUrl!,
+                              child: CachedNetworkImage(
+                                imageUrl: profileUrl!,
                                 height: 40.0,
                                 width: 40.0,
                                 fit: BoxFit.fill,

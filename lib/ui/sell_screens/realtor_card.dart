@@ -29,108 +29,106 @@ class _RealtorCardState extends State<RealtorCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: color,
         body: SafeArea(
             child: Stack(children: [
-          PageView.builder(
-            itemCount: widget.data['data'].length,
-            controller: _pageController,
-            onPageChanged: (int page) {},
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              final currentData = widget.data['data'][index];
-              return RealtorPage(
-                  image: currentData['images'][0],
-                  onTapDelete: () async {
-                    final id = currentData['id'];
+      PageView.builder(
+        itemCount: widget.data['data'].length,
+        controller: _pageController,
+        onPageChanged: (int page) {},
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) {
+          final currentData = widget.data['data'][index];
+          return RealtorPage(
+              image: currentData['images'][0],
+              onTapDelete: () async {
+                final id = currentData['id'];
 
-                    showDialog(
-                        context: context,
-                        builder: (context) => CustomDeleteDialog(
-                            content: 'Property',
-                            onCancel: () => Navigator.pop(context),
-                            onDelete: () async {
-                              EasyLoading.show(status: 'Please Wait...');
-                              await SellScreenMethods.deleteProperty(id);
-                              EasyLoading.showSuccess(
-                                  'Property delete successfully');
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  RouteName.bottomBar, (route) => false,
-                                  arguments: 1);
-                            }));
-                  },
-                  onTapEdit: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text(
-                                'Are you sure to edit this property'),
-                            actions: [
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('No')),
-                              TextButton(
-                                  onPressed: () async {
-                                    final id = currentData['id'];
-                                    EasyLoading.show(status: 'Please Wait');
-                                    final data = await SellScreenMethods
-                                        .getDataToEditProperty(id);
-                                    await EasyLoading.dismiss();
-                                    Navigator.pushNamed(context,
-                                        RouteName.postYourPropertyPageOne,
-                                        arguments: [data, true]);
-                                  },
-                                  child: const Text('Yes'))
-                            ],
-                          );
-                        });
-                  },
-                  onTapLeadsBox: () {
-                    Navigator.pushNamed(context, RouteName.leadsBox,
-                        arguments: currentData['id']);
-                  },
-                  onTapPropertyBox: () {
-                    final boxEnabled = currentData['box_enabled'];
-                    if (boxEnabled == 0) {
-                      final id = currentData['id'];
+                showDialog(
+                    context: context,
+                    builder: (context) => CustomDeleteDialog(
+                        content: 'Property',
+                        onCancel: () => Navigator.pop(context),
+                        onDelete: () async {
+                          EasyLoading.show(status: 'Please Wait...');
+                          await SellScreenMethods.deleteProperty(id);
+                          EasyLoading.showSuccess(
+                              'Property delete successfully');
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, RouteName.bottomBar, (route) => false,
+                              arguments: 1);
+                        }));
+              },
+              onTapEdit: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Are you sure to edit this property'),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('No')),
+                          TextButton(
+                              onPressed: () async {
+                                final id = currentData['id'];
+                                EasyLoading.show(status: 'Please Wait');
+                                final data = await SellScreenMethods
+                                    .getDataToEditProperty(id);
+                                await EasyLoading.dismiss();
+                                Navigator.pushNamed(
+                                    context, RouteName.postYourPropertyPageOne,
+                                    arguments: [data, true]);
+                              },
+                              child: const Text('Yes'))
+                        ],
+                      );
+                    });
+              },
+              onTapLeadsBox: () {
+                Navigator.pushNamed(context, RouteName.leadsBox,
+                    arguments: currentData['id']);
+              },
+              onTapPropertyBox: () {
+                final boxEnabled = currentData['box_enabled'];
+                if (boxEnabled == 0) {
+                  final id = currentData['id'];
 
-                      Navigator.pushNamed(context, RouteName.listingPropertyBox,
-                          arguments: id);
-                    } else {
-                      EasyLoading.showToast(
-                          "Property Already Added to Property Box");
-                    }
-                  },
-                  onTapLocation: () {
-                    final _latitude = currentData['latitude'];
-                    final _longitude = currentData['longitude'];
+                  Navigator.pushNamed(context, RouteName.listingPropertyBox,
+                      arguments: id);
+                } else {
+                  EasyLoading.showToast(
+                      "Property Already Added to Property Box");
+                }
+              },
+              onTapLocation: () {
+                final _latitude = currentData['latitude'];
+                final _longitude = currentData['longitude'];
 
-                    Navigator.pushNamed(context, RouteName.location,
-                        arguments: [_latitude, _longitude]);
-                  },
-                  onTapGallery: () {
-                    Navigator.pushNamed(context, RouteName.gallery,
-                        arguments: currentData['images']);
-                  },
-                  onTapEmi: () {
-                    Navigator.pushNamed(context, RouteName.emi,
-                        arguments: currentData['price']);
-                  },
-                  onTapDocuments: () {
-                    Navigator.pushNamed(
-                      context,
-                      RouteName.documents,
-                      arguments: currentData['docs'],
-                    );
-                  },
-                  onTapTour: () {
-                    Navigator.pushNamed(context, RouteName.tour,
-                        arguments: currentData['videos']);
-                  });
-            },
-          ),
-        ])));
+                Navigator.pushNamed(context, RouteName.location,
+                    arguments: [_latitude, _longitude]);
+              },
+              onTapGallery: () {
+                Navigator.pushNamed(context, RouteName.gallery,
+                    arguments: currentData['images']);
+              },
+              onTapEmi: () {
+                Navigator.pushNamed(context, RouteName.emi,
+                    arguments: currentData['price']);
+              },
+              onTapDocuments: () {
+                Navigator.pushNamed(
+                  context,
+                  RouteName.documents,
+                  arguments: currentData['docs'],
+                );
+              },
+              onTapTour: () {
+                Navigator.pushNamed(context, RouteName.tour,
+                    arguments: currentData['videos']);
+              });
+        },
+      ),
+    ])));
   }
 }
 

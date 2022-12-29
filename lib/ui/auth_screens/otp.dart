@@ -13,28 +13,29 @@ import 'package:provider/provider.dart';
 import '../../route_generator.dart';
 
 class Otp extends StatefulWidget {
-  final List args;
+  final String countryCode;
+  final String phoneNumber;
+  final bool isUpdate;
 
-  const Otp({required this.args, Key? key}) : super(key: key);
+  const Otp(
+      {required this.countryCode,
+      required this.phoneNumber,
+      required this.isUpdate,
+      Key? key})
+      : super(key: key);
 
   @override
   _OtpState createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> {
-  String? _phoneNumber;
-  String? _dialCode;
-  late final String phoneNumber;
-  var update = "false";
-  late final String name;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
   int? _resendToken;
   bool isLoading = false;
 
   Future<void> verifyUser({int? resendToken}) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: _dialCode! + _phoneNumber!,
+      phoneNumber: widget.countryCode + widget.phoneNumber,
       forceResendingToken: resendToken,
       verificationCompleted: (PhoneAuthCredential credential) async {
         //   print("verification complete");
@@ -66,8 +67,7 @@ class _OtpState extends State<Otp> {
   @override
   void initState() {
     super.initState();
-    _phoneNumber = widget.args[0];
-    _dialCode = widget.args[1];
+
     verifyUser().then((value) {}).catchError((error) {});
   }
 
@@ -103,7 +103,7 @@ class _OtpState extends State<Otp> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: Text(
-                          "enter otp send to your mobile\nnumber ${_phoneNumber!.replaceRange(2, 8, '******')}",
+                          "enter otp send to your mobile\nnumber ${widget.phoneNumber.replaceRange(2, 8, '******')}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontWeight: FontWeight.w500,
@@ -212,12 +212,19 @@ class _OtpState extends State<Otp> {
                                 if (_verificationId != null) {
                                   try {
                                     setState(() => isLoading = true);
-                                    bool result = await otpProvider
-                                        .checkOtp(_verificationId!);
+                                    bool result = await otpProvider.checkOtp(
+                                        _verificationId!,
+                                        widget.isUpdate,
+                                        widget.countryCode,
+                                        widget.phoneNumber);
 
                                     if (result == true) {
                                       Navigator.pushNamed(
-                                          context, RouteName.signUp);
+                                          context, RouteName.signUp,
+                                          arguments: [
+                                            widget.countryCode,
+                                            widget.phoneNumber
+                                          ]);
                                     } else {
                                       Navigator.pushNamedAndRemoveUntil(context,
                                           RouteName.bottomBar, (route) => false,
@@ -226,55 +233,6 @@ class _OtpState extends State<Otp> {
                                   } catch (e) {
                                     Fluttertoast.showToast(msg: e.toString());
                                     setState(() => isLoading = false);
-                                    // setState(() => loading = true);
-                                    // final result = (widget.args[1] != "true")? await otpProvider.checkOtp(
-                                    //     _verificationId!, name, phoneNumber): await otpProvider.updateOtp(_verificationId!, phoneNumber);
-                                    // switch (result) {
-                                    //   case 'correct':
-                                    //     {
-                                    //       setState(() => loading = false);
-                                    //       Navigator.pushNamedAndRemoveUntil(
-                                    //           context,
-                                    //           RouteName.bottomBar,
-                                    //           (route) => false);
-                                    //       break;
-                                    //     }
-                                    //   case 'incorrect':
-                                    //     {
-                                    //       setState(() => loading = false);
-                                    //       ScaffoldMessenger.of(context)
-                                    //           .showSnackBar(const SnackBar(
-                                    //               content: Text(
-                                    //                   "Please Enter Correct OTP"),
-                                    //               duration:
-                                    //                   Duration(seconds: 2)));
-                                    //       break;
-                                    //     }
-                                    //   case "updated":
-                                    //     {
-                                    //       setState(() {
-                                    //         loading = false;
-                                    //       });
-                                    //       Navigator.pop(context);
-                                    //       ScaffoldMessenger.of(context)
-                                    //           .showSnackBar(const SnackBar(
-                                    //           content: Text(
-                                    //               "Updated the phoneNumber"),
-                                    //           duration:
-                                    //           Duration(seconds: 2)));
-                                    //       break;
-                                    //     }
-                                    //   case 'enterotp':
-                                    //     {
-                                    //       setState(() => loading = false);
-                                    //       ScaffoldMessenger.of(context)
-                                    //           .showSnackBar(const SnackBar(
-                                    //               content:
-                                    //                   Text("Please Enter OTP"),
-                                    //               duration:
-                                    //                   Duration(seconds: 2)));
-                                    //       break;
-                                    //     }
                                   }
                                 }
                               },

@@ -90,15 +90,14 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                                 text: 'Furnished :')),
                                         Flexible(
                                           child: CustomSelector(
-                                                  isDense: true,
-                                                  borderRadius: 10,
-                                                  dropDownItems:
-                                                      value.furnishedDropDown,
-                                                  chosenValue: value
-                                                      .furnishedChosenValue,
-                                                  onChanged:
-                                                      value.onChangedFurnished)
-                                              .use(),
+                                              isDense: true,
+                                              borderRadius: 10,
+                                              dropDownItems:
+                                                  value.furnishedDropDown,
+                                              chosenValue:
+                                                  value.furnishedChosenValue,
+                                              onChanged:
+                                                  value.onChangedFurnished),
                                         ),
                                       ],
                                     ),
@@ -116,7 +115,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             chosenValue:
                                                 value.floorsChosenValue,
                                             onChanged: value.onChangedFloors,
-                                          ).use(),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -135,7 +134,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             chosenValue:
                                                 value.bedRoomChosenValue,
                                             onChanged: value.onChangedBedRoom,
-                                          ).use(),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -154,7 +153,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             dropDownItems:
                                                 value.bathRoomDropDown,
                                             onChanged: value.onChangedBathRoom,
-                                          ).use(),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -173,7 +172,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             dropDownItems:
                                                 value.carParkDropDown,
                                             onChanged: value.onChangedCarPark,
-                                          ).use(),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -192,7 +191,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             dropDownItems:
                                                 value.extraRoomDropDown,
                                             onChanged: value.onChangedExtraRoom,
-                                          ).use(),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -439,6 +438,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
 }
 
 class CustomWidget {
+  final BuildContext context;
   late String text;
   final void Function(dynamic)? onChanged;
   final dynamic chosenValue;
@@ -453,6 +453,7 @@ class CustomWidget {
 
   CustomWidget(
       {required this.text,
+      required this.context,
       this.onChanged,
       this.chosenValue,
       this.validator,
@@ -503,14 +504,13 @@ class CustomWidget {
                     ),
                   )
                 : CustomSelector(
-                        hint: const Text('Select'),
-                        onChanged: onChanged,
-                        chosenValue: chosenValue,
-                        isDense: true,
-                        borderRadius: 10,
-                        textColor: Colors.white.withOpacity(0.8),
-                        dropDownItems: dropDownItems)
-                    .use(),
+                    hint: 'Select',
+                    onChanged: onChanged,
+                    chosenValue: chosenValue,
+                    isDense: true,
+                    borderRadius: 10,
+                    textColor: Colors.white.withOpacity(0.8),
+                    dropDownItems: dropDownItems),
           )
         ],
       ),

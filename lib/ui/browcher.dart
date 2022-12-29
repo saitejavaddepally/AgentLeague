@@ -74,9 +74,7 @@ class _BroucherState extends State<Broucher> {
                                                     enableDoubleTapZooming:
                                                         true,
                                                     onDocumentLoadFailed:
-                                                        (details) {
-                                                      print(details.error);
-                                                    },
+                                                        (details) {},
                                                   )));
                                     },
                                     contentPadding: const EdgeInsets.symmetric(

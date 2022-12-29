@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:agent_league/helper/shared_preferences.dart';
+import 'package:agent_league/helper/string_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,6 +13,7 @@ class FirestoreDataProvider {
   static final _user = FirebaseFirestore.instance.collection('users');
   static final _chat = FirebaseFirestore.instance.collection('chats');
   static final _wallet = FirebaseFirestore.instance.collection('wallet');
+  static final _projects = FirebaseFirestore.instance.collection('projects');
   static final User? _currentUser = FirebaseAuth.instance.currentUser;
 
   Future<num> getAllChatCounter() async {
@@ -119,7 +122,6 @@ class FirestoreDataProvider {
   }
 
   Future getProfileImage(String path) async {
-    print("path is $path");
     Reference storageRef = FirebaseStorage.instance.ref().child(path);
     final listResult = await storageRef.listAll();
 
@@ -136,7 +138,7 @@ class FirestoreDataProvider {
   }
 
   Future<int> getNotificationCounter() async {
-    String? uid = await SharedPreferencesHelper().getUserId();
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
     var docSnapshot =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     int counter = docSnapshot.data()?['counter'];
@@ -145,7 +147,7 @@ class FirestoreDataProvider {
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getAllNotifications() async {
-    String? uid = await SharedPreferencesHelper().getUserId();
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
     final querySnapshot = await FirebaseFirestore.instance
         .collection('notifications')
         .doc(uid)
@@ -156,7 +158,7 @@ class FirestoreDataProvider {
   }
 
   Future<void> readAll() async {
-    String? uid = await SharedPreferencesHelper().getUserId();
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
     QuerySnapshot<Map<String, dynamic>> allDoc = await FirebaseFirestore
         .instance
         .collection('notifications')
@@ -181,47 +183,96 @@ class FirestoreDataProvider {
         .update({'counter': 0});
   }
 
-  Future getProfileInformation() async {
-    DocumentReference ref = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid);
-    Map res = {};
-    await ref.get().then((event) {
-      res = event.data() as Map;
-    });
-
-    return res;
+  static Future<Map<String, dynamic>> getUserInformation(String userId) async {
+    try {
+      final docSnap = await _user.doc(userId).get();
+      if (docSnap.exists) {
+        return docSnap.data()!;
+      } else {
+        return Future.error(StringManager.noUsersFoundError);
+      }
+    } catch (e) {
+      return Future.error(StringManager.somethingWentWrong);
+    }
   }
 
-  Future<String?> getProfilePicture() async {
-    String url = '';
-    await AuthMethods().getUserId().then((value) async {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('sell_images/$value/profile_pic');
-      url = await ref.getDownloadURL().catchError((error) {
-        return '';
-      });
-    });
-
-    return url;
+  static Future<String> getProfilePicture(String userId) async {
+    try {
+      final docSnap = await _user.doc(userId).get();
+      return docSnap.data()?[StringManager.profilePicKey] ?? '';
+    } catch (e) {
+      log(e.toString());
+      return '';
+    }
   }
 
-  Future uploadProfilePicture(File? image) async {
-    dynamic snapshot;
-    final _firebaseStorage = FirebaseStorage.instance;
+  static Future<void> uploadProfilePicture(File image, String userId) async {
+    try {
+      final _firebaseStorage = FirebaseStorage.instance;
 
-    await AuthMethods().getUserId().then((value) async {
-      snapshot = await _firebaseStorage
+      final task = await _firebaseStorage
           .ref()
-          .child('sell_images/$value/profile_pic')
-          .putFile(image!);
-      String? url = await getProfilePicture();
+          .child('user/$userId/profile_pic')
+          .putFile(image);
+
+      final url = await task.ref.getDownloadURL();
 
       await FirebaseFirestore.instance
-          .collection('users')
-          .doc(value)
-          .set({"profilePicture": url});
-    });
+          .collection(StringManager.usersCollectionKey)
+          .doc(userId)
+          .update({StringManager.profilePicKey: url});
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future<String> getUserName() async {
+    try {
+      final docSnap =
+          await _user.doc(FirebaseAuth.instance.currentUser!.uid).get();
+      return docSnap.data()?['name'] ?? '';
+    } catch (e) {
+      log(e.toString());
+      return '';
+    }
+  }
+
+  static Future<void> updateUserInfo(
+      String userId, Map<String, dynamic> data) async {
+    try {
+      await _user.doc(userId).update(data);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllHmdaProjects() async {
+    final querySnap = await _projects
+        .where(StringManager.projectCategory, isEqualTo: 'hmda')
+        .get();
+
+    return querySnap.docs
+        .map((e) => e.data()..addAll({'docId': e.id}))
+        .toList();
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllVillasProjects() async {
+    final querySnap = await _projects
+        .where(StringManager.projectCategory, isEqualTo: 'villas')
+        .get();
+
+    return querySnap.docs
+        .map((e) => e.data()..addAll({'docId': e.id}))
+        .toList();
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllHiRiseProjects() async {
+    final querySnap = await _projects
+        .where(StringManager.projectCategory, isEqualTo: 'hiRise')
+        .get();
+
+    return querySnap.docs
+        .map((e) => e.data()..addAll({'docId': e.id}))
+        .toList();
   }
 }

@@ -97,8 +97,8 @@ class RouteName {
   static const String layout = '/layout';
   static const String realtorVideo = '/realtorVideo';
   static const String broucher = '/broucher';
-  static const String uploadingProgress = 'upload_progress';
-  static const String saveProperty = 'saved_property';
+  static const String uploadingProgress = '/upload_progress';
+  static const String saveProperty = '/saved_property';
 }
 
 class RouteGenerator {
@@ -134,8 +134,12 @@ class RouteGenerator {
             child: const Alerts(), type: PageTransitionType.leftToRight);
 
       case RouteName.signUp:
-        return PageTransition(
-            child: const SignUpForm(), type: PageTransitionType.leftToRight);
+        if (args is List) {
+          return PageTransition(
+              child: SignUpForm(countryCode: args[0], phoneNumber: args[1]),
+              type: PageTransitionType.leftToRight);
+        }
+        return _errorRoute();
       case RouteName.help:
         return PageTransition(
             child: const Help(), type: PageTransitionType.leftToRight);
@@ -143,7 +147,11 @@ class RouteGenerator {
         {
           if (args is List) {
             return PageTransition(
-                child: Otp(args: args), type: PageTransitionType.leftToRight);
+                child: Otp(
+                    countryCode: args[0],
+                    phoneNumber: args[1],
+                    isUpdate: args[2]),
+                type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
         }
@@ -162,9 +170,9 @@ class RouteGenerator {
 
       case RouteName.projectExplorer:
         {
-          if (args is Map) {
+          if (args is Map<String, dynamic>) {
             return PageTransition(
-                child: ProjectExplorer(projectDetails: args),
+                child: ProjectExplorer(data: args),
                 type: PageTransitionType.leftToRight);
           }
           return _errorRoute();
@@ -410,12 +418,8 @@ class RouteGenerator {
 
       case RouteName.layout:
         {
-          if (args is List) {
-            return PageTransition(
-                child: Layout(docs: args),
-                type: PageTransitionType.leftToRight);
-          }
-          return _errorRoute();
+          return PageTransition(
+              child: const Layout(), type: PageTransitionType.leftToRight);
         }
 
       case RouteName.leadNotes:

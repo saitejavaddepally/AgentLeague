@@ -34,16 +34,19 @@ class CustomButton {
     this.isNeu = true,
     this.textAlignRight = false,
   });
-  message(String message, BuildContext context){
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  message(String message, BuildContext context) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
+
   use() {
     return SizedBox(
         width: width,
         height: height,
         child: Neumorphic(
             style: NeumorphicStyle(
-                color: (disabled)? Colors.grey : color,
+                shadowLightColor: Colors.white.withOpacity(0.7),
+                color: (disabled) ? Colors.grey : color,
                 shape: NeumorphicShape.flat,
                 boxShape: (rounded)
                     ? const NeumorphicBoxShape.circle()

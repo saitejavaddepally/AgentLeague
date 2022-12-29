@@ -1,6 +1,7 @@
-import 'package:agent_league/provider/sell_providers/uploading_progress_provider.dart';
+import 'package:agent_league/provider/firestore_data_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../components/custom_button.dart';
@@ -16,38 +17,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool loading = false;
-  var name = '';
-  var phone = '';
-  String profileUrl = '';
-
-  // Future asyncTriggerFunction() async {
-  //   List data = await getProfileInformation();
-  //   setState(() {
-  //     name = data[0];
-  //     profileUrl = data[1];
-  //   });
-  // }
-
-  // Future getProfileInformation() async {
-  //   Map data = await UploadPropertiesToFirestore().getProfileInformation();
-  //   String? profileUrl =
-  //       await UploadPropertiesToFirestore().getProfilePicture();
-  //   return [data['name'], profileUrl];
-  // }
-
-  // @override
-  // void initState() {
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   asyncTriggerFunction();
-  //   setState(() {
-  //     loading = false;
-  //   });
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,22 +44,23 @@ class _HomeState extends State<Home> {
                     ]),
                     Row(
                       children: [
-                        (!loading)
-                            ? CustomImage(
-                                image: (profileUrl != '')
-                                    ? profileUrl
-                                    : 'assets/profile.png',
-                                text: "profile",
-                                type: (profileUrl != '') ? 'url' : 'static',
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/profile');
-                                })
-                            : const SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: SpinKitCircle(
-                                    size: 30, color: Colors.white),
-                              ),
+                        FutureBuilder<String>(
+                            initialData: '',
+                            future: FirestoreDataProvider.getProfilePicture(
+                                FirebaseAuth.instance.currentUser!.uid),
+                            builder: (context, snapshot) {
+                              return CustomImage(
+                                  image: (snapshot.data!.isEmpty)
+                                      ? 'assets/profile.png'
+                                      : snapshot.data!,
+                                  text: "profile",
+                                  type: (snapshot.data!.isEmpty)
+                                      ? 'static'
+                                      : 'url',
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/profile');
+                                  });
+                            }),
                         const SizedBox(width: 15),
                         CustomImage(
                             image: "assets/explorer.png",
@@ -112,20 +82,20 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                (!loading)
-                    ? RichText(
-                        text: TextSpan(
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 18),
-                            children: [
-                            const TextSpan(text: "Hello,  "),
-                            TextSpan(
-                                text: name.toUpperCase(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500))
-                          ]))
-                    : const SizedBox(
-                        height: 20, child: Center(child: Text('Loading..'))),
+                FutureBuilder<String>(
+                  initialData: '',
+                  future: FirestoreDataProvider.getUserName(),
+                  builder: (context, snapshot) => RichText(
+                      text: TextSpan(
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 18),
+                          children: [
+                        const TextSpan(text: "Hello,  "),
+                        TextSpan(
+                            text: snapshot.data?.toUpperCase(),
+                            style: const TextStyle(fontWeight: FontWeight.w500))
+                      ])),
+                ),
                 const SizedBox(height: 5),
                 const Text('Todays recommended actions for you',
                     style:
@@ -288,13 +258,13 @@ class CustomImage extends StatelessWidget {
                   ? BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.blue))
-                  : BoxDecoration(boxShadow: shadow1),
+                  : const BoxDecoration(boxShadow: shadow1),
               child: Stack(children: [
                 (type == 'url')
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
-                        child: Image.network(
-                          image,
+                        child: CachedNetworkImage(
+                          imageUrl: image,
                           height: 40.0,
                           width: 40.0,
                           fit: BoxFit.fill,
