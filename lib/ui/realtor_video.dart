@@ -96,7 +96,6 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
 
   @override
   Widget build(BuildContext context) {
-    var _size = MediaQuery.of(context).size;
     return FutureBuilder(
       future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {

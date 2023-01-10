@@ -17,7 +17,7 @@ class CustomContainerText {
             text: TextSpan(
               children: [
                 TextSpan(
-                    text: text1 + ': ',
+                    text: '$text1: ',
                     style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold)),
                 TextSpan(

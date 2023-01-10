@@ -6,11 +6,6 @@ class VasthuProvider extends ChangeNotifier {
   // for nameTextField
   final TextEditingController nameController = TextEditingController();
 
-  String _name = '';
-  onNameSubmitted(String value) {
-    _name = value;
-  }
-
   String? validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Enter Your Name";
@@ -22,11 +17,6 @@ class VasthuProvider extends ChangeNotifier {
   // for mobileTextField
 
   final TextEditingController mobileController = TextEditingController();
-
-  String _mobile = '';
-  onMobileSubmitted(String value) {
-    _mobile = value;
-  }
 
   String? validateMobile(String? value) {
     if (value == null || value.isEmpty || value.length != 10) {

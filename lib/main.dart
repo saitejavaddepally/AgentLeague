@@ -1,3 +1,4 @@
+import 'package:agent_league/Services/local_notification_service.dart';
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/helper/shared_preferences.dart';
 
@@ -24,8 +25,9 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  //await LocalNotificationService.initialize();
   await Firebase.initializeApp();
+  await NotificationService().init();
+
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -79,8 +81,6 @@ class MyAppState extends State {
         stream: FirebaseAuth.instance.authStateChanges(),
         initialData: FirebaseAuth.instance.currentUser,
         builder: (context, snapshot) {
-          SharedPreferencesHelper.isOnboardingSeen()
-              .then((value) => print("onboarding $value"));
           if (snapshot.data == null) {
             return FutureBuilder<bool?>(
               future: SharedPreferencesHelper.isOnboardingSeen(),

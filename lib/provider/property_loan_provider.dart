@@ -6,11 +6,6 @@ class PropertyLoanProvider extends ChangeNotifier {
   // for nameTextField
   final TextEditingController nameController = TextEditingController();
 
-  String _name = '';
-  onNameSubmitted(String value) {
-    _name = value;
-  }
-
   String? validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Enter Your Name";
@@ -22,11 +17,6 @@ class PropertyLoanProvider extends ChangeNotifier {
   // for mobileTextField
 
   final TextEditingController mobileController = TextEditingController();
-
-  String _mobile = '';
-  onMobileSubmitted(String value) {
-    _mobile = value;
-  }
 
   String? validateMobile(String? value) {
     if (value == null || value.isEmpty || value.length != 10) {
@@ -53,11 +43,6 @@ class PropertyLoanProvider extends ChangeNotifier {
   // for crTextField
   final TextEditingController crController = TextEditingController();
 
-  String _cr = '';
-  onCrSubmitted(String value) {
-    _cr = value;
-  }
-
   String? validateCr(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Field Required";
@@ -68,11 +53,6 @@ class PropertyLoanProvider extends ChangeNotifier {
 
   // for lksTextField
   final TextEditingController lksController = TextEditingController();
-
-  String _lks = '';
-  onLksSubmitted(String value) {
-    _lks = value;
-  }
 
   String? validateLks(String? value) {
     if (value == null || value.trim().isEmpty) {

@@ -25,7 +25,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
     return ChangeNotifierProvider(
         create: (context) => PropertyBuyingScoreProvider(),
         builder: (context, child) {
-          final _pr =
+          final pr =
               Provider.of<PropertyBuyingScoreProvider>(context, listen: false);
           return Scaffold(
             bottomNavigationBar: Padding(
@@ -36,7 +36,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                     text: 'Calculate',
                     onClick: () {
                       if (_formKey.currentState!.validate()) {
-                        final range = _pr.calculateRange();
+                        final range = pr.calculateRange();
                         Navigator.pushNamed(context, RouteName.propertyRange,
                             arguments: range);
                       }
@@ -50,7 +50,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                 Flexible(
                   child: CustomButton(
                     text: 'Reset',
-                    onClick: _pr.resetAllData,
+                    onClick: pr.resetAllData,
                     color: HexColor('FD7E0E'),
                     width: 89,
                     height: 40,
@@ -88,15 +88,15 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               const Expanded(child: CustomLabel(text: 'DOB :')),
                               Expanded(
                                 child: CustomTextField(
-                                    controller: _pr.dobController,
+                                    controller: pr.dobController,
                                     readOnly: true,
                                     isDense: true,
-                                    validator: _pr.validateDate),
+                                    validator: pr.validateDate),
                               ),
                               const SizedBox(width: 5),
                               GestureDetector(
                                   onTap: () {
-                                    _pr.selectDate(context);
+                                    pr.selectDate(context);
                                   },
                                   child: const Icon(Icons.calendar_month))
                             ],
@@ -111,6 +111,12 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               children: [
                                 TextButton(
                                     onPressed: value.onEmployeeClick,
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: (value.employee)
+                                          ? HexColor('FE7F0E')
+                                          : Colors.white.withOpacity(0.1),
+                                      minimumSize: const Size(85, 30),
+                                    ),
                                     child: Text('Employee',
                                         style: TextStyle(
                                           fontSize: 14,
@@ -118,16 +124,16 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                           color: (value.employee)
                                               ? HexColor('131415')
                                               : Colors.white.withOpacity(0.8),
-                                        )),
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: (value.employee)
-                                          ? HexColor('FE7F0E')
-                                          : Colors.white.withOpacity(0.1),
-                                      minimumSize: const Size(85, 30),
-                                    )),
+                                        ))),
                                 const SizedBox(width: 5),
                                 TextButton(
                                     onPressed: value.onFreelancerClick,
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: (value.freelancer)
+                                          ? HexColor('FE7F0E')
+                                          : Colors.white.withOpacity(0.1),
+                                      minimumSize: const Size(90, 30),
+                                    ),
                                     child: Text('Freelancer',
                                         style: TextStyle(
                                           fontSize: 14,
@@ -135,16 +141,16 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                           color: (value.freelancer)
                                               ? HexColor('131415')
                                               : Colors.white.withOpacity(0.8),
-                                        )),
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: (value.freelancer)
-                                          ? HexColor('FE7F0E')
-                                          : Colors.white.withOpacity(0.1),
-                                      minimumSize: const Size(90, 30),
-                                    )),
+                                        ))),
                                 const SizedBox(width: 5),
                                 TextButton(
                                     onPressed: value.onBusinessClick,
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: (value.business)
+                                          ? HexColor('FE7F0E')
+                                          : Colors.white.withOpacity(0.1),
+                                      minimumSize: const Size(85, 30),
+                                    ),
                                     child: Text('Business',
                                         style: TextStyle(
                                           fontSize: 14,
@@ -152,13 +158,7 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                           color: (value.business)
                                               ? HexColor('131415')
                                               : Colors.white.withOpacity(0.8),
-                                        )),
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: (value.business)
-                                          ? HexColor('FE7F0E')
-                                          : Colors.white.withOpacity(0.1),
-                                      minimumSize: const Size(85, 30),
-                                    )),
+                                        ))),
                               ],
                             ),
                           ),
@@ -172,9 +172,8 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               Expanded(
                                   child: CustomTextField(
                                 isDense: true,
-                                controller: _pr.monthlyIncomeController,
-                                onChanged: _pr.onSubmittedMonthlyIncome,
-                                validator: _pr.validateMonthlyIncome,
+                                controller: pr.monthlyIncomeController,
+                                validator: pr.validateMonthlyIncome,
                                 keyboardType: TextInputType.number,
                               )),
                               const SizedBox(width: 10),
@@ -192,9 +191,8 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               Expanded(
                                   child: CustomTextField(
                                 isDense: true,
-                                controller: _pr.monthlyEmiController,
-                                onChanged: _pr.onSubmittedMonthlyEmi,
-                                validator: _pr.validateMonthlyEmi,
+                                controller: pr.monthlyEmiController,
+                                validator: pr.validateMonthlyEmi,
                                 keyboardType: TextInputType.number,
                               )),
                               const SizedBox(width: 10),
@@ -212,9 +210,8 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               Expanded(
                                   child: CustomTextField(
                                 isDense: true,
-                                controller: _pr.extraIncomeController,
-                                onChanged: _pr.onSubmittedExtraIncome,
-                                validator: _pr.validateExtraIncome,
+                                controller: pr.extraIncomeController,
+                                validator: pr.validateExtraIncome,
                                 keyboardType: TextInputType.number,
                               )),
                               const SizedBox(width: 10),
@@ -231,9 +228,8 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                               Expanded(
                                   child: CustomTextField(
                                 isDense: true,
-                                controller: _pr.downPaymentController,
-                                onChanged: _pr.onSubmittedDownPayment,
-                                validator: _pr.validateDownPayment,
+                                controller: pr.downPaymentController,
+                                validator: pr.validateDownPayment,
                                 keyboardType: TextInputType.number,
                               )),
                               const SizedBox(width: 10),
@@ -264,13 +260,6 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                               value.onYesClickCoBorrower(
                                                   context);
                                             },
-                                            child: Text('Yes',
-                                                style: TextStyle(
-                                                  color: (value.coBorrower)
-                                                      ? HexColor('131415')
-                                                      : Colors.white
-                                                          .withOpacity(0.8),
-                                                )),
                                             style: TextButton.styleFrom(
                                               backgroundColor:
                                                   (value.coBorrower)
@@ -278,17 +267,17 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                                       : Colors.white
                                                           .withOpacity(0.1),
                                               minimumSize: const Size(41, 30),
-                                            )),
+                                            ),
+                                            child: Text('Yes',
+                                                style: TextStyle(
+                                                  color: (value.coBorrower)
+                                                      ? HexColor('131415')
+                                                      : Colors.white
+                                                          .withOpacity(0.8),
+                                                ))),
                                         TextButton(
                                             onPressed:
                                                 value.onNoClickCoBorrower,
-                                            child: Text('No',
-                                                style: TextStyle(
-                                                  color: (value.coBorrower)
-                                                      ? Colors.white
-                                                          .withOpacity(0.8)
-                                                      : HexColor('131415'),
-                                                )),
                                             style: TextButton.styleFrom(
                                               backgroundColor:
                                                   (value.coBorrower)
@@ -296,7 +285,14 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                                           .withOpacity(0.1)
                                                       : HexColor('FE7F0E'),
                                               minimumSize: const Size(37, 30),
-                                            )),
+                                            ),
+                                            child: Text('No',
+                                                style: TextStyle(
+                                                  color: (value.coBorrower)
+                                                      ? Colors.white
+                                                          .withOpacity(0.8)
+                                                      : HexColor('131415'),
+                                                ))),
                                       ],
                                     ),
                                   ],
@@ -319,36 +315,36 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                         TextButton(
                                             onPressed:
                                                 value.onYesClickIncomeTax,
-                                            child: Text('Yes',
-                                                style: TextStyle(
-                                                  color: (value.incomeTax)
-                                                      ? HexColor('131415')
-                                                      : Colors.white
-                                                          .withOpacity(0.8),
-                                                )),
                                             style: TextButton.styleFrom(
                                               backgroundColor: (value.incomeTax)
                                                   ? HexColor('FE7F0E')
                                                   : Colors.white
                                                       .withOpacity(0.1),
                                               minimumSize: const Size(41, 30),
-                                            )),
-                                        TextButton(
-                                            onPressed: value.onNoClickIncomeTax,
-                                            child: Text('No',
+                                            ),
+                                            child: Text('Yes',
                                                 style: TextStyle(
                                                   color: (value.incomeTax)
-                                                      ? Colors.white
-                                                          .withOpacity(0.8)
-                                                      : HexColor('131415'),
-                                                )),
+                                                      ? HexColor('131415')
+                                                      : Colors.white
+                                                          .withOpacity(0.8),
+                                                ))),
+                                        TextButton(
+                                            onPressed: value.onNoClickIncomeTax,
                                             style: TextButton.styleFrom(
                                               backgroundColor: (value.incomeTax)
                                                   ? Colors.white
                                                       .withOpacity(0.1)
                                                   : HexColor('FE7F0E'),
                                               minimumSize: const Size(37, 30),
-                                            )),
+                                            ),
+                                            child: Text('No',
+                                                style: TextStyle(
+                                                  color: (value.incomeTax)
+                                                      ? Colors.white
+                                                          .withOpacity(0.8)
+                                                      : HexColor('131415'),
+                                                ))),
                                       ],
                                     ),
                                   ],
@@ -368,36 +364,36 @@ class _PropertyBuyingScoreState extends State<PropertyBuyingScore> {
                                       children: [
                                         TextButton(
                                             onPressed: value.onYesClickLoan,
-                                            child: Text('Yes',
-                                                style: TextStyle(
-                                                  color: (value.loan)
-                                                      ? HexColor('131415')
-                                                      : Colors.white
-                                                          .withOpacity(0.8),
-                                                )),
                                             style: TextButton.styleFrom(
                                               backgroundColor: (value.loan)
                                                   ? HexColor('FE7F0E')
                                                   : Colors.white
                                                       .withOpacity(0.1),
                                               minimumSize: const Size(41, 30),
-                                            )),
-                                        TextButton(
-                                            onPressed: value.onNoClickLoan,
-                                            child: Text('No',
+                                            ),
+                                            child: Text('Yes',
                                                 style: TextStyle(
                                                   color: (value.loan)
-                                                      ? Colors.white
-                                                          .withOpacity(0.8)
-                                                      : HexColor('131415'),
-                                                )),
+                                                      ? HexColor('131415')
+                                                      : Colors.white
+                                                          .withOpacity(0.8),
+                                                ))),
+                                        TextButton(
+                                            onPressed: value.onNoClickLoan,
                                             style: TextButton.styleFrom(
                                               backgroundColor: (value.loan)
                                                   ? Colors.white
                                                       .withOpacity(0.1)
                                                   : HexColor('FE7F0E'),
                                               minimumSize: const Size(37, 30),
-                                            )),
+                                            ),
+                                            child: Text('No',
+                                                style: TextStyle(
+                                                  color: (value.loan)
+                                                      ? Colors.white
+                                                          .withOpacity(0.8)
+                                                      : HexColor('131415'),
+                                                ))),
                                       ],
                                     ),
                                   ],
@@ -487,8 +483,6 @@ class CustomDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
-                        child: const Text('Submit',
-                            style: TextStyle(color: Colors.black)),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             Navigator.pop(context, [
@@ -498,17 +492,19 @@ class CustomDialog extends StatelessWidget {
                           }
                         },
                         style: TextButton.styleFrom(
-                            backgroundColor: HexColor('FE7F0E'))),
+                            backgroundColor: HexColor('FE7F0E')),
+                        child: const Text('Submit',
+                            style: TextStyle(color: Colors.black))),
                     const SizedBox(width: 20),
                     TextButton(
-                        child: Text('Cancel',
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.8))),
                         onPressed: () {
                           Navigator.pop(context);
                         },
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.1))),
+                            backgroundColor: Colors.white.withOpacity(0.1)),
+                        child: Text('Cancel',
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8)))),
                   ],
                 ),
               ],

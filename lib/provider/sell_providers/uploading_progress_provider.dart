@@ -24,7 +24,7 @@ class UploadingProgressProvider extends ChangeNotifier {
     String? id;
 
     try {
-      final _docRef = await _sellPlots
+      final docRef = await _sellPlots
           .doc(_currentUser?.uid)
           .collection('standlone')
           .add(data
@@ -33,19 +33,19 @@ class UploadingProgressProvider extends ChangeNotifier {
               'timestamp': FieldValue.serverTimestamp()
             }));
 
-      id = _docRef.id;
+      id = docRef.id;
       String path = 'sell_plot/${_currentUser?.uid}/standlone/$id/';
       final imageUrls = await Utils.uploadFiles(
-          images, path + 'images/', 'image', imageIndex);
+          images, '${path}images/', 'image', imageIndex);
       processIndex = 1;
       notifyListeners();
 
       final docUrls =
-          await Utils.uploadFiles(docs, path + 'docs/', 'doc', docsIndex);
+          await Utils.uploadFiles(docs, '${path}docs/', 'doc', docsIndex);
       processIndex = 2;
       notifyListeners();
       final videoUrls = await Utils.uploadFiles(
-          videos, path + 'videos/', 'video', videosIndex);
+          videos, '${path}videos/', 'video', videosIndex);
       processIndex = 3;
       notifyListeners();
 
@@ -91,33 +91,31 @@ class UploadingProgressProvider extends ChangeNotifier {
       notifyListeners();
       //upload images, videos, docs and get url
       final imageUrls = await Utils.uploadFiles(
-          images, path + 'images/', 'image', imageIndex);
+          images, '${path}images/', 'image', imageIndex);
 
-      final docUrls =
-          await Utils.uploadFiles(docs, path + 'docs/', 'doc', docsIndex);
+      await Utils.uploadFiles(docs, '${path}docs/', 'doc', docsIndex);
 
       processIndex = 2;
       notifyListeners();
-      final videoUrls = await Utils.uploadFiles(
-          videos, path + 'videos/', 'video', videosIndex);
+      await Utils.uploadFiles(videos, '${path}videos/', 'video', videosIndex);
 
       //get url of all images in specified path
       final imageListResult =
-          await FirebaseStorage.instance.ref(path + 'images/').listAll();
+          await FirebaseStorage.instance.ref('${path}images/').listAll();
 
       final allImgUrl = await Future.wait(
           imageListResult.items.map((e) => e.getDownloadURL()));
 
       //get url of all docs in specified path
       final docListResult =
-          await FirebaseStorage.instance.ref(path + 'docs/').listAll();
+          await FirebaseStorage.instance.ref('${path}docs/').listAll();
 
       final allDocsUrl =
           await Future.wait(docListResult.items.map((e) => e.getDownloadURL()));
 
       //get url of all videos in specified path
       final videoListResult =
-          await FirebaseStorage.instance.ref(path + 'videos/').listAll();
+          await FirebaseStorage.instance.ref('${path}videos/').listAll();
 
       final allVideoUrl = await Future.wait(
           videoListResult.items.map((e) => e.getDownloadURL()));

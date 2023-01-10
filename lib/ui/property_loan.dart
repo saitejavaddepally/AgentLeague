@@ -21,7 +21,7 @@ class _PropertyLoanState extends State<PropertyLoan> {
     return ChangeNotifierProvider(
         create: (context) => PropertyLoanProvider(),
         builder: (context, child) {
-          final _pr = Provider.of<PropertyLoanProvider>(context, listen: false);
+          final pr = Provider.of<PropertyLoanProvider>(context, listen: false);
           return Scaffold(
               bottomNavigationBar: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0, right: 20),
@@ -29,7 +29,7 @@ class _PropertyLoanState extends State<PropertyLoan> {
                   CustomButton(
                     text: 'Reset',
                     onClick: () {
-                      _pr.resetData();
+                      pr.resetData();
                     },
                     color: HexColor('082640'),
                     width: 89,
@@ -67,7 +67,6 @@ class _PropertyLoanState extends State<PropertyLoan> {
                               label: 'Name :',
                               child: CustomTextField(
                                   controller: value.nameController,
-                                  onChanged: value.onNameSubmitted,
                                   validator: value.validateName,
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -92,7 +91,6 @@ class _PropertyLoanState extends State<PropertyLoan> {
                                 Expanded(
                                   child: CustomTextField(
                                       controller: value.mobileController,
-                                      onChanged: value.onMobileSubmitted,
                                       validator: value.validateMobile,
                                       keyboardType: TextInputType.phone,
                                       isDense: true,
@@ -125,7 +123,6 @@ class _PropertyLoanState extends State<PropertyLoan> {
                                         isDense: true,
                                         keyboardType: TextInputType.number,
                                         controller: value.crController,
-                                        onChanged: value.onCrSubmitted,
                                         validator: value.validateCr,
                                       )),
                                       const ColorText(text: 'Cr')
@@ -140,7 +137,6 @@ class _PropertyLoanState extends State<PropertyLoan> {
                                           child: CustomTextField(
                                         keyboardType: TextInputType.number,
                                         controller: value.lksController,
-                                        onChanged: value.onLksSubmitted,
                                         validator: value.validateLks,
                                         isDense: true,
                                       )),
@@ -197,11 +193,11 @@ class ColorText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 10),
-      child: Text(text),
       decoration: BoxDecoration(
           color: CustomColors.orange,
           borderRadius: const BorderRadius.only(
               topRight: Radius.circular(10), bottomRight: Radius.circular(10))),
+      child: Text(text),
     );
   }
 }

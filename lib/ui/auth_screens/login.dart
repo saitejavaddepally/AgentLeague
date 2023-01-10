@@ -16,7 +16,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final TextEditingController _phoneNumberController = TextEditingController();
-  String? _phoneNumber;
   String? _dialCode = '+91';
   final _formKey = GlobalKey<FormState>();
 
@@ -98,9 +97,7 @@ class _LoginState extends State<Login> {
                             keyboardType: TextInputType.number,
                             controller: _phoneNumberController,
                             style: const TextStyle(color: Colors.white),
-                            onChanged: (value) {
-                              _phoneNumber = value;
-                            },
+                            onChanged: (value) {},
                             validator: (number) {
                               if (number == null ||
                                   number.isEmpty ||

@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:agent_league/Services/keys.dart';
@@ -120,8 +122,8 @@ class GetUserLocation {
   static Future<String> _getAddressFromCoordinates(LatLng userLocation) async {
     var url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLocation.latitude},${userLocation.longitude}&sensor=true&key=$mapKey');
-    var _response = await http.get(url);
-    var data = _response.body;
+    var response = await http.get(url);
+    var data = response.body;
     Map<String, dynamic> data2 = jsonDecode(data);
     List<dynamic> list = data2['results'];
 

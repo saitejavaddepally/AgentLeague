@@ -46,11 +46,11 @@ class _AmentiesState extends State<Amenties> {
                   PropertyVideoProvider(widget.dataToEdit?['videos'])),
         ],
         builder: (context, child) {
-          final _imageProvider =
+          final imageProvider =
               Provider.of<PropertyPhotosProvider>(context, listen: false);
-          final _docProvider =
+          final docProvider =
               Provider.of<PropertyDocumentsProvider>(context, listen: false);
-          final _videoProvider =
+          final videoProvider =
               Provider.of<PropertyVideoProvider>(context, listen: false);
 
           return (!isLoading)
@@ -284,15 +284,15 @@ class _AmentiesState extends State<Amenties> {
                                                     text: 'Next',
                                                     onClick: () {
                                                       final images =
-                                                          _imageProvider
+                                                          imageProvider
                                                                   .getImage()[
                                                               'images'];
 
-                                                      final docs = _docProvider
+                                                      final docs = docProvider
                                                           .getDocs()['docs'];
 
                                                       final videos =
-                                                          _videoProvider
+                                                          videoProvider
                                                                   .getVideos()[
                                                               'videos'];
                                                       checkAndUploadProperty(

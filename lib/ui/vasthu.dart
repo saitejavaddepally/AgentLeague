@@ -22,7 +22,7 @@ class _VasthuScreenState extends State<VasthuScreen> {
     return ChangeNotifierProvider(
         create: (context) => VasthuProvider(),
         builder: (context, child) {
-          final _pr = Provider.of<VasthuProvider>(context, listen: false);
+          final pr = Provider.of<VasthuProvider>(context, listen: false);
           return Scaffold(
               bottomNavigationBar: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0, right: 20),
@@ -30,7 +30,7 @@ class _VasthuScreenState extends State<VasthuScreen> {
                   CustomButton(
                     text: 'Reset',
                     onClick: () {
-                      _pr.resetData();
+                      pr.resetData();
                     },
                     color: HexColor('082640'),
                     width: 89,
@@ -68,7 +68,6 @@ class _VasthuScreenState extends State<VasthuScreen> {
                               label: 'Name :',
                               child: CustomTextField(
                                   controller: value.nameController,
-                                  onChanged: value.onNameSubmitted,
                                   validator: value.validateName,
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -93,7 +92,6 @@ class _VasthuScreenState extends State<VasthuScreen> {
                                 Expanded(
                                   child: CustomTextField(
                                       controller: value.mobileController,
-                                      onChanged: value.onMobileSubmitted,
                                       validator: value.validateMobile,
                                       keyboardType: TextInputType.phone,
                                       isDense: true,

@@ -46,7 +46,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
           ChangeNotifierProvider(create: (context) => AmenitiesProvider()),
         ],
         builder: (context, child) {
-          final _propertyTwo =
+          final propertyTwo =
               Provider.of<PostYourPropertyProviderTwo>(context, listen: false);
           return ModalProgressHUD(
               inAsyncCall: isLoading,
@@ -222,16 +222,6 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                                             .onYesClickRentalIncome(
                                                                 context);
                                                       },
-                                                      child: Text('Yes',
-                                                          style: TextStyle(
-                                                            color: (value
-                                                                    .rentalIncome)
-                                                                ? HexColor(
-                                                                    '131415')
-                                                                : Colors.white
-                                                                    .withOpacity(
-                                                                        0.8),
-                                                          )),
                                                       style:
                                                           TextButton.styleFrom(
                                                         backgroundColor: (value
@@ -242,20 +232,20 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                                                     0.1),
                                                         minimumSize:
                                                             const Size(41, 30),
-                                                      )),
-                                                  TextButton(
-                                                      onPressed: value
-                                                          .onNoClickRentalIncome,
-                                                      child: Text('No',
+                                                      ),
+                                                      child: Text('Yes',
                                                           style: TextStyle(
                                                             color: (value
                                                                     .rentalIncome)
-                                                                ? Colors.white
+                                                                ? HexColor(
+                                                                    '131415')
+                                                                : Colors.white
                                                                     .withOpacity(
-                                                                        0.8)
-                                                                : HexColor(
-                                                                    '131415'),
-                                                          )),
+                                                                        0.8),
+                                                          ))),
+                                                  TextButton(
+                                                      onPressed: value
+                                                          .onNoClickRentalIncome,
                                                       style:
                                                           TextButton.styleFrom(
                                                         backgroundColor: (value
@@ -267,7 +257,17 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                                                 'FE7F0E'),
                                                         minimumSize:
                                                             const Size(37, 30),
-                                                      )),
+                                                      ),
+                                                      child: Text('No',
+                                                          style: TextStyle(
+                                                            color: (value
+                                                                    .rentalIncome)
+                                                                ? Colors.white
+                                                                    .withOpacity(
+                                                                        0.8)
+                                                                : HexColor(
+                                                                    '131415'),
+                                                          ))),
                                                 ],
                                               ),
                                             ],
@@ -391,7 +391,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             text: "Reset",
                                             textColor: HexColor('FE7F0E'),
                                             onClick: () {
-                                              _propertyTwo.resetAllData();
+                                              propertyTwo.resetAllData();
                                             },
                                             isNeu: false,
                                             textAlignRight: true,
@@ -419,7 +419,7 @@ class _PostYourPropertyPageTwoState extends State<PostYourPropertyPageTwo> {
                                             Navigator.pushNamed(
                                                 context, RouteName.amenities,
                                                 arguments: [
-                                                  _propertyTwo.getMap(
+                                                  propertyTwo.getMap(
                                                       widget.previousPageData),
                                                   widget.dataToEdit,
                                                   widget.isFreeListing
@@ -566,8 +566,6 @@ class CustomDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                      child: const Text('Submit',
-                          style: TextStyle(color: Colors.black)),
                       onPressed: () {
                         if (_totalPortion != null &&
                             _totalPortion!.trim().isNotEmpty &&
@@ -578,17 +576,19 @@ class CustomDialog extends StatelessWidget {
                         }
                       },
                       style: TextButton.styleFrom(
-                          backgroundColor: HexColor('FE7F0E'))),
+                          backgroundColor: HexColor('FE7F0E')),
+                      child: const Text('Submit',
+                          style: TextStyle(color: Colors.black))),
                   const SizedBox(width: 20),
                   TextButton(
-                      child: Text('Cancel',
-                          style:
-                              TextStyle(color: Colors.white.withOpacity(0.8))),
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.1))),
+                          backgroundColor: Colors.white.withOpacity(0.1)),
+                      child: Text('Cancel',
+                          style:
+                              TextStyle(color: Colors.white.withOpacity(0.8)))),
                 ],
               ),
             ],

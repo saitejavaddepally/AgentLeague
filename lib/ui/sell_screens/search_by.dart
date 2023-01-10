@@ -116,7 +116,7 @@ class _SearchLocationState extends State<SearchLocation> {
     return ChangeNotifierProvider(
         create: (context) => LocationSearchProvider(),
         builder: (context, child) {
-          final _pr =
+          final pr =
               Provider.of<LocationSearchProvider>(context, listen: false);
           return ModalProgressHUD(
             inAsyncCall: isLoading,
@@ -130,7 +130,7 @@ class _SearchLocationState extends State<SearchLocation> {
                     CustomButton(
                       text: 'Reset',
                       onClick: () {
-                        _pr.resetData();
+                        pr.resetData();
                       },
                       color: HexColor('082640'),
                       width: 89,
@@ -142,8 +142,8 @@ class _SearchLocationState extends State<SearchLocation> {
                       onClick: () async {
                         if (_formKey.currentState!.validate()) {
                           setState(() => isLoading = true);
-                          await _pr.getAllPlots(widget.plotPageInformation,
-                              _pr.latitude!, _pr.longitude!, _pr.chosenKm!);
+                          await pr.getAllPlots(widget.plotPageInformation,
+                              pr.latitude!, pr.longitude!, pr.chosenKm!);
                           setState(() => isLoading = false);
                         }
                       },
@@ -167,8 +167,8 @@ class _SearchLocationState extends State<SearchLocation> {
                           Expanded(
                             flex: 3,
                             child: CustomTextField(
-                              controller: _pr.locationController,
-                              validator: _pr.validateLocation,
+                              controller: pr.locationController,
+                              validator: pr.validateLocation,
                               readOnly: true,
                               onTap: () async {
                                 final result = await showDialog(
@@ -183,9 +183,9 @@ class _SearchLocationState extends State<SearchLocation> {
                                       .getCurrentLocation();
                                   setState(() => isLoading = false);
                                   if (res != null && res.isNotEmpty) {
-                                    _pr.locationController.text = res[0];
-                                    _pr.latitude = res[1];
-                                    _pr.longitude = res[2];
+                                    pr.locationController.text = res[0];
+                                    pr.latitude = res[1];
+                                    pr.longitude = res[2];
                                   }
                                 }
                                 if (result == 2) {
@@ -193,9 +193,9 @@ class _SearchLocationState extends State<SearchLocation> {
                                       await GetUserLocation.getMapLocation(
                                           context);
                                   if (res != null && res.isNotEmpty) {
-                                    _pr.locationController.text = res[0];
-                                    _pr.latitude = res[1];
-                                    _pr.longitude = res[2];
+                                    pr.locationController.text = res[0];
+                                    pr.latitude = res[1];
+                                    pr.longitude = res[2];
                                   }
                                 }
                               },
@@ -289,7 +289,7 @@ class _PriceState extends State<Price> {
     return ChangeNotifierProvider(
         create: (context) => PriceSearchProvider(),
         builder: (context, child) {
-          final _pr = Provider.of<PriceSearchProvider>(context, listen: false);
+          final pr = Provider.of<PriceSearchProvider>(context, listen: false);
           return Scaffold(
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.only(bottom: 10.0, right: 25),
@@ -297,7 +297,7 @@ class _PriceState extends State<Price> {
                 CustomButton(
                   text: 'Reset',
                   onClick: () {
-                    _pr.reset();
+                    pr.reset();
                   },
                   color: HexColor('082640'),
                   width: 89,
@@ -307,7 +307,7 @@ class _PriceState extends State<Price> {
                 CustomButton(
                   text: 'Submit',
                   onClick: () {
-                    _pr.search(widget.plotPageInformation);
+                    pr.search(widget.plotPageInformation);
                   },
                   color: HexColor('FD7E0E'),
                   width: 102,

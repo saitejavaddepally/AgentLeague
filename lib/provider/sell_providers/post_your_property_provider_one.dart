@@ -285,7 +285,7 @@ class PostYourPropertyProviderOne extends ChangeNotifier {
       StringManager.facing: _facingChosenValue,
       StringManager.handOverYear: handOverYearController.text,
       StringManager.handOverMonth: handOverMonthController.text,
-      StringManager.size: _sizeController.text + ' ' + _sizeChosenValue!,
+      StringManager.size: '${_sizeController.text} ${_sizeChosenValue!}',
       StringManager.latitudeKey: latitude,
       StringManager.longitudeKey: longitude,
       StringManager.boxEnabled: 0,

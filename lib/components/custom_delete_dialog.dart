@@ -52,29 +52,29 @@ class CustomDeleteDialog extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: onCancel,
-                child: const Text('Cancel',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14)),
                 style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     fixedSize: const Size(100, 41),
                     backgroundColor: HexColor('FACEA7')),
+                child: const Text('Cancel',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14)),
               ),
               TextButton(
                 onPressed: onDelete,
-                child: const Text('Delete',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14)),
                 style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     fixedSize: const Size(100, 41),
                     backgroundColor: HexColor('FD7E0E')),
+                child: const Text('Delete',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14)),
               )
             ],
           ),

@@ -101,11 +101,11 @@ class _RealtorCardState extends State<RealtorCard> {
                 }
               },
               onTapLocation: () {
-                final _latitude = currentData['latitude'];
-                final _longitude = currentData['longitude'];
+                final latitude = currentData['latitude'];
+                final longitude = currentData['longitude'];
 
                 Navigator.pushNamed(context, RouteName.location,
-                    arguments: [_latitude, _longitude]);
+                    arguments: [latitude, longitude]);
               },
               onTapGallery: () {
                 Navigator.pushNamed(context, RouteName.gallery,

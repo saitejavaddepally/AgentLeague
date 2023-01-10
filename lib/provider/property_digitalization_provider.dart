@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class PropertyDigitalizationProvider extends ChangeNotifier {
-  int _totalWalletBalance = 500;
+  final int _totalWalletBalance = 500;
   int _balanceAfterTransaction = 500;
 
   int _amountUsed = 0;
-  int _digitalizationCharges = 99;
-  int _gstAmount = 18;
-  int _promocodeAmount = 0;
+  final int _digitalizationCharges = 99;
+  final int _gstAmount = 18;
+  final int _promocodeAmount = 0;
   var grandTotal = 0;
 
   PropertyDigitalizationProvider() {

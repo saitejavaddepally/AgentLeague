@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:developer';
 import 'dart:io';
 
@@ -24,17 +26,16 @@ class Utils {
   }
 
   static Future<List<String>> uploadFiles(
-      List<File> _files, String path, String type, List<int> indexes) async {
-    var _fileUrls = await Future.wait(_files.mapIndexed((index, _file) =>
-        uploadFile(
-            _file, path + type + ' ' + (indexes[index] + 1).toString())));
+      List<File> files, String path, String type, List<int> indexes) async {
+    var fileUrls = await Future.wait(files.mapIndexed(
+        (index, file) => uploadFile(file, '$path$type ${indexes[index] + 1}')));
 
-    return _fileUrls;
+    return fileUrls;
   }
 
-  static Future<String> uploadFile(File _file, String path) async {
+  static Future<String> uploadFile(File file, String path) async {
     final storageReference = FirebaseStorage.instance.ref().child(path);
-    final uploadTask = storageReference.putFile(_file);
+    final uploadTask = storageReference.putFile(file);
     await uploadTask.whenComplete(() => log(''));
 
     return await storageReference.getDownloadURL();

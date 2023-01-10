@@ -6,23 +6,23 @@ class LeadScreenMethods {
   static final String? _userId = FirebaseAuth.instance.currentUser?.uid;
   static final _leadsBox = FirebaseFirestore.instance.collection('leads_box');
   static Future<List<List<String>>> getAllProperty() async {
-    List<String> _propertyData = [];
-    List<String> _propertyId = [];
+    List<String> propertyData = [];
+    List<String> propertyId = [];
 
-    final _collRefStandlone = _sellPlots.doc(_userId).collection('standlone');
-    final _querySnapPlot = await _collRefStandlone.get();
-    for (int i = 0; i < _querySnapPlot.docs.length; i++) {
-      final _id = _querySnapPlot.docs[i].id;
-      final _data = _querySnapPlot.docs[i].data();
-      final _propertyType = _data['propertyType'];
-      final _propertySize = _data['size'];
-      final _price = _data['price'];
+    final collRefStandlone = _sellPlots.doc(_userId).collection('standlone');
+    final querySnapPlot = await collRefStandlone.get();
+    for (int i = 0; i < querySnapPlot.docs.length; i++) {
+      final id = querySnapPlot.docs[i].id;
+      final data = querySnapPlot.docs[i].data();
+      final propertyType = data['propertyType'];
+      final propertySize = data['size'];
+      final price = data['price'];
 
-      _propertyData.add("$_propertyType - $_propertySize - $_price/${i + 1}");
-      _propertyId.add(_id);
+      propertyData.add("$propertyType - $propertySize - $price/${i + 1}");
+      propertyId.add(id);
     }
 
-    return [_propertyData..insert(0, "All/0"), _propertyId..insert(0, "")];
+    return [propertyData..insert(0, "All/0"), propertyId..insert(0, "")];
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllLeads(

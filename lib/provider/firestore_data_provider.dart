@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:agent_league/helper/shared_preferences.dart';
 import 'package:agent_league/helper/string_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,21 +16,21 @@ class FirestoreDataProvider {
   static final User? _currentUser = FirebaseAuth.instance.currentUser;
 
   Future<num> getAllChatCounter() async {
-    num _totalCounter = 0;
+    num totalCounter = 0;
     String? uid = await AuthMethods().getUserId();
 
-    final _currentUser = await _user.doc(uid).get();
-    final _currentUserData = _currentUser.data();
-    final _querySnapUser = await _user.get();
-    for (final u in _querySnapUser.docs) {
+    final currentUser = await _user.doc(uid).get();
+    final currentUserData = currentUser.data();
+    final querySnapUser = await _user.get();
+    for (final u in querySnapUser.docs) {
       final id = u.id;
-      final count = _currentUserData?[id];
+      final count = currentUserData?[id];
       if (count == null) {
       } else {
-        _totalCounter += count;
+        totalCounter += count;
       }
     }
-    return _totalCounter;
+    return totalCounter;
   }
 
   Future<num> getParticularChatCounter(String uid) async {
@@ -89,16 +88,16 @@ class FirestoreDataProvider {
       String? currentUser = await AuthMethods().getUserId();
       await _user.doc(currentUser).update({uid: 0});
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 
   static Future<bool> checkReferralCode(
       String referralCode, String name) async {
-    final _querySnap =
+    final querySnap =
         await _user.where('ref_code', isEqualTo: referralCode).get();
-    if (_querySnap.docs.isNotEmpty) {
-      final uid = _querySnap.docs.first.id;
+    if (querySnap.docs.isNotEmpty) {
+      final uid = querySnap.docs.first.id;
       await _user.doc(uid).update({'wallet_amount': FieldValue.increment(100)});
       await _wallet.doc(uid).collection('standlone').add({
         'timestamp': FieldValue.serverTimestamp(),
@@ -113,8 +112,8 @@ class FirestoreDataProvider {
   }
 
   static Future<num> getWalletBalance() async {
-    final _docSnap = await _user.doc(_currentUser?.uid).get();
-    return _docSnap.data()?['wallet_amount'] ?? 0;
+    final docSnap = await _user.doc(_currentUser?.uid).get();
+    return docSnap.data()?['wallet_amount'] ?? 0;
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getWalletHistory() {
@@ -208,9 +207,9 @@ class FirestoreDataProvider {
 
   static Future<void> uploadProfilePicture(File image, String userId) async {
     try {
-      final _firebaseStorage = FirebaseStorage.instance;
+      final firebaseStorage = FirebaseStorage.instance;
 
-      final task = await _firebaseStorage
+      final task = await firebaseStorage
           .ref()
           .child('user/$userId/profile_pic')
           .putFile(image);

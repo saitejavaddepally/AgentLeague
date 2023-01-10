@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:agent_league/helper/constants.dart';
 import 'package:agent_league/provider/firestore_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

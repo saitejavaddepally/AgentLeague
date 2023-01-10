@@ -89,7 +89,7 @@ class _StandloneState extends State<Standlone> {
         create: (context) => SellScreenProvider(),
         builder: (context, child) {
           return Builder(builder: (context) {
-            final _pr = Provider.of<SellScreenProvider>(context, listen: false);
+            final pr = Provider.of<SellScreenProvider>(context, listen: false);
             return SingleChildScrollView(
               child: Padding(
                 padding:
@@ -245,7 +245,7 @@ class _StandloneState extends State<Standlone> {
                     ),
                     const SizedBox(height: 10),
                     FutureBuilder<List<Map<String, dynamic>>>(
-                      future: _pr.getAllPaidProperty(),
+                      future: pr.getAllPaidProperty(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final data = snapshot.data!;

@@ -21,7 +21,7 @@ class SellScreenProvider extends ChangeNotifier {
   String? _sortByChosenValue = 'Price Low - High';
   String? get sortByChosenValue => _sortByChosenValue;
 
-  bool _isSearchOn = false;
+  final bool _isSearchOn = false;
   bool get isSearchOn => _isSearchOn;
 
   void onChangeSortBy(value) {
@@ -50,7 +50,7 @@ class SellScreenProvider extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> getAllPaidProperty() async {
     log('1');
     final userId = FirebaseAuth.instance.currentUser?.uid;
-    final _querySnap = await FirebaseFirestore.instance
+    final querySnap = await FirebaseFirestore.instance
         .collection('sell_plots')
         .doc(userId)
         .collection('standlone')
@@ -58,7 +58,7 @@ class SellScreenProvider extends ChangeNotifier {
         .orderBy(_orderBy, descending: _desc)
         .get();
     log("2");
-    _data = _querySnap.docs.map((e) => e.data()..addAll({'id': e.id})).toList();
+    _data = querySnap.docs.map((e) => e.data()..addAll({'id': e.id})).toList();
     notifyListeners();
     return _data;
   }

@@ -74,9 +74,7 @@ class _HomeState extends State<Home> {
                             image: "assets/alerts.png",
                             text: "alerts",
                             type: 'static',
-                            onTap: () {
-                              //Navigator.pushNamed(context, RouteName.alerts);
-                            }),
+                            onTap: () {}),
                       ],
                     ),
                   ],

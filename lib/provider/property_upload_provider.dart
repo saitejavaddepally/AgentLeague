@@ -32,18 +32,18 @@ class PropertyUploadProvider {
 
       final imageUrls = await Utils.uploadFiles(
           images,
-          path + StringManager.imagesKey + '/',
+          '$path${StringManager.imagesKey}/',
           StringManager.imagesKey,
           imageIndex);
 
       final videoUrls = await Utils.uploadFiles(
           videos,
-          path + StringManager.videosKey + '/',
+          '$path${StringManager.videosKey}/',
           StringManager.videosKey,
           videosIndex);
 
       final docsUrl = await Utils.uploadFiles(docs,
-          path + StringManager.docsKey + '/', StringManager.docsKey, docsIndex);
+          '$path${StringManager.docsKey}/', StringManager.docsKey, docsIndex);
 
       await _projects.doc(latestProjectId).update({
         StringManager.imagesKey: imageUrls,

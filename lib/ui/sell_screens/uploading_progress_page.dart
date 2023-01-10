@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:agent_league/provider/sell_providers/sell_screen_methods.dart';
@@ -49,10 +51,10 @@ class UploadingProgress extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => UploadingProgressProvider(),
         builder: (context, child) {
-          final _pr =
+          final pr =
               Provider.of<UploadingProgressProvider>(context, listen: false);
 
-          checkFunction(_pr, context);
+          checkFunction(pr, context);
 
           return Scaffold(
             body: SingleChildScrollView(
@@ -202,10 +204,10 @@ class UploadingProgress extends StatelessWidget {
         });
   }
 
-  void checkFunction(UploadingProgressProvider _pr, BuildContext context) {
+  void checkFunction(UploadingProgressProvider pr, BuildContext context) {
     if (dataToEdit != null) {
       final id = dataToEdit?['id'];
-      _pr
+      pr
           .editProject(previousData, image, videos, docs, imagesIndex,
               docsIndex, videosIndex, id)
           .then((value) async {
@@ -225,7 +227,7 @@ class UploadingProgress extends StatelessWidget {
             arguments: 1);
       });
     } else {
-      _pr
+      pr
           .addProject(previousData, image, videos, docs, isFreeListing,
               imagesIndex, docsIndex, videosIndex)
           .then((id) async {

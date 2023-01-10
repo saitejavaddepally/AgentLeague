@@ -42,9 +42,9 @@ class OtpProvider extends ChangeNotifier {
           await auth.currentUser!.updatePhoneNumber(credential);
           await updateUser(auth.currentUser!.uid, countryCode, phoneNumber);
         } else {
-          UserCredential _userCredential =
+          UserCredential userCredential =
               await auth.signInWithCredential(credential);
-          if (_userCredential.additionalUserInfo!.isNewUser) {
+          if (userCredential.additionalUserInfo!.isNewUser) {
             return true;
           }
         }

@@ -65,11 +65,6 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
   // for monthlyIncomeTextField
   final TextEditingController monthlyIncomeController = TextEditingController();
-  String _monthlyIncome = '';
-
-  onSubmittedMonthlyIncome(value) {
-    _monthlyIncome = value;
-  }
 
   String? validateMonthlyIncome(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -81,11 +76,6 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
   // for monthlyEmiTextField
   final TextEditingController monthlyEmiController = TextEditingController();
-  String _monthlyEmi = '';
-
-  onSubmittedMonthlyEmi(value) {
-    _monthlyEmi = value;
-  }
 
   String? validateMonthlyEmi(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -97,11 +87,6 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
   // for extraIncomeTextField
   final TextEditingController extraIncomeController = TextEditingController();
-  String _extraIncome = '';
-
-  onSubmittedExtraIncome(value) {
-    _extraIncome = value;
-  }
 
   String? validateExtraIncome(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -113,11 +98,6 @@ class PropertyBuyingScoreProvider extends ChangeNotifier {
 
   // for downPaymentTextField
   final TextEditingController downPaymentController = TextEditingController();
-  String _downPayment = '';
-
-  onSubmittedDownPayment(value) {
-    _downPayment = value;
-  }
 
   String? validateDownPayment(String? value) {
     if (value == null || value.trim().isEmpty) {

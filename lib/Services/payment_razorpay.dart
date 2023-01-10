@@ -1,4 +1,7 @@
+// ignore_for_file: depend_on_referenced_packages, use_build_context_synchronously
+
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:agent_league/Services/auth_methods.dart';
 //import 'package:agent_league/Services/key_id.dart';
@@ -35,12 +38,10 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
           "currency": "INR"
         }));
 
-    print(" response is ${response.body}");
-
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       orderId = data['id'];
-      print(orderId);
+
       var options = {
         // 'key': key_id,
         // 'amount': widget.data['grandTotal']* 100,
@@ -53,7 +54,7 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
       try {
         _razorpay.open(options);
       } catch (e) {
-        print("error $e");
+        log(e.toString());
       }
     } else {
       Fluttertoast.showToast(msg: 'Something Went Wrong');
@@ -63,7 +64,6 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
 
   @override
   void initState() {
-    print(widget.data);
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -110,8 +110,7 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     // Do something when an external wallet is selected
-    Fluttertoast.showToast(
-        msg: "External Wallet : " + response.walletName.toString());
+    Fluttertoast.showToast(msg: "External Wallet : ${response.walletName}");
     Navigator.pop(context);
   }
 
@@ -127,16 +126,16 @@ class _PaymentRazorpayState extends State<PaymentRazorpay> {
           'timestamp': FieldValue.serverTimestamp(),
           'isVerified': false
         })
-        .then((value) => print("Added"))
-        .catchError((error) => print("Failed : $error"));
+        .then((value) {})
+        .catchError((error) {});
   }
 
   Future<void> updatePaymentSuccess(String orderId) {
     return successPayment
         .doc(orderId)
         .update({'isVerified': true})
-        .then((value) => print("Updated"))
-        .catchError((error) => print("Failed to update : $error"));
+        .then((value) {})
+        .catchError((error) {});
   }
 
   @override

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:async';
 
@@ -45,7 +45,7 @@ class _OtpState extends State<Otp> {
         //   Navigator.pushReplacementNamed(context, '/');
       },
       verificationFailed: (FirebaseAuthException e) {
-        print("Verification failed" + e.code);
+        print("Verification failed${e.code}");
         if (e.code == 'invalid-phone-number') {
           Fluttertoast.showToast(msg: 'Invalid Phone Number');
         } else {
